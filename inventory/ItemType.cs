@@ -13,6 +13,8 @@ public enum ItemType
     Ring = 6,
     Weapon = 7,
     Consumable = 8,
+    Weapon_Melee,
+    Weapon_Range,
     Backpack,
     Ammo
 }

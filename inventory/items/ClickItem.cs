@@ -47,7 +47,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                     {
                         Transform equipment_slot = equipment_ui.transform.GetChild(i);
 
-                        if (clickItem.itemType == equipment_slot.GetComponent<MoveItem>().ThisSlotType)
+                        if (MoveItem.compareItemType(clickItem.itemType, equipment_slot.GetComponent<MoveItem>().ThisSlotType))
                         {
                             // if equipment slot don't contain any item, put it
                             if (equipment_slot.childCount == 0)
