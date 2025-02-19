@@ -10,19 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Leather Armor
+  m_Name: Fiery Armor
   m_EditorClassIdentifier: 
-  itemName: Leather Armor
+  itemName: Steel Armor
   itemType: 2
-  itemID: 2
-  itemDesc: This is a Leather armor
-  itemIcon: {fileID: 21300000, guid: fcd8bd2db18e92d42a7d14fc0e395888, type: 3}
+  itemID: 0
+  itemDesc: This is a Steel Armor
+  itemIcon: {fileID: 21300000, guid: fa96832082fe213428b65ad2180b0a36, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 1
   itemWeight: 0
   maxStack: 1
   indexItemInList: 999
   rarity: 0
   itemAttributes:
   - attributeName: DEF
-    attributeValue: 20
+    attributeValue: 50
+  - attributeName: MaxHP
+    attributeValue: 200

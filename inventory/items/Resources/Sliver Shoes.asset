@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Leather Armor
+  m_Name: Sliver Shoes
   m_EditorClassIdentifier: 
-  itemName: Leather Armor
-  itemType: 2
-  itemID: 2
-  itemDesc: This is a Leather armor
-  itemIcon: {fileID: 21300000, guid: fcd8bd2db18e92d42a7d14fc0e395888, type: 3}
+  itemName: Sliver Shoe
+  itemType: 4
+  itemID: 1
+  itemDesc: This is a Sliver Shoe
+  itemIcon: {fileID: 21300000, guid: c4b30d660b4c34941a38c601b97323ec, type: 3}
   itemModel: {fileID: 0}
   itemValue: 10
   itemWeight: 0
@@ -25,4 +25,6 @@ MonoBehaviour:
   rarity: 0
   itemAttributes:
   - attributeName: DEF
-    attributeValue: 20
+    attributeValue: 5
+  - attributeName: SPEED
+    attributeValue: 10

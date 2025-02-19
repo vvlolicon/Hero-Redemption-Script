@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Leather Armor
+  m_Name: Leather Shoes
   m_EditorClassIdentifier: 
-  itemName: Leather Armor
-  itemType: 2
-  itemID: 2
-  itemDesc: This is a Leather armor
-  itemIcon: {fileID: 21300000, guid: fcd8bd2db18e92d42a7d14fc0e395888, type: 3}
+  itemName: Leather Shoes
+  itemType: 4
+  itemID: 3
+  itemDesc: This is a Leather Shoes
+  itemIcon: {fileID: 21300000, guid: 3677eacbc4390644e97df27f50b96587, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 5
   itemWeight: 0
   maxStack: 1
   indexItemInList: 999
   rarity: 0
   itemAttributes:
   - attributeName: DEF
-    attributeValue: 20
+    attributeValue: 5
