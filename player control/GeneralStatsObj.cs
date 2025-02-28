@@ -11,7 +11,7 @@ public class GeneralStatsObj : ScriptableObject
     public float MP;
     public float ATK;
     public float SPEED;
-    public int DEF;
+    public float DEF;
     public float AttackTime;
     public float CritChance = 0;
     public float CritMult;

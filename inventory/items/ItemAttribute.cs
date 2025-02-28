@@ -6,7 +6,7 @@ public class ItemAttribute
 {
 
     public ItemAttributeName AtrbName;
-    public int AtrbValue;
+    public float AtrbValue;
     public ItemAttribute(ItemAttributeName attributeName, int attributeValue)
     {
         this.AtrbName = attributeName;
