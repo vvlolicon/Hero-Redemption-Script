@@ -5,15 +5,14 @@ using System.Collections;
 public class ItemAttribute
 {
 
-    public string attributeName;
-    public int attributeValue;
-    public ItemAttribute(string attributeName, int attributeValue)
+    public ItemAttributeName AtrbName;
+    public int AtrbValue;
+    public ItemAttribute(ItemAttributeName attributeName, int attributeValue)
     {
-        this.attributeName = attributeName;
-        this.attributeValue = attributeValue;
+        this.AtrbName = attributeName;
+        this.AtrbValue = attributeValue;
     }
 
-    public ItemAttribute() { }
-
 }
+public enum ItemAttributeName { MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, CritChance, CritMult, CritResis, DmgReduce }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerStatManager : MonoBehaviour
 {
-    public PlayerStats playerStats;
+    public GeneralStatsObj playerStats;
     public PlayerStats initialPlayerStat;
     public TMP_Text HUD_HP_text;
     public TMP_Text HUD_MP_text;
@@ -16,12 +16,12 @@ public class PlayerStatManager : MonoBehaviour
     public TMP_Text Stats_DEF_text;
     public TMP_Text Stats_SPEED_text;
 
-    private ThirdPersonController playerController;
+    //public ThirdPersonController playerController;
 
     private void Start()
     {
-        playerController = GetComponent<ThirdPersonController>();
-        playerStats.setPlayerStat(initialPlayerStat);
+        //playerController = GetComponent<ThirdPersonController>();
+        //playerStats.setPlayerStat(initialPlayerStat);
     }
 
     // Update is called once per frame
@@ -34,6 +34,6 @@ public class PlayerStatManager : MonoBehaviour
         Stats_ATK_text.text = "Attack: " + playerStats.ATK;
         Stats_DEF_text.text = "Defence: " + playerStats.DEF;
         Stats_SPEED_text.text = "Speed: " + playerStats.SPEED;
-        playerController.MoveSpeed = playerStats.SPEED/10;
+        //playerController.MoveSpeed = playerStats.SPEED/10;
     }
 }

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a2cfb0994f0984e95553b321549577, type: 3}
+  m_Name: PlayerStaticData
+  m_EditorClassIdentifier: 
+  _runSpeedMult: 1.5
+  _atkSpeedMult: 0.5
+  _jumpSpeed: 8
+  _gravity: 20
+  _groundedGravity: -0.5
+  _mass: 60
+  _maxDashTime: 0.25
+  _dashSpeed: 20

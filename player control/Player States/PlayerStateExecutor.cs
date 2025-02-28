@@ -1,0 +1,240 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
+
+public class PlayerStateExecutor : MonoBehaviour, IDamageable
+{
+    void Start()
+    {
+        _stateMan = new PlayerStatsManager(this);
+        CurState = _stateMan.Grounded();
+        CurState.EnterState();
+        //setValue();
+    }
+
+    void setValue()
+    {
+        IsHit = false;
+        JumpPressed = false;
+        MovePressed = false;
+        RunPressed = false;
+        AttackPressed = false;
+        MovementY = 0;
+        WasGrounded = false;
+        Attacking = false;
+
+        Impact = Vector3.zero;
+        InputMoveXZ = Vector2.zero;
+        CanJump = true;
+        CanMove = true;
+        CanRun = true;
+        AttackTimer = _playerStats.AttackTime;
+
+        RunSpeedMult = _playerStaticData._runSpeedMult;
+        AtkSpeedMult = _playerStaticData._atkSpeedMult;
+        JumpSpeed = _playerStaticData._jumpSpeed;
+        Gravity = _playerStaticData._gravity;
+        GroundedGravity = _playerStaticData._groundedGravity;
+        Mass = _playerStaticData._mass;
+        MaxDashTime = _playerStaticData._maxDashTime;
+        DashSpeed = _playerStaticData._dashSpeed;
+
+        _currentDashTime = MaxDashTime;
+    }
+
+    void Awake()
+    {
+        _charCont = GetComponent<CharacterController>();
+        _soundMan = GetComponent<SoundManager>();
+        _animator = GetComponentInChildren<Animator>();
+        _playerInput = GetComponent<PlayerInput>();
+        DistToGround = _charCont.bounds.extents.y;
+        setValue();
+        //_playerInput = new PlayerInputMethods();
+        //_playerInput.PlayerControl.Move.started += OnMove;
+        //_playerInput.PlayerControl.Move.performed += OnMove;
+        //_playerInput.PlayerControl.Move.canceled += OnMove;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        PlayerSpeed = _playerStats.SPEED / 10;
+        CurState.UpdateStates();
+        //test
+        test_showState.text = "Current State:" + CurState.CurStateType();
+        if(CurState.SubState !=  null)
+            test_showState.text += "\n" + "current Sub State: " + CurState.SubState.CurStateType();
+        test_MovementY.text = "CanJump: " + CanJump + " , StartJump: " + StartJump + " , CanRun: " + CanRun + " , IsDashing: " + IsDashing()
+            + "\n" + " , curDashTime: " + _currentDashTime +  " , isGrounded: " + CharCont.isGrounded +  ", MovePressed: " + MovePressed + ", PlayerSpeed: " + PlayerSpeed;
+        // Move the controller
+        _charCont.Move(CurMovement * Time.deltaTime);
+        if(AttackTimer < _playerStats.AttackTime + 1)
+        {
+            AttackTimer += Time.deltaTime;
+        }
+    }
+
+    public void OnJump(InputValue value)
+    {
+        if (CanJump && !Attacking)
+        {
+            //Animator.ResetTrigger("Exit");
+            //Animator.SetTrigger("Jump");
+            //Animator.SetFloat("SpeedY", 8f);
+            //Animator.Play("StartJump");
+            //NewRoroutine(Jump(0.4f));
+            JumpPressed = true;
+        }
+    }
+    public IEnumerator Jump(float delay)
+    {
+        Debug.Log("start Enumerator");
+        StartJump = false;
+        // Wait for the specified delay time
+        yield return new WaitForSeconds(delay);
+
+        // Action to perform after the delay
+        Debug.Log("start Jump");
+        JumpPressed = true;
+        MovementY = JumpSpeed;
+        //SoundMan.PlaySound("Jump");
+        StartJump = true;
+    }
+    public void OnRun(InputValue value)
+    {
+        if (!Attacking && CanRun)
+            RunPressed = !RunPressed;
+        //test_runPress.text = "run pressed: " + _runPressed;
+    }
+    public void OnMove(InputValue value)
+    {
+        InputMoveXZ = value.Get<Vector2>();
+        MovePressed = InputMoveXZ.x != 0 || InputMoveXZ.y != 0;
+    }
+
+    public void OnAttack(InputValue value)
+    {
+        if (CanMove && !Attacking && AttackTimer >= _playerStats.AttackTime)
+        {
+            if (_charCont.isGrounded && !IsDashing())
+            {
+                AttackPressed = value.isPressed;
+            }
+        }
+    }
+
+    public void ApplyDamage(DmgInfo data)
+    {
+        //Debug.Log("Player is hit");
+        if (data!= null && data is PlayerDmgInfo)
+        {
+            PlayerDmgInfo info = (PlayerDmgInfo)data;
+            if (!IsHit)
+            {
+                //Debug.Log("change state");
+                PlayerHitState hitState = (PlayerHitState)_stateMan.Hit();
+                CurState.SwitchState(hitState);
+                Debug.Log("change to State: " + hitState.CurStateType());
+                hitState.ApplyDamage(info);
+                //hitState.OnHit(info);
+            }
+            // apply damage whether or not player is at hit state
+            DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritResis);
+            HealthMan.Damage(dmgResult.Dmg);
+        }
+    }
+    public void EnableMove(bool camMoveT) //Enables or disables the character movement
+    {
+        if (!IsHit)
+            CanMove = camMoveT;
+    }
+
+    public void NewRoroutine(IEnumerator coroutine)
+    {
+        StartCoroutine(coroutine);
+    }
+    
+
+
+    //public void OnEnable()
+    //{
+    //    _playerInput.PlayerControl.Enable();
+    //}
+
+    public GameObject _childPlayer;
+    public Camera _camera;
+    public GameObject _movIndicator; //Where is the character moving to
+    public PlayerStaticData _playerStaticData;
+
+    float _currentDashTime;
+    Vector3 _dashDir;
+    Vector3 _groundNormal;
+
+    CharacterController _charCont;
+    Animator _animator;
+    SoundManager _soundMan;
+    PlayerInput _playerInput;
+
+    //states variables
+    PlayerStatsManager _stateMan;
+
+    //test
+    public TMP_Text test_showState;
+    public TMP_Text test_MovementY;
+
+    public GeneralStatsObj _playerStats;
+
+
+    //getter and setter
+    public bool StartJump { get; set; }
+    public float PlayerSpeed { get; private set; }//Base Speed of the player
+    public float RunSpeedMult { get; private set; }
+    public float AtkSpeedMult { get; private set; }
+    public float Gravity { get; private set; }
+    public float GroundedGravity { get; private set; }
+    public float JumpSpeed { get; private set; }
+    public float Mass { get; private set; }
+    public float MaxDashTime { get; private set; }
+    public float DashSpeed { get; private set; }
+
+    public PlayerBaseState CurState { get; set; }
+    public bool JumpPressed { get; set; }
+    public bool MovePressed { get; set; }
+    public bool RunPressed { get; set; }
+    public bool AttackPressed { get; set; }
+    public Vector3 CurMovement { get; set; }
+    public Vector2 InputMoveXZ { get; private set; }
+    public float MovementY { get; set; }
+    public float CurPlayerSpeed { get; set; }//current Speed (including multiply of running / attacking)
+    public Vector3 Impact { get; set; }
+    public float DistToGround { get; set; } //Distance to the ground for check if there is ground under the character
+    public bool CanJump { get; set; }
+    public bool CanMove { get; set; }
+    public bool CanRun { get; set; }
+    public bool WasGrounded { get; set; }
+    public float FallTime { get; set; } //Time the player is falling
+    public bool Attacking { get; set; }
+    public bool IsHit { get; set; }
+    public float AttackTimer { get; set; }
+
+    public Animator Animator { get { return _animator; } }
+    public GameObject MovIndicator { get { return _movIndicator; } }
+    public GameObject ChildPlayer { get { return _childPlayer; } }
+    public CharacterController CharCont { get { return _charCont; } }
+    public Camera Camera { get { return _camera; } }
+    public SoundManager SoundMan { get { return _soundMan; } }
+    public GeneralStatsObj PlayerStats { get { return _playerStats; } }
+    public HealthManager HealthMan { get; set; }
+
+    public bool IsDashing() //Checks if player if dashing
+    {
+        return _currentDashTime < MaxDashTime;
+    }
+}

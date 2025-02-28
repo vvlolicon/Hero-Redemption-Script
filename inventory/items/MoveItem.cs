@@ -11,41 +11,32 @@ using static UnityEditor.Progress;
 public class MoveItem : MonoBehaviour, IDropHandler
 {
     public ItemType ThisSlotType;
-    public PlayerStats playerStats;
+    public GeneralStatsObj playerStats;
     [HideInInspector]public Item curSlotItem;
 
-    void Start()
-    {
-        //GameObject exampleItem = Resources.Load<GameObject>("prefab/item");
-        //GameObject newItem = Instantiate(exampleItem);
-        //newItem.transform.SetParent(this.transform);
-        //UpdateItemAttribute(exampleItem.GetComponent<ItemDetail>().item);
-        //Destroy(newItem);
-        //Debug.Log("curSlotItem = " + curSlotItem.itemName);
-    }
     public void OnDrop(PointerEventData eventData)
     {
         GameObject dropObject = eventData.pointerDrag;
         DraggableItem dropDragItem = dropObject.GetComponent<DraggableItem>();
         ItemType dropItemType = dropObject.GetComponent<ItemDetail>().item.itemType;
-        GameObject originItemSlot = dropDragItem.parentAfterDrag.gameObject;
-        GameObject originItemInterface = dropDragItem.parentAfterDrag.parent.gameObject;
+        GameObject targetItemSlot = dropDragItem.parentAfterDrag.gameObject;
+        GameObject targetItemInterface = dropDragItem.parentAfterDrag.parent.gameObject;
         GameObject targetSlotInterface = transform.parent.gameObject;
         Item droppedItem = dropObject.GetComponent<ItemDetail>().item;
 
-        Debug.Log("##########Test Variables##########");
-        Debug.Log("originItemSlot = " + originItemSlot.name);
-        Debug.Log("originItemInterface = " + originItemInterface.name + " / tag: " + originItemInterface.tag);
-        Debug.Log("targetSlotInterface = " + targetSlotInterface.name + " / tag: " + targetSlotInterface.tag);
+        //Debug.Log("##########Test Variables##########");
+        //Debug.Log("targetItemSlot = " + targetItemSlot.name);
+        //Debug.Log("targetItemInterface = " + targetItemInterface.name + " / tag: " + targetItemInterface.tag);
+        //Debug.Log("targetSlotInterface = " + targetSlotInterface.name + " / tag: " + targetSlotInterface.tag);
         Debug.Log("transform.childCount: " + transform.childCount);
         if (transform.childCount > 0)
         {
-            Debug.Log("target slot has item inside");
-            Debug.Log("is targetSlotInterface = originItemInterface: " + targetSlotInterface.CompareTag(originItemInterface.tag));
+            //Debug.Log("target slot has item inside");
+            //Debug.Log("is targetSlotInterface = targetItemInterface: " + targetSlotInterface.CompareTag(targetItemInterface.tag));
+            //Debug.Log("dragItemInSlot.parentAfterDrag = " + dragItemInSlot.parentAfterDrag.name);
             Item targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
             DraggableItem targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
-            //Debug.Log("dragItemInSlot.parentAfterDrag = " + dragItemInSlot.parentAfterDrag.name);
-            if (targetSlotInterface.CompareTag(originItemInterface.tag)&& !(targetSlotInterface.CompareTag("player_equipment"))&& !(originItemInterface.CompareTag("player_equipment")))
+            if (targetSlotInterface.CompareTag(targetItemInterface.tag)&& !(targetSlotInterface.CompareTag("player_equipment"))&& !(targetItemInterface.CompareTag("player_equipment")))
             {
                 Debug.Log("dropping item from inventory to inventory");
                 exchangeItem(targetDragItem, dropDragItem);
@@ -53,13 +44,13 @@ public class MoveItem : MonoBehaviour, IDropHandler
             else if (targetSlotInterface.CompareTag("player_equipment"))
             {
                 // check drag item is drag from equipment slot
-                if (originItemInterface.CompareTag("player_inventory"))
+                if (targetItemInterface.CompareTag("player_inventory"))
                 {
-                    Debug.Log("dropping item from inventory to equipment");
+                    //Debug.Log("dropping item from inventory to equipment");
                     //if target exchange item type is equal to drag item type, exchange the position of target item with drag item 
                     if (compareItemType(targetItem.itemType,ThisSlotType))
                     {
-                        Debug.Log("droppedItem: " + droppedItem.itemName + " / targetItem: " + targetItem.itemName);
+                        //Debug.Log("droppedItem: " + droppedItem.itemName + " / targetItem: " + targetItem.itemName);
                         UpdateItemAttribute(droppedItem);
                         exchangeItem(targetDragItem, dropDragItem);
                     } else
@@ -71,7 +62,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
                             if (slot.childCount == 0)
                             {
                                 slot.GetComponent<MoveItem>().dropItem(dropDragItem);
-                                originItemSlot.GetComponent<MoveItem>().removeItemAttribute();
+                                targetItemSlot.GetComponent<MoveItem>().removeItemAttribute();
                                 break;
                             }
                         }
@@ -93,9 +84,9 @@ public class MoveItem : MonoBehaviour, IDropHandler
             if (targetSlotInterface.CompareTag("player_inventory"))
             {
                 dropItem(dropDragItem);
-                if (originItemInterface.CompareTag("player_equipment"))
+                if (targetItemInterface.CompareTag("player_equipment"))
                 {
-                    originItemSlot.GetComponent<MoveItem>().removeItemAttribute();
+                    targetItemSlot.GetComponent<MoveItem>().removeItemAttribute();
                 }
             }
             else if (targetSlotInterface.CompareTag("player_equipment") && compareItemType(dropItemType, ThisSlotType))
@@ -141,20 +132,11 @@ public class MoveItem : MonoBehaviour, IDropHandler
     {
         removeItemAttribute();
         curSlotItem = itemDetail;
-        Debug.Log("Register item attribute: " + curSlotItem.name);
+        //Debug.Log("Register item attribute: " + curSlotItem.name);
 
         foreach (ItemAttribute itemAttr in curSlotItem.itemAttributes)
         {
-            if (itemAttr.attributeName.Equals("MaxHP"))
-                playerStats.maxHP += itemAttr.attributeValue;
-            if (itemAttr.attributeName.Equals("MaxMP"))
-                playerStats.maxMP += itemAttr.attributeValue;
-            if (itemAttr.attributeName.Equals("ATK"))
-                playerStats.ATK += itemAttr.attributeValue;
-            if (itemAttr.attributeName.Equals("DEF"))
-                playerStats.DEF += itemAttr.attributeValue;
-            if (itemAttr.attributeName.Equals("SPEED"))
-                playerStats.SPEED += itemAttr.attributeValue;
+            ChangePlayerStats(itemAttr, 1);
         }
     }
 
@@ -162,34 +144,53 @@ public class MoveItem : MonoBehaviour, IDropHandler
     {
         if (curSlotItem != null)
         {
-            Debug.Log("remove item attribute: " + curSlotItem.name);
+            //Debug.Log("remove item attribute: " + curSlotItem.name);
             foreach (ItemAttribute itemAttr in curSlotItem.itemAttributes)
             {
-                if (itemAttr.attributeName.Equals("MaxHP"))
-                {
-                    playerStats.maxHP -= itemAttr.attributeValue;
-                    Debug.Log("remove MaxHP: " + itemAttr.attributeValue);
-                }
-                else if (itemAttr.attributeName.Equals("MaxMP"))
-                    playerStats.maxMP -= itemAttr.attributeValue;
-                else if (itemAttr.attributeName.Equals("ATK"))
-                {
-                    playerStats.ATK -= itemAttr.attributeValue;
-                    Debug.Log("remove atk: " + itemAttr.attributeValue);
-                }
-                else if (itemAttr.attributeName.Equals("DEF"))
-                {
-                    playerStats.DEF -= itemAttr.attributeValue;
-                    Debug.Log("remove def: " + itemAttr.attributeValue);
-                }
-                else if (itemAttr.attributeName.Equals("SPEED"))
-                    playerStats.SPEED -= itemAttr.attributeValue;
+                ChangePlayerStats(itemAttr, -1);
             }
             curSlotItem = null;
         }
         else
         {
             //Debug.Log("null item");
+        }
+    }
+
+    public void ChangePlayerStats(ItemAttribute itemAttr, int multiplier)
+    {
+        switch (itemAttr.AtrbName)
+        {
+            case ItemAttributeName.MaxHP:
+                playerStats.maxHP += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.MaxMP:
+                playerStats.maxMP += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.ATK:
+                playerStats.ATK += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.AtkTime:
+                playerStats.AttackTime += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.DEF:
+                playerStats.DEF += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.SPEED:
+                playerStats.SPEED += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.CritChance:
+                playerStats.CritChance += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.CritMult:
+                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.CritResis:
+                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.DmgReduce:
+                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+                break;
         }
     }
 

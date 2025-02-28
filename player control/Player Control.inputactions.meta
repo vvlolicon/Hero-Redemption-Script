@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4c4eff532e515f046b38a783eac5fd2c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 8404be70184654265930450def6a9037, type: 3}
+  generateWrapperCode: 0
+  wrapperCodePath: D:\projects\unity\test_new_project\Assets\RPGCombatSystem\Scripts\Player
+    control\PlayerInputMethods.cs
+  wrapperClassName: PlayerInputMethods
+  wrapperCodeNamespace: 

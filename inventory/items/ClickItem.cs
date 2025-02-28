@@ -71,8 +71,8 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                         // if equipment slot don't contain any item, put it
                         if (inventory_slot.childCount == 0)
                         {
-                            Debug.Log("remove item at slot: " + transform.parent.gameObject.name);
-                            Debug.Log("remove item name: " + transform.parent.GetComponent<MoveItem>().curSlotItem.itemName);
+                            //Debug.Log("remove item at slot: " + transform.parent.gameObject.name);
+                            //Debug.Log("remove item name: " + transform.parent.GetComponent<MoveItem>().curSlotItem.itemName);
                             transform.parent.GetComponent<MoveItem>().removeItemAttribute();
                             clickDragItem.parentAfterDrag = inventory_slot;
                             transform.SetParent(inventory_slot);
