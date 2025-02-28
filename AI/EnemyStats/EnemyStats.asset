@@ -9,10 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f7e3ed618007e94f93051b73a5d211f, type: 3}
-  m_Name: PlayerHealth
+  m_Script: {fileID: 11500000, guid: 48228403f17192e4ab8cdecf498040ce, type: 3}
+  m_Name: EnemyStats
   m_EditorClassIdentifier: 
-  health: 769.4063
-  maxHealth: 1000
-  infiniteHP: 0
-  damageTextPrefab: {fileID: 7142085611692283070, guid: 9d700b13dbb1cb64bae2c35b89e6acd9, type: 3}
+  maxHP: 1000
+  HP: 1000
+  maxMP: 0
+  MP: 0
+  ATK: 100
+  SPEED: 30
+  DEF: 20
+  AttackTime: 2.5
+  CritChance: 0
+  CritMult: 0
+  CritResis: 0
+  DmgReduction: 0

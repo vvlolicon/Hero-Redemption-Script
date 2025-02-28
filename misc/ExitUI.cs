@@ -13,9 +13,9 @@ public class ExitUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeInHierarchy)
-        {
-            gameObject.SetActive(false);
-        }
+        //if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeInHierarchy)
+        //{
+        //    gameObject.SetActive(false);
+        //}
     }
 }

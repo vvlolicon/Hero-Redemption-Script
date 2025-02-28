@@ -24,7 +24,7 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: DEF
-    attributeValue: 5
-  - attributeName: SPEED
-    attributeValue: 10
+  - AtrbName: 6
+    AtrbValue: 100
+  - AtrbName: 7
+    AtrbValue: 100

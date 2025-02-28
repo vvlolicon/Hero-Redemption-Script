@@ -24,7 +24,7 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: MaxHp
-    attributeValue: 100
-  - attributeName: ATK
-    attributeValue: 100
+  - AtrbName: 2
+    AtrbValue: 100
+  - AtrbName: 9
+    AtrbValue: 1.5

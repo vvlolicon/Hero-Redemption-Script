@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -6,36 +8,45 @@ using UnityEngine.InputSystem;
 public class playerInputData : MonoBehaviour
 {
 
-	[Header("Movement Settings")]
-	public bool analogMovement;
+	//[Header("Movement Settings")]
+	//public bool analogMovement;
 
-	[Header("Mouse Cursor Settings")]
-	public GameObject inventoryUI;
-	public GameObject equipmentUI;
+    [Header("UI settings")]
+    public GameObject inventoryUI;
+    public GameObject equipmentUI;
+    public GameObject testData;
+	//public Canvas UIWindow;
 
+    private PlayerStateExecutor _executor;
+	public List<GameObject> UIWindows = new List<GameObject>();
 
 	public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
     public bool CursorLocked { get; private set; }
-    public bool cursorInputForLook { get; set; }
+    public bool InputEnable { get; set; }
     public Vector2 InputMove { get; private set; }
     public Vector2 InputLook { get; private set; }
 
     private void Start()
     {
-		CursorLocked = true;
-		cursorInputForLook = true;
+        SetCursorState(true);
+		InputEnable = true;
+        _executor = GetComponent<PlayerStateExecutor>();
+        
     }
 
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
 	{
-		MoveInput(value.Get<Vector2>());
+		if (InputEnable)
+		{
+			_executor.OnMovePressed(value.Get<Vector2>());
+		}
 	}
 
 	public void OnLook(InputValue value)
 	{
-		if(cursorInputForLook)
+		if(CursorLocked)
 		{
 			LookInput(value.Get<Vector2>());
 		}
@@ -43,21 +54,88 @@ public class playerInputData : MonoBehaviour
 
 	public void OnJump(InputValue value)
 	{
-		JumpInput(value.isPressed);
-	}
+		if (InputEnable)
+		{
+			_executor.OnJumpPressed();
+		}
+    }
 
 	public void OnSprint(InputValue value)
 	{
-		SprintInput(value.isPressed);
+		if (InputEnable)
+		{
+			SprintInput(value.isPressed);
+		}
 	}
 
-	public void OnOpenInventory()
+    public void OnRun(InputValue value)
+    {
+		if (InputEnable)
+        {
+            _executor.OnRunPressed();
+        }
+        //test_runPress.text = "run pressed: " + _runPressed;
+    }
+
+	public void OnAttack(InputValue value)
+	{
+        if (InputEnable && CursorLocked)
+        {
+            _executor.OnAttackPressed(value.isPressed);
+        }
+    }
+
+    public void OnOpenInventory()
 	{
         inventoryUI.SetActive(true);
 		equipmentUI.SetActive(true);
+        SetCursorState(false);
+		InputEnable = false;
+    }
 
+	public void OnEscHit(InputValue value)
+	{
+		foreach(var UI in UIWindows)
+		{
+            if (UI.activeInHierarchy)
+            {
+                UI.SetActive(false);
+				//break;
+            }
+        }
+        SetCursorState(true);
+        InputEnable = true;
     }
 #endif
+
+	public void OnUIQuit()
+	{
+        StartCoroutine(CheckUIWindowActive());
+    }
+
+    public IEnumerator CheckUIWindowActive()
+	{
+        yield return new WaitForSeconds(0.1f);
+        bool hasWindowActive = false;
+        foreach (var UI in UIWindows)
+        {
+            if (UI.activeInHierarchy)
+            {
+                hasWindowActive = true;
+                break;
+            }
+        }
+        if (!hasWindowActive)
+        {
+            SetCursorState(true);
+            InputEnable = true;
+        }
+    }
+
+    public void OnShowTestData(InputValue value)
+	{
+        testData.SetActive(!testData.activeInHierarchy);
+    }
 
 
 	public void MoveInput(Vector2 newMoveDirection)
@@ -87,6 +165,8 @@ public class playerInputData : MonoBehaviour
 
 	private void SetCursorState(bool newState)
 	{
-		Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+        CursorLocked = newState;
+        InputEnable = newState;
+        Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 	}
 }

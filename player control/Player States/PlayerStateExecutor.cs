@@ -15,6 +15,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         _stateMan = new PlayerStatsManager(this);
         CurState = _stateMan.Grounded();
         CurState.EnterState();
+        _healthMan.maxHealth = PlayerStats.maxHP;
+        _healthMan.health = PlayerStats.maxHP;
         //setValue();
     }
 
@@ -81,7 +83,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         }
     }
 
-    public void OnJump(InputValue value)
+    public void OnJumpPressed()
     {
         if (CanJump && !Attacking)
         {
@@ -89,7 +91,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
             //Animator.SetTrigger("Jump");
             //Animator.SetFloat("SpeedY", 8f);
             //Animator.Play("StartJump");
-            //NewRoroutine(Jump(0.4f));
+            NewRoroutine(Jump(0.4f));
             JumpPressed = true;
         }
     }
@@ -107,25 +109,25 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         //SoundMan.PlaySound("Jump");
         StartJump = true;
     }
-    public void OnRun(InputValue value)
+    public void OnRunPressed()
     {
         if (!Attacking && CanRun)
             RunPressed = !RunPressed;
         //test_runPress.text = "run pressed: " + _runPressed;
     }
-    public void OnMove(InputValue value)
+    public void OnMovePressed(Vector2 value)
     {
-        InputMoveXZ = value.Get<Vector2>();
+        InputMoveXZ = value;
         MovePressed = InputMoveXZ.x != 0 || InputMoveXZ.y != 0;
     }
 
-    public void OnAttack(InputValue value)
+    public void OnAttackPressed(bool value)
     {
         if (CanMove && !Attacking && AttackTimer >= _playerStats.AttackTime)
         {
             if (_charCont.isGrounded && !IsDashing())
             {
-                AttackPressed = value.isPressed;
+                AttackPressed = value;
             }
         }
     }
@@ -147,7 +149,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
             }
             // apply damage whether or not player is at hit state
             DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritResis);
-            HealthMan.Damage(dmgResult.Dmg);
+            _healthMan.Damage(dmgResult.Dmg);
         }
     }
     public void EnableMove(bool camMoveT) //Enables or disables the character movement
@@ -190,6 +192,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     public TMP_Text test_MovementY;
 
     public GeneralStatsObj _playerStats;
+    public HealthManager _healthMan;
 
 
     //getter and setter
@@ -231,7 +234,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     public Camera Camera { get { return _camera; } }
     public SoundManager SoundMan { get { return _soundMan; } }
     public GeneralStatsObj PlayerStats { get { return _playerStats; } }
-    public HealthManager HealthMan { get; set; }
 
     public bool IsDashing() //Checks if player if dashing
     {

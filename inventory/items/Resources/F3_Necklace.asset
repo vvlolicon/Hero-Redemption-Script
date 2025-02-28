@@ -24,15 +24,15 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: MaxHP
-    attributeValue: 1500
-  - attributeName: MaxMP
-    attributeValue: 500
-  - attributeName: ATK
-    attributeValue: 500
-  - attributeName: CC
-    attributeValue: 80
-  - attributeName: CD
-    attributeValue: 50
-  - attributeName: DEF
-    attributeValue: 1000
+  - AtrbName: 2
+    AtrbValue: 0.5
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0

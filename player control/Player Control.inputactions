@@ -45,7 +45,7 @@
                     "name": "OpenInventory",
                     "type": "Button",
                     "id": "1eb276ac-b8aa-40ec-b8af-23f70d3cb312",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -67,6 +67,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "EscHit",
+                    "type": "Button",
+                    "id": "3ab4c764-395b-45d0-8fd1-5af91de64c4f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowTestData",
+                    "type": "Button",
+                    "id": "ebcca315-fb9e-4f7d-bf95-a117fe34880b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -84,7 +102,7 @@
                 {
                     "name": "",
                     "id": "076be6a9-7b96-4f66-a2c2-100a68e7736c",
-                    "path": "<Keyboard>/i",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
@@ -188,6 +206,28 @@
                     "processors": "InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)",
                     "groups": ";KeyboardMouse",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a51f3615-4f9c-4c2e-97b5-351f174c3136",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EscHit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c1d30d58-0a5f-4383-a8e7-ada0713d92ba",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowTestData",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

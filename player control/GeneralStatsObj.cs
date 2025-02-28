@@ -34,5 +34,9 @@ public class GeneralStatsObj : ScriptableObject
         DEF = stats.DEF;
         SPEED = stats.SPEED;
         AttackTime = stats.AttackTime;
+        CritChance = stats.CritChance;
+        CritMult = stats.CritMult;
+        CritResis = stats.CritResis;
+        DmgReduction = stats.DmgReduction;
     }
 }

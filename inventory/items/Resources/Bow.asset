@@ -24,5 +24,5 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: ATK
-    attributeValue: 50
+  - AtrbName: 7
+    AtrbValue: 0

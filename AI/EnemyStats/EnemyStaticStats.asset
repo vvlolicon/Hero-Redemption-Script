@@ -9,13 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f214150adc062a948a822bdf2c82dc82, type: 3}
-  m_Name: InitialPlayerStat
+  m_Script: {fileID: 11500000, guid: 80bfd7902d182e841911a6173aa8cb51, type: 3}
+  m_Name: EnemyStaticStats
   m_EditorClassIdentifier: 
-  maxHP: 1000
-  HP: 1000
-  maxMP: 1000
-  MP: 1000
-  ATK: 100
-  SPEED: 50
-  DEF: 100
+  _visDist: 10
+  _visAngle: 90
+  _attackDist: 2
+  _chaseTime: 3
+  _atkAnimTime: 1.2

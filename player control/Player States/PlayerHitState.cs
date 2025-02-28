@@ -87,7 +87,7 @@ public class PlayerHitState : PlayerBaseState
 
     public void ApplyDamage(PlayerDmgInfo info) //Apply damage to the player
     {
-        Executor.SoundMan.PlaySound("Hit");
+        //Executor.SoundMan.PlaySound("Hit");
         //currentDashTime = maxDashTime; //Cancels dash if was pressed
         Executor.Animator.SetFloat("Speed", 0);
         Executor.Animator.StopPlayback();
