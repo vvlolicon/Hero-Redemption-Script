@@ -24,17 +24,17 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: MaxHP
-    attributeValue: 0
-  - attributeName: MaxMP
-    attributeValue: 0
-  - attributeName: ATK
-    attributeValue: 0
-  - attributeName: DEF
-    attributeValue: 0
-  - attributeName: HP
-    attributeValue: 0
-  - attributeName: MP
-    attributeValue: 0
-  - attributeName: SPEED
-    attributeValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
