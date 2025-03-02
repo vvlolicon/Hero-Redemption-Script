@@ -58,12 +58,14 @@ public class PlayerAttackState : PlayerBaseState
         {
             Executor.Attacking = false;
             Executor.CanJump = true;
+            Executor.Animator.speed = 1;
         }
     }
 
     private void Attack()
     {
         Executor.Animator.Play("Attack");
+        Executor.Animator.speed *= Executor.GetAtkSpeedMult();
         //Executor.SoundMan.PlaySound("Attack");
         Executor.AttackTimer = 0;
     }

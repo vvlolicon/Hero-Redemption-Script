@@ -43,7 +43,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         CanJump = true;
         CanMove = true;
         CanRun = true;
-        AttackTimer = _playerStats.AttackTime;
+        AttackTimer = 0;
 
         RunSpeedMult = _playerStaticData._runSpeedMult;
         AtkSpeedMult = _playerStaticData._atkSpeedMult;
@@ -84,10 +84,17 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         }
         // Move the controller
         _charCont.Move(CurMovement * Time.deltaTime);
-        if(AttackTimer < _playerStaticData._iniAtkSpeed * 1/ Mathf.Max(1 + _playerStats.AttackTime, 0.1f))
+        _atkTimeCD = _playerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
+        if (AttackTimer > 0)
         {
-            AttackTimer += Time.deltaTime;
+            AttackTimer -= Time.deltaTime;
+            Debug.Log("AttackTimer: " + AttackTimer + " / atkTimeCD: " + _atkTimeCD);
         }
+    }
+
+    public float GetAtkSpeedMult()
+    {
+        return Mathf.Min((1 + _playerStats.AttackTime), 10f);
     }
 
     void FixedUpdate()
@@ -145,10 +152,11 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
 
     public void OnAttackPressed(bool value)
     {
-        if (CanMove && !Attacking && AttackTimer >= _playerStats.AttackTime)
+        if (CanMove && !Attacking && AttackTimer <= 0)
         {
             if (_charCont.isGrounded && !IsDashing())
             {
+                AttackTimer = _atkTimeCD;
                 AttackPressed = value;
             }
         }
@@ -206,6 +214,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     Vector3 _dashDir;
     Vector3 _groundNormal;
     float _mpRegenTimer;
+    float _atkTimeCD;
 
     CharacterController _charCont;
     Animator _animator;
