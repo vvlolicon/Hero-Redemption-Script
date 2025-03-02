@@ -5,38 +5,41 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game Functions/Game Stats/General Stats")]
 public class GeneralStatsObj : ScriptableObject
 {
-    public float maxHP;
+    public float MaxHP;
     public float HP;
-    public float maxMP;
+    public float MaxMP;
     public float MP;
+    public float MP_Regen;
     public float ATK;
     public float SPEED;
     public float DEF;
     public float AttackTime;
     public float CritChance = 0;
-    public float CritMult;
-    public float CritResis;
+    public float CritChanRdc = 0;
+    public float CritDmgMult;
+    public float CritDmgResis;
     public float DmgReduction;
 
     private void OnEnable()
     {
-        HP = maxHP;
-        MP = maxMP;
+        HP = MaxHP;
+        MP = MaxMP;
     }
 
     public void setStats(GeneralStatsObj stats)
     {
-        maxHP = stats.maxHP;
-        HP = maxHP;
-        maxMP = stats.maxMP;
-        MP = maxMP;
+        MaxHP = stats.MaxHP;
+        HP = MaxHP;
+        MaxMP = stats.MaxMP;
+        MP = MaxMP;
         ATK = stats.ATK;
         DEF = stats.DEF;
         SPEED = stats.SPEED;
         AttackTime = stats.AttackTime;
         CritChance = stats.CritChance;
-        CritMult = stats.CritMult;
-        CritResis = stats.CritResis;
+        CritChanRdc = stats.CritChanRdc;
+        CritDmgMult = stats.CritDmgMult;
+        CritDmgResis = stats.CritDmgResis;
         DmgReduction = stats.DmgReduction;
     }
 }

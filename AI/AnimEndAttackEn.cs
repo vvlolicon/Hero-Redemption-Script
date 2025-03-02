@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimEndAttack : StateMachineBehaviour
+public class AnimEndAttackEn : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -19,9 +19,10 @@ public class AnimEndAttack : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //GameObject player = animator.gameObject;
-        ////Debug.Log(player.name + " end attack");
-        //player.GetComponent<AnimatorEvents>().EnableMove();
+        //GameObject enemy = animator.gameObject;
+        //Debug.Log(enemy.name + " end attack");
+        AnimatorEventsEn animatorEv = animator.gameObject.GetComponent<AnimatorEventsEn>();
+        animatorEv.EndAttack();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

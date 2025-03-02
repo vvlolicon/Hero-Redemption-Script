@@ -31,7 +31,7 @@ public class Sword1 : MonoBehaviour
 	{
         if (other.tag == "Enemy" && _executor.CurState.CurStateType() == PlayerStates.ATTACK)
         {
-            EnemyDmgInfo dmgInfo = new EnemyDmgInfo(_playerStats.ATK, _playerStats.CritChance, _playerStats.CritMult, _dmgColor, transform, other.gameObject);
+            EnemyDmgInfo dmgInfo = new EnemyDmgInfo(_playerStats.ATK, _playerStats.CritChance, _playerStats.CritDmgMult, _dmgColor, transform, other.gameObject);
             dmgInfo.CallDamageable(other.gameObject);
         }
 	}

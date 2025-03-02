@@ -3,22 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(menuName = "Game Functions/Health Manager")]
-public class HealthManager : ScriptableObject
+public class HealthManager : MonoBehaviour
 {
-    [SerializeField] public float health;
-    [SerializeField] public float maxHealth = 100;
     public bool infiniteHP = false;
     //public UnityEvent<DmgInfo> healthChangeEvent;
     public GameObject damageTextPrefab;
+    public float textPopupOffset = 50f;
 
-    private Camera camera;
+    Camera _camera;
+    public PlayerStateExecutor _playerExecutor { get; set; }
+    public EnemyStateExecutor _enemyExecutor { get; set; }
+    //PlayerStatDisplay _statDisplay;
 
-
-    public void Initialize()
+    float health 
+    { 
+        get {
+            if (_playerExecutor != null)
+                return _playerExecutor.PlayerStats.HP;
+            else if (_enemyExecutor != null)
+                return _enemyExecutor.HP;
+            else
+                return Mathf.Infinity;
+        }
+        set
+        {
+            if (_playerExecutor != null)
+            {
+                _playerExecutor.PlayerStats.HP = value;
+            }
+            else if (_enemyExecutor != null)
+            {
+                _enemyExecutor.HP = value;
+                Debug.Log(gameObject.name + " HP left: " + maxHealth + " / " + health);
+            }
+            else
+                Debug.Log("cannnot find object to set HP");
+        }
+    }
+    float maxHealth
     {
-        health = maxHealth;
-        
+        get
+        {
+            if (_playerExecutor != null)
+                return _playerExecutor.PlayerStats.MaxHP;
+            else if (_enemyExecutor != null)
+                return _enemyExecutor.MaxHP;
+            else
+                return Mathf.Infinity;
+        }
+        set
+        {
+            if (_playerExecutor != null)
+                _playerExecutor.PlayerStats.MaxHP = value;
+            else if (_enemyExecutor != null)
+                _enemyExecutor.MaxHP = value;
+            else
+                Debug.Log("cannnot find object to set HP");
+        }
+    }
+
+    private void Start()
+    {
+       
     }
 
     public void Damage(float dmg)
@@ -30,24 +76,35 @@ public class HealthManager : ScriptableObject
             //health -= 
     }
 
+    void ownerDies()
+    {
+        if (_playerExecutor != null)
+            _playerExecutor.OnDying();
+        else if (_enemyExecutor != null)
+            _enemyExecutor.OnDying();
+    }
+
     public void createHealthMeg(DmgInfo TDmgInfo)
     {
         //throws a damage text
         if (TDmgInfo is EnemyDmgInfo)
         {
             EnemyDmgInfo dmgInfo = (EnemyDmgInfo)TDmgInfo;
-            camera = Camera.main;
+            _camera = Camera.main;
             Vector2 randomOffset = new Vector2(Random.Range(0.5f, 1f) * RandomMethods.RandomPosNegNumber(), Random.Range(0, 1f));
-            // multiply the offset to 100f to enlarge the randomlise offset position
-            Vector3 textPos = RandomMethods.ScreenPointOffset(camera, dmgInfo.DmgTextPos.position, randomOffset * 100f);
+            // multiply the offset to offset distance to enlarge the randomlise offset position
+            Vector3 textPos = RandomMethods.ScreenPointOffset(_camera, dmgInfo.DmgTextPos.position, randomOffset * textPopupOffset);
             GameObject dmgText = Instantiate(damageTextPrefab, textPos, Quaternion.identity);
             string damageShow = "" + dmgInfo.damageShow;
+            Color dmgColor = dmgInfo.TextColor;
             if (dmgInfo.IsCrit)
             {
+                // change the damage text color to red and enlarge 1.5 times size to show critical attack
+                dmgColor = Color.red;
                 dmgText.transform.localScale *= 1.5f;
                 damageShow += "!";
             }
-            dmgText.GetComponent<DamagePopup>().SetUp(damageShow, dmgInfo.TextColor, randomOffset);
+            dmgText.GetComponent<DamagePopup>().SetUp(damageShow, dmgColor, randomOffset);
         }
     }
     public void onHealthChange(float value)
@@ -55,7 +112,8 @@ public class HealthManager : ScriptableObject
         health += value;
         if (health <= 0)
         {
-            //Debug.Log("player dies");
+            Debug.Log( gameObject.name + " dies");
+            ownerDies();
         }
     }
 

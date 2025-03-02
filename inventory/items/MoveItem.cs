@@ -96,7 +96,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
             }
             
         }
-        Debug.Log("##########Test Variables End##########");
+        //Debug.Log("##########Test Variables End##########");
     }
 
     private void exchangeItem(DraggableItem itemInSlot, DraggableItem itemDrop)
@@ -162,10 +162,14 @@ public class MoveItem : MonoBehaviour, IDropHandler
         switch (itemAttr.AtrbName)
         {
             case ItemAttributeName.MaxHP:
-                playerStats.maxHP += itemAttr.AtrbValue * multiplier;
+                playerStats.MaxHP += itemAttr.AtrbValue * multiplier;
+                // also changes the hp when changing MaxHP, and makesure at least 1 HP left
+                playerStats.HP = Mathf.Max(playerStats.HP + itemAttr.AtrbValue * multiplier, 1); 
                 break;
             case ItemAttributeName.MaxMP:
-                playerStats.maxMP += itemAttr.AtrbValue * multiplier;
+                playerStats.MaxMP += itemAttr.AtrbValue * multiplier;
+                // also change MP when max MP changes, and makesure at least 0 MP
+                playerStats.MP = Mathf.Max(playerStats.MP + itemAttr.AtrbValue * multiplier, 0); 
                 break;
             case ItemAttributeName.ATK:
                 playerStats.ATK += itemAttr.AtrbValue * multiplier;
@@ -182,14 +186,17 @@ public class MoveItem : MonoBehaviour, IDropHandler
             case ItemAttributeName.CritChance:
                 playerStats.CritChance += itemAttr.AtrbValue * multiplier;
                 break;
-            case ItemAttributeName.CritMult:
-                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+            case ItemAttributeName.CritChanRdc:
+                playerStats.CritChanRdc += itemAttr.AtrbValue * multiplier;
                 break;
-            case ItemAttributeName.CritResis:
-                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+            case ItemAttributeName.CritDmgMult:
+                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
+                break;
+            case ItemAttributeName.CritDmgResis:
+                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
                 break;
             case ItemAttributeName.DmgReduce:
-                playerStats.CritMult += itemAttr.AtrbValue * multiplier;
+                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
                 break;
         }
     }

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class WeaponEnemy : MonoBehaviour
 {
-    //public int attack = 132; //Damage of the weapon
-    //public int random_range = 10;
     public Color dmgColor = Color.cyan; //Color of the text with the damage value
 
     private BoxCollider coll; //Collider of the weapon
@@ -26,10 +24,8 @@ public class WeaponEnemy : MonoBehaviour
         {
             PlayerDmgInfo dmgInfo = new PlayerDmgInfo(_executor.ATK, other.transform.position - transform.position, 250f);
             dmgInfo.CallDamageable(other.gameObject);
-            //float dmgValue = attack + Random.Range(-1 * random_range, random_range);
-            //PlayerDmgInfo dmgInfo = new PlayerDmgInfo(dmgValue, other.transform.position - transform.position, 250f);
-            //OnHealthChanged.Raise(dmgInfo);
-            //dmgInfo.CallDamageable(other.gameObject);
+            // ensure only cause damage once;
+            _executor.AnimatorEvents.EndAttack();
         }
 	}
 

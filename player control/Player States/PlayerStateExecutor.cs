@@ -10,14 +10,21 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerStateExecutor : MonoBehaviour, IDamageable
 {
-    void Start()
+    void Awake()
     {
-        _stateMan = new PlayerStatsManager(this);
-        CurState = _stateMan.Grounded();
-        CurState.EnterState();
-        _healthMan.maxHealth = PlayerStats.maxHP;
-        _healthMan.health = PlayerStats.maxHP;
-        //setValue();
+        _charCont = GetComponent<CharacterController>();
+        _soundMan = GetComponent<SoundManager>();
+        _animator = GetComponentInChildren<Animator>();
+        _playerInput = GetComponent<PlayerInput>();
+        _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
+        _healthMan = GetComponent<HealthManager>();
+        _healthMan._playerExecutor = this;
+        DistToGround = _charCont.bounds.extents.y;
+        setValue();
+        //_playerInput = new PlayerInputMethods();
+        //_playerInput.PlayerControl.Move.started += OnMove;
+        //_playerInput.PlayerControl.Move.performed += OnMove;
+        //_playerInput.PlayerControl.Move.canceled += OnMove;
     }
 
     void setValue()
@@ -49,20 +56,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
 
         _currentDashTime = MaxDashTime;
     }
-
-    void Awake()
+    void Start()
     {
-        _charCont = GetComponent<CharacterController>();
-        _soundMan = GetComponent<SoundManager>();
-        _animator = GetComponentInChildren<Animator>();
-        _playerInput = GetComponent<PlayerInput>();
-        DistToGround = _charCont.bounds.extents.y;
-        setValue();
-        //_playerInput = new PlayerInputMethods();
-        //_playerInput.PlayerControl.Move.started += OnMove;
-        //_playerInput.PlayerControl.Move.performed += OnMove;
-        //_playerInput.PlayerControl.Move.canceled += OnMove;
+        _stateMan = new PlayerStatsManager(this);
+        CurState = _stateMan.Grounded();
+        CurState.EnterState();
+        //setValue();
     }
+
 
     // Update is called once per frame
     void Update()
@@ -70,16 +71,37 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         PlayerSpeed = _playerStats.SPEED / 10;
         CurState.UpdateStates();
         //test
-        test_showState.text = "Current State:" + CurState.CurStateType();
-        if(CurState.SubState !=  null)
-            test_showState.text += "\n" + "current Sub State: " + CurState.SubState.CurStateType();
-        test_MovementY.text = "CanJump: " + CanJump + " , StartJump: " + StartJump + " , CanRun: " + CanRun + " , IsDashing: " + IsDashing()
-            + "\n" + " , curDashTime: " + _currentDashTime +  " , isGrounded: " + CharCont.isGrounded +  ", MovePressed: " + MovePressed + ", PlayerSpeed: " + PlayerSpeed;
+        if (test_showState.gameObject.activeInHierarchy)
+        {
+            test_showState.text = "Current State:" + CurState.CurStateType();
+            if (CurState.SubState != null)
+                test_showState.text += "\n" + "current Sub State: " + CurState.SubState.CurStateType();
+        }
+        if (test_MovementY.gameObject.activeInHierarchy)
+        {
+            test_MovementY.text = "CanJump: " + CanJump + " , StartJump: " + StartJump + " , CanRun: " + CanRun + " , IsDashing: " + IsDashing()
+           + "\n" + " , curDashTime: " + _currentDashTime + " , isGrounded: " + CharCont.isGrounded + ", MovePressed: " + MovePressed + ", PlayerSpeed: " + PlayerSpeed;
+        }
         // Move the controller
         _charCont.Move(CurMovement * Time.deltaTime);
         if(AttackTimer < _playerStats.AttackTime + 1)
         {
             AttackTimer += Time.deltaTime;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        // for every MP regen frequency(default 1s), recover player MP for value of MP_Regen
+        // to ensure actual time frequency, use fixed update for this
+        if (_mpRegenTimer > _playerStaticData._mpRegenFreq)
+        {
+            // ensure MP does not exceed maximum MP
+            PlayerStats.MP = Mathf.Min(PlayerStats.MaxMP, PlayerStats.MP + PlayerStats.MP_Regen);
+            _mpRegenTimer = 0;
+        } else
+        {
+            _mpRegenTimer += Time.deltaTime;
         }
     }
 
@@ -91,7 +113,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
             //Animator.SetTrigger("Jump");
             //Animator.SetFloat("SpeedY", 8f);
             //Animator.Play("StartJump");
-            NewRoroutine(Jump(0.4f));
+            //NewRoroutine(Jump(0.4f));
             JumpPressed = true;
         }
     }
@@ -134,21 +156,17 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
 
     public void ApplyDamage(DmgInfo data)
     {
-        //Debug.Log("Player is hit");
         if (data!= null && data is PlayerDmgInfo)
         {
             PlayerDmgInfo info = (PlayerDmgInfo)data;
             if (!IsHit)
             {
-                //Debug.Log("change state");
                 PlayerHitState hitState = (PlayerHitState)_stateMan.Hit();
                 CurState.SwitchState(hitState);
-                Debug.Log("change to State: " + hitState.CurStateType());
                 hitState.ApplyDamage(info);
-                //hitState.OnHit(info);
             }
             // apply damage whether or not player is at hit state
-            DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritResis);
+            DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritDmgResis);
             _healthMan.Damage(dmgResult.Dmg);
         }
     }
@@ -162,8 +180,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     {
         StartCoroutine(coroutine);
     }
-    
 
+    public void OnDying()
+    {
+        // TODO: player dead state;
+        // TODO: player dead animation and UI window
+
+        // TODO: SL system;
+    }
 
     //public void OnEnable()
     //{
@@ -178,21 +202,23 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     float _currentDashTime;
     Vector3 _dashDir;
     Vector3 _groundNormal;
+    float _mpRegenTimer;
 
     CharacterController _charCont;
     Animator _animator;
     SoundManager _soundMan;
     PlayerInput _playerInput;
+    HealthManager _healthMan;
 
     //states variables
     PlayerStatsManager _stateMan;
+    PlayerStatDisplay _statDisplay;
 
     //test
     public TMP_Text test_showState;
     public TMP_Text test_MovementY;
 
     public GeneralStatsObj _playerStats;
-    public HealthManager _healthMan;
 
 
     //getter and setter

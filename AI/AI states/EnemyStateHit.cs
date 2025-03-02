@@ -16,6 +16,7 @@ public class EnemyStateHit : EnemyBaseStates
         Executor.Animator.SetTrigger("isHited");
         Executor.Agent.isStopped = true;
         waitTimer = 0;
+        Executor.AnimatorEvents.EndAttack();
     }
 
     protected override void CheckSwitchState()

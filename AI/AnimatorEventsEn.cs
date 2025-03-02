@@ -41,4 +41,10 @@ public class AnimatorEventsEn : MonoBehaviour
     {
         soundMan.PlaySound(soundName);
     }
+
+    public void EndAttack()
+    {
+        isAttacking = false;
+        DisableWeaponColl();
+    }
 }

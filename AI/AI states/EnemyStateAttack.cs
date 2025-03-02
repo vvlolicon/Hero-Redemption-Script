@@ -17,7 +17,6 @@ public class EnemyStateAttack : EnemyBaseStates
         _animator = Executor.Animator;
         _animator.SetTrigger("isIdle");
         Executor.Agent.isStopped = true;
-        Executor.AnimatorEvents.isAttacking = true;
     }
 
     protected override void CheckSwitchState()
@@ -43,6 +42,7 @@ public class EnemyStateAttack : EnemyBaseStates
             Executor.WaitTimer = 0;
             _animator.ResetTrigger("isIdle");
             _animator.SetTrigger("isMeleeAttacking");
+            Executor.AnimatorEvents.isAttacking = true;
         }
         // if the animation finish plays, stop attack and wait for attack CD
         else if (_waitTimer > Executor.AtkAnimTime)
@@ -58,6 +58,6 @@ public class EnemyStateAttack : EnemyBaseStates
         _animator.ResetTrigger("isMeleeAttacking");
         Executor.AnimatorEvents.isAttacking = false;
         Executor.Agent.isStopped = false;
-        _animator.GetComponent<AnimatorEventsEn>().DisableWeaponColl();
+        Executor.AnimatorEvents.EndAttack();
     }
 }

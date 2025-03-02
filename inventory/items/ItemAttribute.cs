@@ -10,9 +10,12 @@ public class ItemAttribute
     public ItemAttribute(ItemAttributeName attributeName, int attributeValue)
     {
         this.AtrbName = attributeName;
-        this.AtrbValue = attributeValue;
+        this.AtrbValue = attributeValue;    
     }
 
 }
-public enum ItemAttributeName { MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, CritChance, CritMult, CritResis, DmgReduce }
+public enum ItemAttributeName { 
+    MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, 
+    CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce 
+}
 

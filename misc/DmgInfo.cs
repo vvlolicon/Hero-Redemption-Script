@@ -20,11 +20,10 @@ public abstract class DmgInfo
     //}
     public void CallDamageable(GameObject other)
     {
-        Debug.Log("causing damage to " + other.gameObject.name);
+        //Debug.Log("causing damage to " + other.gameObject.name);
         IDamageable[] damageable = other.GetComponents<IDamageable>();
         foreach (var dmg in damageable)
         {
-            Debug.Log("triggering: " + dmg.ToString());
             dmg.ApplyDamage(this);
         }
     }
