@@ -10,21 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Leather Shoes
+  m_Name: Small Health Potion
   m_EditorClassIdentifier: 
-  itemName: Leather Shoes
-  itemType: 4
-  itemID: 9
-  itemDesc: This is a Leather Shoes
-  itemIcon: {fileID: 21300000, guid: 3677eacbc4390644e97df27f50b96587, type: 3}
+  itemName: Small Health Potion
+  itemType: 8
+  itemID: 10
+  itemDesc: 
+  itemIcon: {fileID: 21300000, guid: abcf74e1d10656842af1b13cefdfbe23, type: 3}
   itemModel: {fileID: 0}
   itemValue: 5
   itemWeight: 0
-  maxStack: 1
+  maxStack: 64
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 50
-  - AtrbName: 6
-    AtrbValue: 5
+  - AtrbName: 1
+    AtrbValue: 150

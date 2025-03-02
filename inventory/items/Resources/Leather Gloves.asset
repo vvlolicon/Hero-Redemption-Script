@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Leather Gloves
   m_EditorClassIdentifier: 
-  itemName: Leather Shoes
+  itemName: Leather Gloves
   itemType: 4
-  itemID: 3
+  itemID: 9
   itemDesc: This is a Leather Shoes
   itemIcon: {fileID: 21300000, guid: 2ac662c22b865e244b2a9c5b862ce644, type: 3}
   itemModel: {fileID: 0}
@@ -24,5 +24,11 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: DEF
-    attributeValue: 5
+  - AtrbName: 0
+    AtrbValue: 50
+  - AtrbName: 4
+    AtrbValue: 15
+  - AtrbName: 8
+    AtrbValue: 15
+  - AtrbName: 6
+    AtrbValue: 5

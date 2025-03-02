@@ -16,7 +16,7 @@ MonoBehaviour:
   itemType: 4
   itemID: 4
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 420abf6faaa76ab47b6fa0fbbdf22ad6, type: 3}
+  itemIcon: {fileID: 21300000, guid: b374902d43529634b85fba6d803f82a1, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
@@ -24,11 +24,11 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: CC
-    attributeValue: 20
-  - attributeName: CD
-    attributeValue: 50
-  - attributeName: DEF
-    attributeValue: 500
-  - attributeName: SPEED
-    attributeValue: 20
+  - AtrbName: 8
+    AtrbValue: 20
+  - AtrbName: 10
+    AtrbValue: 50
+  - AtrbName: 6
+    AtrbValue: 500
+  - AtrbName: 7
+    AtrbValue: 1.2

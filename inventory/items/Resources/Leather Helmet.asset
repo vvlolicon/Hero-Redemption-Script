@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Leather Helmet
   itemType: 1
-  itemID: 1
+  itemID: 7
   itemDesc: This is a Leather Helmet
   itemIcon: {fileID: 21300000, guid: 63dca6d4e4e873a4cb09997656d54082, type: 3}
   itemModel: {fileID: 0}
@@ -24,5 +24,7 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: DEF
-    attributeValue: 10
+  - AtrbName: 0
+    AtrbValue: 100
+  - AtrbName: 6
+    AtrbValue: 10
