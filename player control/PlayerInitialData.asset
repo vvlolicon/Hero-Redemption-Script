@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48228403f17192e4ab8cdecf498040ce, type: 3}
   m_Name: PlayerInitialData
   m_EditorClassIdentifier: 
-  MaxHP: 1000
-  HP: 1000
-  MaxMP: 1000
-  MP: 1000
+  MaxHP: 500
+  HP: 500
+  MaxMP: 150
+  MP: 150
   MP_Regen: 0
-  ATK: 100
+  ATK: 10
   SPEED: 50
-  DEF: 100
+  DEF: 10
   AttackTime: 0
-  CritChance: 0.2
+  CritChance: 20
   CritChanRdc: 0
   CritDmgMult: 0
   CritDmgResis: 0

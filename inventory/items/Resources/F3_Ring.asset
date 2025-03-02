@@ -16,7 +16,7 @@ MonoBehaviour:
   itemType: 6
   itemID: 3
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 900e2829d227fdb47962e8efb402a65d, type: 3}
+  itemIcon: {fileID: 21300000, guid: c28453c06c9a95b4bbc7ee7493b1fd17, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
@@ -25,15 +25,15 @@ MonoBehaviour:
   rarity: 0
   itemAttributes:
   - AtrbName: 0
-    AtrbValue: 500
+    AtrbValue: 250
   - AtrbName: 2
-    AtrbValue: 1000
+    AtrbValue: 250
   - AtrbName: 4
-    AtrbValue: 500
+    AtrbValue: 50
   - AtrbName: 6
-    AtrbValue: 1000
+    AtrbValue: 100
   - AtrbName: 12
-    AtrbValue: 20
+    AtrbValue: 0.8
   - AtrbName: 9
     AtrbValue: 40
   - AtrbName: 11
