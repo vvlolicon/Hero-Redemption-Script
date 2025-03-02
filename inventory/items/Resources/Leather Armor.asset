@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Leather Armor
   itemType: 2
-  itemID: 8
+  itemID: 7
   itemDesc: This is a Leather armor
   itemIcon: {fileID: 21300000, guid: fcd8bd2db18e92d42a7d14fc0e395888, type: 3}
   itemModel: {fileID: 0}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Golden Earing
   m_EditorClassIdentifier: 
   itemName: Golden Ring
-  itemType: 6
+  itemType: 5
   itemID: 1
   itemDesc: This is a Golden Ring
   itemIcon: {fileID: 21300000, guid: 3010a40ac3a71ba419b4d98ff9d2a2cb, type: 3}
@@ -24,7 +24,7 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: MaxHp
-    attributeValue: 100
-  - attributeName: ATK
-    attributeValue: 100
+  - AtrbName: 0
+    AtrbValue: 0
+  - AtrbName: 0
+    AtrbValue: 0
