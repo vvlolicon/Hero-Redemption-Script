@@ -67,15 +67,16 @@ public class PlayerStatDisplay  : MonoBehaviour
 
         if (StatsPanel.activeInHierarchy)
         {
+            float CritChance = playerStats.CritChance;
+            float CritChanRdc = playerStats.CritChanRdc;
+            float CritDmgMult = playerStats.CritDmgMult;
             // if the stats contains digits, show only 2 digits
-            if (MaxHP % 1 != 0)
-            {
-                MaxHP = (float)Math.Round(MaxHP, 2);
-            }
-            if (MaxMP % 1 != 0)
-            {
-                MaxMP = (float)Math.Round(MaxMP, 2);
-            }
+            RoundToXDecimal(MaxHP, 2);
+            RoundToXDecimal(MaxMP, 2);
+            RoundToXDecimal(CritChance, 2);
+            RoundToXDecimal(CritChanRdc, 2);
+            RoundToXDecimal(CritDmgMult, 2);
+
             // restrict the maximum value to 100%
             float critResisPerc = Mathf.Min(playerStats.CritDmgResis, 100);
             float dmgReducePerc = Mathf.Min(playerStats.DmgReduction, 100);
@@ -86,12 +87,20 @@ public class PlayerStatDisplay  : MonoBehaviour
             Stats_AtkTime_text.text = "" + playerStats.AttackTime * 100 + "%";
             Stats_DEF_text.text = "" + playerStats.DEF;
             Stats_SPEED_text.text = "" + playerStats.SPEED;
-            Stats_CritChance_text.text = "" + playerStats.CritChance * 100 + "%";
-            Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc * 100 + "%";
+            Stats_CritChance_text.text = "" + playerStats.CritChance + "%";
+            Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
             Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
             Stats_CritResis_text.text = "" + critResisPerc + "%";
             Stats_DmgReduce_text.text = "" + dmgReducePerc + "%";
         }
         //playerController.MoveSpeed = playerStats.SPEED/10;
+    }
+
+    void RoundToXDecimal(float value, int numDecimal)
+    {
+        if (value % 1 != 0)
+        {
+            value = (float)Math.Round(value, numDecimal);
+        }
     }
 }
