@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game Functions/Game Stats/Enemy Stats")]
-public class EnemyStaticStats: ScriptableObject
+[CreateAssetMenu(menuName = "Game Functions/Game Stats/Enemy Static Data")]
+public class EnemyStaticData: ScriptableObject
 {
     public float _visDist = 10.0f; //Distance of vision
     public float _visAngle = 90.0f; //Angle of the cone vision

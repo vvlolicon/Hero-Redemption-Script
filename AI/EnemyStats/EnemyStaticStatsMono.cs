@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyStaticStatsMono : MonoBehaviour
 {
-    public EnemyStaticStats _enemyStaticStats;
+    public EnemyStaticData _enemyStaticStats;
     public List<GameObject> _patrolPoints = new List<GameObject>();
     public Transform _damageTextPos;   
 

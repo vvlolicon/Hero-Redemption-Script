@@ -4,7 +4,6 @@ using System.Collections;
 [System.Serializable]
 public class ItemAttribute
 {
-
     public ItemAttributeName AtrbName;
     public float AtrbValue;
     public ItemAttribute(ItemAttributeName attributeName, int attributeValue)
@@ -16,6 +15,17 @@ public class ItemAttribute
 }
 public enum ItemAttributeName { 
     MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, 
-    CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce 
+    CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce
 }
-
+[System.Serializable]
+public class ItemDropChance
+{
+    public float dropWeight;
+    public Item dropItem;
+    public float dropChance { get; set; }
+    public ItemDropChance(float dropWeight, Item dropItem)
+    {
+        this.dropWeight = dropWeight;
+        this.dropItem = dropItem;
+    }
+}

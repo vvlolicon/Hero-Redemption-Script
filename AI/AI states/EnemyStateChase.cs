@@ -11,6 +11,7 @@ public class EnemyStateChase : EnemyBaseStates
     {
         Executor.Agent.speed = Executor.Speed * 1.5f; // change to running speed
         Executor.Agent.isStopped = false;
+        Executor.Animator.ResetTrigger("isIdle");
         Executor.Animator.SetTrigger("isChasing");
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,7 +33,7 @@ public class EnemyStatBillboard : MonoBehaviour
         {
             HP = (float)System.Math.Round(HP, 2);
         }
-        _hpBarText.text = Mathf.Floor(maxHP) + " / " + HP;
+        _hpBarText.text = HP + " / " + Mathf.Floor(maxHP);
 
         // make the canvas points at player
         transform.LookAt(transform.position + Cam.transform.forward);
