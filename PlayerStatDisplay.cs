@@ -21,6 +21,7 @@ public class PlayerStatDisplay  : MonoBehaviour
     TMP_Text Stats_DEF_text;
     TMP_Text Stats_SPEED_text;
     TMP_Text Stats_CritChance_text;
+    TMP_Text Stats_CritChanceRdc_text;
     TMP_Text Stats_CritMult_text;
     TMP_Text Stats_CritResis_text;
     TMP_Text Stats_DmgReduce_text;
@@ -33,16 +34,17 @@ public class PlayerStatDisplay  : MonoBehaviour
     {
         //playerController = GetComponent<ThirdPersonController>();
         playerStats.setStats(initialPlayerStat);
-        Stats_MaxHP_text = StatsPanel.transform.GetChild(0).GetComponent<TMP_Text>();
-        Stats_MaxMP_text = StatsPanel.transform.GetChild(1).GetComponent<TMP_Text>();
-        Stats_ATK_text = StatsPanel.transform.GetChild(2).GetComponent<TMP_Text>();
-        Stats_AtkTime_text = StatsPanel.transform.GetChild(3).GetComponent<TMP_Text>();
-        Stats_DEF_text = StatsPanel.transform.GetChild(4).GetComponent<TMP_Text>();
-        Stats_SPEED_text = StatsPanel.transform.GetChild(5).GetComponent<TMP_Text>();
-        Stats_CritChance_text = StatsPanel.transform.GetChild(6).GetComponent<TMP_Text>();
-        Stats_CritMult_text = StatsPanel.transform.GetChild(7).GetComponent<TMP_Text>();
-        Stats_CritResis_text = StatsPanel.transform.GetChild(8).GetComponent<TMP_Text>();
-        Stats_DmgReduce_text = StatsPanel.transform.GetChild(9).GetComponent<TMP_Text>();
+        Stats_MaxHP_text = StatsPanel.transform.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
+        Stats_MaxMP_text = StatsPanel.transform.GetChild(1).GetChild(1).GetComponent<TMP_Text>();
+        Stats_ATK_text = StatsPanel.transform.GetChild(2).GetChild(1).GetComponent<TMP_Text>();
+        Stats_AtkTime_text = StatsPanel.transform.GetChild(3).GetChild(1).GetComponent<TMP_Text>();
+        Stats_DEF_text = StatsPanel.transform.GetChild(4).GetChild(1).GetComponent<TMP_Text>();
+        Stats_SPEED_text = StatsPanel.transform.GetChild(5).GetChild(1).GetComponent<TMP_Text>();
+        Stats_CritChance_text = StatsPanel.transform.GetChild(6).GetChild(1).GetComponent<TMP_Text>();
+        Stats_CritChanceRdc_text = StatsPanel.transform.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
+        Stats_CritMult_text = StatsPanel.transform.GetChild(8).GetChild(1).GetComponent<TMP_Text>();
+        Stats_CritResis_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
+        Stats_DmgReduce_text = StatsPanel.transform.GetChild(10).GetChild(1).GetComponent<TMP_Text>();
         HPBar = transform.GetChild(0).GetComponent<Slider>();
         MPBar = transform.GetChild(1).GetComponent<Slider>();
 
@@ -78,16 +80,17 @@ public class PlayerStatDisplay  : MonoBehaviour
             float critResisPerc = Mathf.Min(playerStats.CritDmgResis, 100);
             float dmgReducePerc = Mathf.Min(playerStats.DmgReduction, 100);
 
-            Stats_MaxHP_text.text = "MaxHP: " +  MaxHP;
-            Stats_MaxMP_text.text = "MaxMP: " + MaxMP;
-            Stats_ATK_text.text = "Attack: " + playerStats.ATK;
-            Stats_AtkTime_text.text = "Attack Time: " + playerStats.AttackTime + "s";
-            Stats_DEF_text.text = "Defence: " + playerStats.DEF;
-            Stats_SPEED_text.text = "Speed: " + playerStats.SPEED;
-            Stats_CritChance_text.text = "Crit. %: " + playerStats.CritChance + "%";
-            Stats_CritMult_text.text = "Crit. Mult: " + playerStats.CritDmgMult;
-            Stats_CritResis_text.text = "Crit. Resis. : " + critResisPerc + "%";
-            Stats_DmgReduce_text.text = "Dmg. Reduce: " + dmgReducePerc + "%";
+            Stats_MaxHP_text.text = "" + MaxHP;
+            Stats_MaxMP_text.text = "" + MaxMP;
+            Stats_ATK_text.text = "" + playerStats.ATK;
+            Stats_AtkTime_text.text = "" + playerStats.AttackTime * 100 + "%";
+            Stats_DEF_text.text = "" + playerStats.DEF;
+            Stats_SPEED_text.text = "" + playerStats.SPEED;
+            Stats_CritChance_text.text = "" + playerStats.CritChance * 100 + "%";
+            Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc * 100 + "%";
+            Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
+            Stats_CritResis_text.text = "" + critResisPerc + "%";
+            Stats_DmgReduce_text.text = "" + dmgReducePerc + "%";
         }
         //playerController.MoveSpeed = playerStats.SPEED/10;
     }

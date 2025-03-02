@@ -14,5 +14,6 @@ public class PlayerStaticData : ScriptableObject {
     public float _maxDashTime; //Time that the player is dashing
     public float _dashSpeed; //Dash speed of the player
     public float _mpRegenFreq = 1f;
+    public float _iniAtkSpeed = 2f; // the initial attack speed
 }
     

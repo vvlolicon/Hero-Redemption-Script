@@ -84,7 +84,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         }
         // Move the controller
         _charCont.Move(CurMovement * Time.deltaTime);
-        if(AttackTimer < _playerStats.AttackTime + 1)
+        if(AttackTimer < _playerStaticData._iniAtkSpeed * 1/ Mathf.Max(1 + _playerStats.AttackTime, 0.1f))
         {
             AttackTimer += Time.deltaTime;
         }

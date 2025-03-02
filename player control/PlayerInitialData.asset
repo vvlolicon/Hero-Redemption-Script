@@ -20,8 +20,8 @@ MonoBehaviour:
   ATK: 100
   SPEED: 50
   DEF: 100
-  AttackTime: 1
-  CritChance: 20
+  AttackTime: 0
+  CritChance: 0.2
   CritChanRdc: 0
   CritDmgMult: 0
   CritDmgResis: 0
