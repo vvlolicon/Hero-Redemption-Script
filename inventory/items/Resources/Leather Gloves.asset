@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Leather Gloves
   m_EditorClassIdentifier: 
   itemName: Leather Gloves
-  itemType: 4
-  itemID: 9
+  itemType: 3
+  itemID: 8
   itemDesc: This is a Leather Shoes
   itemIcon: {fileID: 21300000, guid: 2ac662c22b865e244b2a9c5b862ce644, type: 3}
   itemModel: {fileID: 0}
