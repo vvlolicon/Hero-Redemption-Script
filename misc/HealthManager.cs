@@ -124,7 +124,7 @@ public class HealthManager : MonoBehaviour
         float dmg = atk * (100f / (100f + def));
         if (isCritical)
         {
-            dmg *= (1.3f * (1f + critMult) * (1f - critResis));
+            dmg *= (1.3f * (1f + Mathf.Max(critMult - critResis, 0)));
         }
         dmg *= (1 - dmgReduc) * Random.Range(0.95f, 1.05f);
         return new DmgResult(dmg, isCritical);

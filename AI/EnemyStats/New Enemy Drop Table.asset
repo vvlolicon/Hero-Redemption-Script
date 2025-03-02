@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 646a26b1c92de4347be73f0a5e25b032, type: 3}
   m_Name: New Enemy Drop Table
   m_EditorClassIdentifier: 
+  ItemDropList: []

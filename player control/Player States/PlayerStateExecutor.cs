@@ -170,6 +170,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
                 info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.CritChanRdc, 
                 PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritDmgResis);
             _healthMan.Damage(dmgResult.Dmg);
+            Debug.Log("You get damage: " + dmgResult.Dmg + " Is critial hit: " + dmgResult.IsCritHit);
         }
     }
     public void EnableMove(bool camMoveT) //Enables or disables the character movement

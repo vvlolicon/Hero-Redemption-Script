@@ -9,11 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fbfa19b59f00074a9e991113c9f7fcd, type: 3}
-  m_Name: EnemyStaticStats
+  m_Script: {fileID: 11500000, guid: 48228403f17192e4ab8cdecf498040ce, type: 3}
+  m_Name: testStatsDmg
   m_EditorClassIdentifier: 
-  _visDist: 10
-  _visAngle: 90
-  _attackDist: 2.5
-  _chaseTime: 5
-  _atkAnimTime: 1.2
+  MaxHP: 0
+  HP: 0
+  MaxMP: 0
+  MP: 0
+  MP_Regen: 0
+  ATK: 100
+  SPEED: 0
+  DEF: 0
+  AttackTime: 0
+  CritChance: 400
+  CritChanRdc: 0
+  CritDmgMult: 0
+  CritDmgResis: 0
+  DmgReduction: 0

@@ -9,6 +9,7 @@ public class Dummy : MonoBehaviour, IDamageable
     private bool isInvincible = false;
     private Animator anim;
     private AudioSource audioS;
+    public GeneralStatsObj testStats;
 
     [Header("Manager")] public HealthManager healthManager;
 
@@ -29,7 +30,9 @@ public class Dummy : MonoBehaviour, IDamageable
                 Debug.Log("triggered ApplyDmg to dummy");
                 anim.Play("Hitted");
                 audioS.Play();
-                DmgResult result = HealthManager.calculateDamage(info.ATK, 0, info.CritChance, 0, 0, info.CritMult, 0);
+                DmgResult result = HealthManager.calculateDamage(
+                    info.ATK, testStats.DEF, info.CritChance, testStats.CritChanRdc, 
+                    testStats.DmgReduction, info.CritMult, testStats.CritDmgResis);
                 int dmgShow = (int)result.Dmg;
                 healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, result.IsCritHit, info.TextColor, damageTextPos, gameObject));
                 StartCoroutine("MakeInvincible");

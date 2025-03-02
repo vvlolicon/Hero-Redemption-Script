@@ -17,11 +17,12 @@ MonoBehaviour:
   MaxMP: 0
   MP: 0
   MP_Regen: 0
-  ATK: 500
+  ATK: 50
   SPEED: 30
   DEF: 20
   AttackTime: 2.5
   CritChance: 0
-  CritMult: 0
-  CritResis: 0
+  CritChanRdc: 0
+  CritDmgMult: 0
+  CritDmgResis: 0
   DmgReduction: 0

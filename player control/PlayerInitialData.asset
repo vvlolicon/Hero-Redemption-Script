@@ -16,11 +16,13 @@ MonoBehaviour:
   HP: 1000
   MaxMP: 1000
   MP: 1000
+  MP_Regen: 0
   ATK: 100
   SPEED: 50
   DEF: 100
-  AttackTime: 2.5
+  AttackTime: 1
   CritChance: 20
-  CritMult: 1
-  CritResis: 0
+  CritChanRdc: 0
+  CritDmgMult: 0
+  CritDmgResis: 0
   DmgReduction: 0

@@ -79,8 +79,10 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         //    }
         //    test_showState.text += "\n" + "enemy speed: " + Speed;
         //}
-        
-        CurState.UpdateStates();
+        if (CurState != null)
+        {
+            CurState.UpdateStates();
+        }
     }
 
     public void ApplyDamage(DmgInfo data)
