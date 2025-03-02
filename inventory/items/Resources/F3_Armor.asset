@@ -16,7 +16,7 @@ MonoBehaviour:
   itemType: 2
   itemID: 1
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 07734392c22d60e4e9fdf9c6378d0507, type: 3}
+  itemIcon: {fileID: 21300000, guid: 1d07272b28072e748aad0402ccacdc28, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
@@ -24,15 +24,13 @@ MonoBehaviour:
   indexItemInList: 999
   rarity: 0
   itemAttributes:
-  - attributeName: MaxHP
-    attributeValue: 5000
-  - attributeName: MaxMP
-    attributeValue: 2000
-  - attributeName: DEF
-    attributeValue: 2000
-  - attributeName: DR
-    attributeValue: 20
-  - attributeName: CCR
-    attributeValue: 40
-  - attributeName: CDR
-    attributeValue: 40
+  - AtrbName: 0
+    AtrbValue: 5000
+  - AtrbName: 2
+    AtrbValue: 2000
+  - AtrbName: 6
+    AtrbValue: 2000
+  - AtrbName: 11
+    AtrbValue: 20
+  - AtrbName: 10
+    AtrbValue: 40
