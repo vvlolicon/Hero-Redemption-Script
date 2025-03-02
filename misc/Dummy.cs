@@ -29,7 +29,7 @@ public class Dummy : MonoBehaviour, IDamageable
                 Debug.Log("triggered ApplyDmg to dummy");
                 anim.Play("Hitted");
                 audioS.Play();
-                DmgResult result = HealthManager.calculateDamage(info.ATK, 0, info.CritChance, 0, info.CritMult, 0);
+                DmgResult result = HealthManager.calculateDamage(info.ATK, 0, info.CritChance, 0, 0, info.CritMult, 0);
                 int dmgShow = (int)result.Dmg;
                 healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, result.IsCritHit, info.TextColor, damageTextPos, gameObject));
                 StartCoroutine("MakeInvincible");

@@ -94,7 +94,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                     _billboard.SetActive(true);
                 IsInvincible = true;
                 CurState.SwitchState(_stateMan.Hit());
-                DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, _enemyStats.DEF, info.CritChance, DmgReduc, info.CritMult, _enemyStats.CritDmgResis);
+                DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, _enemyStats.DEF, info.CritChance, _enemyStats.CritChanRdc, DmgReduc, info.CritMult, _enemyStats.CritDmgResis);
                 int dmgShow = (int)Mathf.Floor(dmgResult.Dmg);
                 _healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));
                 _healthManager.Damage(dmgResult.Dmg);

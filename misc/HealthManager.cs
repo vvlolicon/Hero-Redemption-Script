@@ -117,10 +117,10 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-    public static DmgResult calculateDamage(float atk, float def, float critChance, float dmgReduc, float critMult, float critResis)
+    public static DmgResult calculateDamage(float atk, float def, float critChance, float critChanRdc, float dmgReduc, float critMult, float critResis)
     {
         //atk *(100 / (100 + def)) *[1.3 x(crit dmg multiplier * crit dmg reduction) + 0.3] * dmg reduction x(0.95~1.05)
-        bool isCritical = IsCriticalHit(critChance);
+        bool isCritical = IsCriticalHit(critChance, critChanRdc);
         float dmg = atk * (100f / (100f + def));
         if (isCritical)
         {
@@ -130,10 +130,10 @@ public class HealthManager : MonoBehaviour
         return new DmgResult(dmg, isCritical);
     }
 
-    public static bool IsCriticalHit(float critChance)
+    public static bool IsCriticalHit(float critChance, float critChanRdc)
     {
-        //Crit Chance = Base Crit Chance(20%) ¡Á ( 1 + critChance given)
-        float chance = 20f * (1 + (critChance / 100));
+        //Crit Chance = Base Crit Chance(20%) ¡Á ( 1 + critChance - critChanRdc)
+        float chance = 20f * (1 + (Mathf.Max(critChance - critChanRdc, 0) / 100));
         return chance >= Random.Range(0, 100);
     }
 

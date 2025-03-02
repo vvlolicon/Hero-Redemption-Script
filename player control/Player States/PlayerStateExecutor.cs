@@ -166,7 +166,9 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
                 hitState.ApplyDamage(info);
             }
             // apply damage whether or not player is at hit state
-            DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritDmgResis);
+            DmgResult dmgResult = HealthManager.calculateDamage(
+                info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.CritChanRdc, 
+                PlayerStats.DmgReduction, info.CritMult, PlayerStats.CritDmgResis);
             _healthMan.Damage(dmgResult.Dmg);
         }
     }
