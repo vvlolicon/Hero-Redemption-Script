@@ -43,8 +43,8 @@ public class PlayerStatDisplay  : MonoBehaviour
         Stats_CritChance_text = StatsPanel.transform.GetChild(6).GetChild(1).GetComponent<TMP_Text>();
         Stats_CritChanceRdc_text = StatsPanel.transform.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
         Stats_CritMult_text = StatsPanel.transform.GetChild(8).GetChild(1).GetComponent<TMP_Text>();
-        Stats_CritResis_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
-        Stats_DmgReduce_text = StatsPanel.transform.GetChild(10).GetChild(1).GetComponent<TMP_Text>();
+        //Stats_CritResis_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
+        Stats_DmgReduce_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
         HPBar = transform.GetChild(0).GetComponent<Slider>();
         MPBar = transform.GetChild(1).GetComponent<Slider>();
 
@@ -79,7 +79,7 @@ public class PlayerStatDisplay  : MonoBehaviour
 
             // restrict the maximum value to 100%
             float critResisPerc = Mathf.Min(playerStats.CritDmgResis, 100);
-            float dmgReducePerc = Mathf.Min(playerStats.DmgReduction, 100);
+            float dmgReducePerc = Mathf.Min(playerStats.DmgReduce, 100);
 
             Stats_MaxHP_text.text = "" + MaxHP;
             Stats_MaxMP_text.text = "" + MaxMP;
@@ -90,7 +90,7 @@ public class PlayerStatDisplay  : MonoBehaviour
             Stats_CritChance_text.text = "" + playerStats.CritChance + "%";
             Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
             Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
-            Stats_CritResis_text.text = "" + critResisPerc + "%";
+            //Stats_CritResis_text.text = "" + critResisPerc + "%";
             Stats_DmgReduce_text.text = "" + dmgReducePerc + "%";
         }
         //playerController.MoveSpeed = playerStats.SPEED/10;

@@ -193,10 +193,10 @@ public class MoveItem : MonoBehaviour, IDropHandler
                 playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
                 break;
             case ItemAttributeName.CritDmgResis:
-                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
+                playerStats.CritDmgResis += itemAttr.AtrbValue * multiplier;
                 break;
             case ItemAttributeName.DmgReduce:
-                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
+                playerStats.DmgReduce += itemAttr.AtrbValue * multiplier;
                 break;
         }
     }

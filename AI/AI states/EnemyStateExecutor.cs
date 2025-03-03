@@ -147,7 +147,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public float ATK { get; set; }
     public float DEF { get; set; }
     // these stats below will not change for same enemy type, so it can get directly from Script Object
-    public float DmgReduc { get { return _enemyStats.DmgReduction; } }
+    public float DmgReduc { get { return _enemyStats.DmgReduce; } }
     public float CritChance { get { return _enemyStats.CritChance; } }
     public float CritResis { get { return _enemyStats.CritDmgResis; } }
     public float CritMult { get { return _enemyStats.CritDmgMult; } }

@@ -119,14 +119,14 @@ public class HealthManager : MonoBehaviour
 
     public static DmgResult calculateDamage(float atk, float def, float critChance, float critChanRdc, float dmgReduc, float critMult, float critResis)
     {
-        //atk *(100 / (100 + def)) *[1.3 x(crit dmg multiplier * crit dmg reduction) + 0.3] * dmg reduction x(0.95~1.05)
+        //atk x (100/(100+def)) x [1.3 x (crit dmg multiplier / crit dmg reduction) + 0.3] x dmg reduction(%) x (0.95~1.05) 
         bool isCritical = IsCriticalHit(critChance, critChanRdc);
         float dmg = atk * (100f / (100f + def));
         if (isCritical)
         {
             dmg *= (1.3f * (1f + Mathf.Max(critMult - critResis, 0)));
         }
-        dmg *= (1 - dmgReduc) * Random.Range(0.95f, 1.05f);
+        dmg *= 1/(1 + dmgReduc/100) * Random.Range(0.95f, 1.05f);
         return new DmgResult(dmg, isCritical);
     }
 

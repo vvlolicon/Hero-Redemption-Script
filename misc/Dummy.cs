@@ -32,7 +32,7 @@ public class Dummy : MonoBehaviour, IDamageable
                 audioS.Play();
                 DmgResult result = HealthManager.calculateDamage(
                     info.ATK, testStats.DEF, info.CritChance, testStats.CritChanRdc, 
-                    testStats.DmgReduction, info.CritMult, testStats.CritDmgResis);
+                    testStats.DmgReduce, info.CritMult, testStats.CritDmgResis);
                 int dmgShow = (int)result.Dmg;
                 healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, result.IsCritHit, info.TextColor, damageTextPos, gameObject));
                 StartCoroutine("MakeInvincible");

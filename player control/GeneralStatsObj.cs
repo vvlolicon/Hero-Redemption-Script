@@ -18,7 +18,7 @@ public class GeneralStatsObj : ScriptableObject
     public float CritChanRdc = 0;
     public float CritDmgMult;
     public float CritDmgResis;
-    public float DmgReduction;
+    public float DmgReduce;
 
     private void OnEnable()
     {
@@ -40,6 +40,6 @@ public class GeneralStatsObj : ScriptableObject
         CritChanRdc = stats.CritChanRdc;
         CritDmgMult = stats.CritDmgMult;
         CritDmgResis = stats.CritDmgResis;
-        DmgReduction = stats.DmgReduction;
+        DmgReduce = stats.DmgReduce;
     }
 }
