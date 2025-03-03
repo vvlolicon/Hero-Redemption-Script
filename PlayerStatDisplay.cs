@@ -41,10 +41,10 @@ public class PlayerStatDisplay  : MonoBehaviour
         Stats_DEF_text = StatsPanel.transform.GetChild(4).GetChild(1).GetComponent<TMP_Text>();
         Stats_SPEED_text = StatsPanel.transform.GetChild(5).GetChild(1).GetComponent<TMP_Text>();
         Stats_CritChance_text = StatsPanel.transform.GetChild(6).GetChild(1).GetComponent<TMP_Text>();
-        Stats_CritChanceRdc_text = StatsPanel.transform.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
-        Stats_CritMult_text = StatsPanel.transform.GetChild(8).GetChild(1).GetComponent<TMP_Text>();
+        //Stats_CritChanceRdc_text = StatsPanel.transform.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
+        //Stats_CritMult_text = StatsPanel.transform.GetChild(8).GetChild(1).GetComponent<TMP_Text>();
         //Stats_CritResis_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
-        Stats_DmgReduce_text = StatsPanel.transform.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
+        Stats_DmgReduce_text = StatsPanel.transform.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
         HPBar = transform.GetChild(0).GetComponent<Slider>();
         MPBar = transform.GetChild(1).GetComponent<Slider>();
 
@@ -88,8 +88,8 @@ public class PlayerStatDisplay  : MonoBehaviour
             Stats_DEF_text.text = "" + playerStats.DEF;
             Stats_SPEED_text.text = "" + playerStats.SPEED;
             Stats_CritChance_text.text = "" + playerStats.CritChance + "%";
-            Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
-            Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
+            //Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
+            //Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
             //Stats_CritResis_text.text = "" + critResisPerc + "%";
             Stats_DmgReduce_text.text = "" + dmgReducePerc + "%";
         }

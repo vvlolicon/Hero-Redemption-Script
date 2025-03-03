@@ -22,8 +22,8 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Item clickItem = gameObject.GetComponent<ItemDetail>().item;
             Debug.Log("click Item: " + clickItem.itemName);
             GameObject item_at_interface = transform.parent.parent.gameObject;
-            GameObject equipment_ui = GameObject.FindGameObjectWithTag("player_equipment");
-            GameObject inventory_ui = GameObject.FindGameObjectWithTag("player_inventory");
+            GameObject equipment_ui = GameObject.FindGameObjectWithTag("Player_Equipment");
+            GameObject inventory_ui = GameObject.FindGameObjectWithTag("Player_Inventory");
 
             //Debug.Log("item_at_interface: " + item_at_interface.name);
             //Debug.Log("equipment_ui: " + equipment_ui.name);
@@ -31,16 +31,16 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // if item is a consumable item(e.g. potion) and item is in player inventory or hot bar, use it 
             if (clickItem.itemType == ItemType.Consumable)
             {
-                if (item_at_interface.CompareTag("player_inventory"))
+                if (item_at_interface.CompareTag("Player_Inventory"))
                 {
-                    // comsume item
+                    gameObject.GetComponent<ConsumableItem>().OnItemConsume(clickItem);
                 }
 
             }
             // if equipment ui is opened and item is in player inventory, try to put item into equipment slot
             else if (inventory_ui.activeInHierarchy == true)
             {
-                if (item_at_interface.CompareTag("player_inventory"))
+                if (item_at_interface.CompareTag("Player_Inventory"))
                 {
                     //find slots and compare item type to equipment slot type
                     for (int i = 0; i < equipment_ui.transform.childCount; i++)
@@ -62,7 +62,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                     }
                 }
                 // if item is in player equipment, try to put it back to inventory
-                else if (item_at_interface.CompareTag("player_equipment"))
+                else if (item_at_interface.CompareTag("Player_Equipment"))
                 {
                     for (int i = 0; i < equipment_ui.transform.childCount; i++)
                     {

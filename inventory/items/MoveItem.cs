@@ -36,15 +36,15 @@ public class MoveItem : MonoBehaviour, IDropHandler
             //Debug.Log("dragItemInSlot.parentAfterDrag = " + dragItemInSlot.parentAfterDrag.name);
             Item targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
             DraggableItem targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
-            if (targetSlotInterface.CompareTag(targetItemInterface.tag)&& !(targetSlotInterface.CompareTag("player_equipment"))&& !(targetItemInterface.CompareTag("player_equipment")))
+            if (targetSlotInterface.CompareTag(targetItemInterface.tag)&& !(targetSlotInterface.CompareTag("Player_Equipment"))&& !(targetItemInterface.CompareTag("Player_Equipment")))
             {
                 Debug.Log("dropping item from inventory to inventory");
                 exchangeItem(targetDragItem, dropDragItem);
             }
-            else if (targetSlotInterface.CompareTag("player_equipment"))
+            else if (targetSlotInterface.CompareTag("Player_Equipment"))
             {
                 // check drag item is drag from equipment slot
-                if (targetItemInterface.CompareTag("player_inventory"))
+                if (targetItemInterface.CompareTag("Player_Inventory"))
                 {
                     //Debug.Log("dropping item from inventory to equipment");
                     //if target exchange item type is equal to drag item type, exchange the position of target item with drag item 
@@ -70,7 +70,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
                 }
                 
             }
-            else if (targetSlotInterface.CompareTag("player_equipment"))
+            else if (targetSlotInterface.CompareTag("Player_Equipment"))
             {
                 if (compareItemType(dropItemType, ThisSlotType))
                 {
@@ -81,15 +81,15 @@ public class MoveItem : MonoBehaviour, IDropHandler
         }
         else
         {
-            if (targetSlotInterface.CompareTag("player_inventory"))
+            if (targetSlotInterface.CompareTag("Player_Inventory"))
             {
                 dropItem(dropDragItem);
-                if (targetItemInterface.CompareTag("player_equipment"))
+                if (targetItemInterface.CompareTag("Player_Equipment"))
                 {
                     targetItemSlot.GetComponent<MoveItem>().removeItemAttribute();
                 }
             }
-            else if (targetSlotInterface.CompareTag("player_equipment") && compareItemType(dropItemType, ThisSlotType))
+            else if (targetSlotInterface.CompareTag("Player_Equipment") && compareItemType(dropItemType, ThisSlotType))
             {
                 UpdateItemAttribute(droppedItem);
                 dropItem(dropDragItem);
@@ -159,44 +159,49 @@ public class MoveItem : MonoBehaviour, IDropHandler
 
     public void ChangePlayerStats(ItemAttribute itemAttr, int multiplier)
     {
+        float valueChanged = itemAttr.AtrbValue * multiplier;
         switch (itemAttr.AtrbName)
         {
             case ItemAttributeName.MaxHP:
-                playerStats.MaxHP += itemAttr.AtrbValue * multiplier;
-                // also changes the hp when changing MaxHP, and makesure at least 1 HP left
-                playerStats.HP = Mathf.Max(playerStats.HP + itemAttr.AtrbValue * multiplier, 1); 
+                if (playerStats.MaxHP == playerStats.HP)
+                {
+                    playerStats.HP += valueChanged;
+                }
+                playerStats.MaxHP += valueChanged;
                 break;
             case ItemAttributeName.MaxMP:
-                playerStats.MaxMP += itemAttr.AtrbValue * multiplier;
-                // also change MP when max MP changes, and makesure at least 0 MP
-                playerStats.MP = Mathf.Max(playerStats.MP + itemAttr.AtrbValue * multiplier, 0); 
+                if (playerStats.MaxMP == playerStats.MP)
+                {
+                    playerStats.MP += valueChanged;
+                }
+                playerStats.MaxMP += valueChanged;
                 break;
             case ItemAttributeName.ATK:
-                playerStats.ATK += itemAttr.AtrbValue * multiplier;
+                playerStats.ATK += valueChanged;
                 break;
             case ItemAttributeName.AtkTime:
-                playerStats.AttackTime += itemAttr.AtrbValue * multiplier;
+                playerStats.AttackTime += valueChanged;
                 break;
             case ItemAttributeName.DEF:
-                playerStats.DEF += itemAttr.AtrbValue * multiplier;
+                playerStats.DEF += valueChanged;
                 break;
             case ItemAttributeName.SPEED:
-                playerStats.SPEED += itemAttr.AtrbValue * multiplier;
+                playerStats.SPEED += valueChanged;
                 break;
             case ItemAttributeName.CritChance:
-                playerStats.CritChance += itemAttr.AtrbValue * multiplier;
+                playerStats.CritChance += valueChanged;
                 break;
             case ItemAttributeName.CritChanRdc:
-                playerStats.CritChanRdc += itemAttr.AtrbValue * multiplier;
+                playerStats.CritChanRdc += valueChanged;
                 break;
             case ItemAttributeName.CritDmgMult:
-                playerStats.CritDmgMult += itemAttr.AtrbValue * multiplier;
+                playerStats.CritDmgMult += valueChanged;
                 break;
             case ItemAttributeName.CritDmgResis:
-                playerStats.CritDmgResis += itemAttr.AtrbValue * multiplier;
+                playerStats.CritDmgResis += valueChanged;
                 break;
             case ItemAttributeName.DmgReduce:
-                playerStats.DmgReduce += itemAttr.AtrbValue * multiplier;
+                playerStats.DmgReduce += valueChanged;
                 break;
         }
     }

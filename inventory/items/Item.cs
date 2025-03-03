@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using Unity.VisualScripting;
 
 [CreateAssetMenu(menuName = "Inventory/Item")]
 [System.Serializable]
@@ -21,11 +23,12 @@ public class Item : ScriptableObject
     public int rarity;
 
     [SerializeField]
-    public List<ItemAttribute> itemAttributes = new List<ItemAttribute>();    
-    
+    public List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
+
     public Item(){}
 
-    public Item(string name, int id, ItemType type, string desc, Sprite icon, GameObject model, int maxStack, string sendmessagetext, List<ItemAttribute> itemAttributes)                 //function to create a instance of the Item
+    //function to create a instance of the Item
+    public Item(string name, int id, ItemType type, string desc, Sprite icon, GameObject model, int maxStack, string sendmessagetext, List<ItemAttribute> itemAttributes)                 
     {
         itemName = name;
         itemType = type;
