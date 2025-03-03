@@ -48,7 +48,7 @@ public abstract class PlayerBaseState
         //modelPos.y -= 0.2f;
         //Executor.ChildPlayer.transform.position = modelPos;
         ExitState();
-        Executor.Animator.SetTrigger("Exit");
+        //Executor.Animator.SetTrigger("Exit");
         newState.InitializeSubStates();
         newState.EnterState();
 

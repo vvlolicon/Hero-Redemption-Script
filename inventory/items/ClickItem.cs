@@ -20,7 +20,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             DraggableItem clickDragItem = gameObject.GetComponent<DraggableItem>();
             Item clickItem = gameObject.GetComponent<ItemDetail>().item;
-            Debug.Log("click Item: " + clickItem.itemName);
+            //Debug.Log("click Item: " + clickItem.itemName);
             GameObject item_at_interface = transform.parent.parent.gameObject;
             GameObject equipment_ui = GameObject.FindGameObjectWithTag("Player_Equipment");
             GameObject inventory_ui = GameObject.FindGameObjectWithTag("Player_Inventory");
@@ -64,10 +64,9 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 // if item is in player equipment, try to put it back to inventory
                 else if (item_at_interface.CompareTag("Player_Equipment"))
                 {
-                    for (int i = 0; i < equipment_ui.transform.childCount; i++)
+                    for (int i = 0; i < inventory_ui.transform.childCount; i++)
                     {
                         Transform inventory_slot = inventory_ui.transform.GetChild(i);
-                        //Debug.Log("checking slot: " + inventory_slot.gameObject.name);
                         // if equipment slot don't contain any item, put it
                         if (inventory_slot.childCount == 0)
                         {

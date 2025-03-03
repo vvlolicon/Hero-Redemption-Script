@@ -24,7 +24,7 @@ public class CameraControl : MonoBehaviour
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
 
-    playerInputData _playerInputData;
+    PlayerInputData _playerInputData;
     PlayerInput _playerInput;
     Vector2 _input;
     private const float _threshold = 0.01f;
@@ -34,20 +34,20 @@ public class CameraControl : MonoBehaviour
 
     private void Awake()
     {
-        
+        _playerInput = GetComponent<PlayerInput>();
+        _playerInputData = GetComponent<PlayerInputData>();
     }
 
     private void Start()
     {
-        _playerInput = GetComponent<PlayerInput>();
-        _playerInputData = GetComponent<playerInputData>();
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        CameraRotation();
+        if(Cursor.lockState == CursorLockMode.Locked)
+            CameraRotation();
     }
 
     private void CameraRotation()

@@ -21,8 +21,8 @@ MonoBehaviour:
   SPEED: 50
   DEF: 10
   AttackTime: 0
-  CritChance: 20
+  CritChance: 0
   CritChanRdc: 0
   CritDmgMult: 0
   CritDmgResis: 0
-  DmgReduction: 0
+  DmgReduce: 0

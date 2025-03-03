@@ -15,7 +15,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         _charCont = GetComponent<CharacterController>();
         _soundMan = GetComponent<SoundManager>();
         _animator = GetComponentInChildren<Animator>();
-        _playerInput = GetComponent<PlayerInput>();
+        _playerInput = GetComponent<PlayerInputData>();
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
         _healthMan._playerExecutor = this;
@@ -150,6 +150,12 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
         MovePressed = InputMoveXZ.x != 0 || InputMoveXZ.y != 0;
     }
 
+    public void OnOpenInventory()
+    {
+        InputMoveXZ = Vector2.zero;
+        MovePressed = false;
+    }
+
     public void OnAttackPressed(bool value)
     {
         if (CanMove && !Attacking && AttackTimer <= 0)
@@ -219,7 +225,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     CharacterController _charCont;
     Animator _animator;
     SoundManager _soundMan;
-    PlayerInput _playerInput;
+    PlayerInputData _playerInput;
     HealthManager _healthMan;
 
     //states variables

@@ -5,20 +5,20 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-public class playerInputData : MonoBehaviour
+public class PlayerInputData : MonoBehaviour
 {
 
 	//[Header("Movement Settings")]
 	//public bool analogMovement;
 
     [Header("UI settings")]
-    public GameObject inventoryUI;
-    public GameObject equipmentUI;
+    GameObject inventoryUI;
+    GameObject equipmentUI;
     public GameObject testData;
 	//public Canvas UIWindow;
 
     private PlayerStateExecutor _executor;
-	public List<GameObject> UIWindows = new List<GameObject>();
+	List<GameObject> UIWindows = new List<GameObject>();
 
 	public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
@@ -27,22 +27,38 @@ public class playerInputData : MonoBehaviour
     public Vector2 InputMove { get; private set; }
     public Vector2 InputLook { get; private set; }
 
+    private void Awake()
+    {
+        _executor = GetComponent<PlayerStateExecutor>();
+        GameObject[] windows = GameObject.FindGameObjectsWithTag("UIWindow");
+        UIWindows.AddRange(windows);
+    }
+
     private void Start()
     {
         SetCursorState(true);
 		InputEnable = true;
-        _executor = GetComponent<PlayerStateExecutor>();
         
+        // deactive ui windows after setting up vars
+        foreach (GameObject ui in UIWindows)
+        {
+            ui.SetActive(false);
+        }
     }
 
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
 	{
-		if (InputEnable)
-		{
-			_executor.OnMovePressed(value.Get<Vector2>());
-		}
-	}
+        if (InputEnable)
+        {
+            _executor.OnMovePressed(value.Get<Vector2>());
+        }
+        else
+        {
+            _executor.OnMovePressed(Vector2.zero);
+        }
+
+    }
 
 	public void OnLook(InputValue value)
 	{
@@ -87,10 +103,13 @@ public class playerInputData : MonoBehaviour
 
     public void OnOpenInventory()
 	{
-        inventoryUI.SetActive(true);
-		equipmentUI.SetActive(true);
+        foreach (GameObject ui in UIWindows)
+        {
+            ui.SetActive(true);
+        }
         SetCursorState(false);
 		InputEnable = false;
+        _executor.OnOpenInventory();
     }
 
 	public void OnEscHit(InputValue value)
@@ -160,13 +179,12 @@ public class playerInputData : MonoBehaviour
 
 	private void OnApplicationFocus(bool hasFocus)
 	{
-		SetCursorState(CursorLocked);
+		SetCursorState(hasFocus);
 	}
 
 	private void SetCursorState(bool newState)
 	{
         CursorLocked = newState;
-        InputEnable = newState;
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 	}
 }
