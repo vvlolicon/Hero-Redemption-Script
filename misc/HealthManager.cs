@@ -134,8 +134,8 @@ public class HealthManager : MonoBehaviour
 
     public static bool IsCriticalHit(float critChance, float critChanRdc)
     {
-        //Crit Chance = Base Crit Chance(20%) ¡Á ( 1 + critChance - critChanRdc)
-        float chance = 1 + (Mathf.Max(critChance - critChanRdc, 0) / 100);
+        //Crit Chance = Base Crit Chance(20%) ¡Á ( 1 + critChance)
+        float chance = 20 * (1 + (Mathf.Max(critChance - critChanRdc, 0) / 100));
         return chance >= Random.Range(0, 100);
     }
 
