@@ -87,7 +87,7 @@ public class PlayerStatDisplay  : MonoBehaviour
             Stats_AtkTime_text.text = "" + playerStats.AttackTime * 100 + "%";
             Stats_DEF_text.text = "" + playerStats.DEF;
             Stats_SPEED_text.text = "" + playerStats.SPEED;
-            Stats_CritChance_text.text = "" + playerStats.CritChance + "%";
+            Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerStats.CritChance,0) + "%";
             //Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
             //Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
             //Stats_CritResis_text.text = "" + critResisPerc + "%";
