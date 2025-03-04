@@ -19,9 +19,9 @@ public class MoveItem : MonoBehaviour, IDropHandler
         GameObject dropObject = eventData.pointerDrag;
         DraggableItem dropDragItem = dropObject.GetComponent<DraggableItem>();
         ItemType dropItemType = dropObject.GetComponent<ItemDetail>().item.itemType;
-        GameObject targetItemSlot = dropDragItem.parentAfterDrag.gameObject;
-        GameObject targetItemInterface = dropDragItem.parentAfterDrag.parent.gameObject;
-        GameObject targetSlotInterface = transform.parent.gameObject;
+        GameObject dropItemOriginSlot = dropDragItem.parentAfterDrag.gameObject;
+        GameObject dropItemOriginWindow = dropDragItem.parentAfterDrag.parent.gameObject;
+        GameObject targetSlotWindow = transform.parent.gameObject;
         Item droppedItem = dropObject.GetComponent<ItemDetail>().item;
 
         //Debug.Log("##########Test Variables##########");
@@ -29,22 +29,22 @@ public class MoveItem : MonoBehaviour, IDropHandler
         //Debug.Log("targetItemInterface = " + targetItemInterface.name + " / tag: " + targetItemInterface.tag);
         //Debug.Log("targetSlotInterface = " + targetSlotInterface.name + " / tag: " + targetSlotInterface.tag);
         Debug.Log("transform.childCount: " + transform.childCount);
-        if (transform.childCount > 0)
+        if (transform.childCount > 0) // has item in target dropped window
         {
             //Debug.Log("target slot has item inside");
             //Debug.Log("is targetSlotInterface = targetItemInterface: " + targetSlotInterface.CompareTag(targetItemInterface.tag));
             //Debug.Log("dragItemInSlot.parentAfterDrag = " + dragItemInSlot.parentAfterDrag.name);
             Item targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
             DraggableItem targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
-            if (targetSlotInterface.CompareTag(targetItemInterface.tag)&& !(targetSlotInterface.CompareTag("Player_Equipment"))&& !(targetItemInterface.CompareTag("Player_Equipment")))
+            if (targetSlotWindow.CompareTag(dropItemOriginWindow.tag)&& !(targetSlotWindow.CompareTag("Player_Equipment"))&& !(dropItemOriginWindow.CompareTag("Player_Equipment")))
             {
                 Debug.Log("dropping item from inventory to inventory");
                 exchangeItem(targetDragItem, dropDragItem);
             }
-            else if (targetSlotInterface.CompareTag("Player_Equipment"))
+            else if (targetSlotWindow.CompareTag("Player_Equipment"))
             {
                 // check drag item is drag from equipment slot
-                if (targetItemInterface.CompareTag("Player_Inventory"))
+                if (dropItemOriginWindow.CompareTag("Player_Inventory"))
                 {
                     //Debug.Log("dropping item from inventory to equipment");
                     //if target exchange item type is equal to drag item type, exchange the position of target item with drag item 
@@ -56,13 +56,13 @@ public class MoveItem : MonoBehaviour, IDropHandler
                     } else
                     {
                         // find a empty place in inventory to put the item
-                        for (int i = 0; i < targetSlotInterface.transform.childCount; i++)
+                        for (int i = 0; i < targetSlotWindow.transform.childCount; i++)
                         {
-                            Transform slot = targetSlotInterface.transform.GetChild(i);
+                            Transform slot = targetSlotWindow.transform.GetChild(i);
                             if (slot.childCount == 0)
                             {
                                 slot.GetComponent<MoveItem>().dropItem(dropDragItem);
-                                targetItemSlot.GetComponent<MoveItem>().removeItemAttribute();
+                                dropItemOriginSlot.GetComponent<MoveItem>().removeItemAttribute();
                                 break;
                             }
                         }
@@ -70,7 +70,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
                 }
                 
             }
-            else if (targetSlotInterface.CompareTag("Player_Equipment"))
+            else if (targetSlotWindow.CompareTag("Player_Equipment"))
             {
                 if (compareItemType(dropItemType, ThisSlotType))
                 {
@@ -78,23 +78,31 @@ public class MoveItem : MonoBehaviour, IDropHandler
                     exchangeItem(targetDragItem, dropDragItem);
                 }
             }
+            else if (targetSlotWindow.CompareTag("Player_HotbarItem") && dropItemType == ItemType.Consumable)
+            {
+                exchangeItem(targetDragItem, dropDragItem);
+            }
         }
-        else
+        else // does not have item in target dropped window
         {
-            if (targetSlotInterface.CompareTag("Player_Inventory"))
+            if (targetSlotWindow.CompareTag("Player_Inventory"))
             {
                 dropItem(dropDragItem);
-                if (targetItemInterface.CompareTag("Player_Equipment"))
+                if (dropItemOriginWindow.CompareTag("Player_Equipment"))
                 {
-                    targetItemSlot.GetComponent<MoveItem>().removeItemAttribute();
+                    dropItemOriginSlot.GetComponent<MoveItem>().removeItemAttribute();
                 }
             }
-            else if (targetSlotInterface.CompareTag("Player_Equipment") && compareItemType(dropItemType, ThisSlotType))
+            else if (targetSlotWindow.CompareTag("Player_Equipment") && compareItemType(dropItemType, ThisSlotType))
             {
                 UpdateItemAttribute(droppedItem);
                 dropItem(dropDragItem);
             }
-            
+            else if (targetSlotWindow.CompareTag("Player_HotbarItem") && dropItemType == ItemType.Consumable)
+            {
+                dropItem(dropDragItem);
+            }
+
         }
         //Debug.Log("##########Test Variables End##########");
     }
