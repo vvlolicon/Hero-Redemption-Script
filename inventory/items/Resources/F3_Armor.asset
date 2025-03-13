@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Saviour Armor
   itemType: 2
+  consumableItemType: 0
   itemID: 1
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 4ce4c79d58f8e434dbcce544b763d84f, type: 3}
+  itemIcon: {fileID: 21300000, guid: 8f3068b6be693d044a8ea283bc2761d3, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0

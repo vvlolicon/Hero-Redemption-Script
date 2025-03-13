@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 261925ed2f7dec74eadf27d9aa6a62ff, type: 3}
+  m_Name: ExamplePickup
+  m_EditorClassIdentifier: 
+  itemID: 2
+  itemModel: {fileID: 7046050308793112747, guid: 5bfdd3cb782dde145a84d90c80c62ce4, type: 3}
+  itemAttributes:
+  - AtrbName: 4
+    AtrbValue: 100

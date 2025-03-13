@@ -90,4 +90,104 @@ public class PlayerBaseMethods
         return isAnimationPlaying && animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
     }
 
+    public static void ChangePlayerStats(GeneralStatsObj playerStats, ItemAttribute itemAttr)
+    {
+        float valueChanged = itemAttr.AtrbValue;
+        switch (itemAttr.AtrbName)
+        {
+            case ItemAttributeName.MaxHP:
+                // if hp is at max, change together with maxHP change
+                if (playerStats.MaxHP == playerStats.HP)
+                {
+                    playerStats.HP += valueChanged;
+                }
+                playerStats.MaxHP += valueChanged;
+                break;
+            case ItemAttributeName.MaxMP:
+                // if mp is at max, change together with maxMP change
+                if (playerStats.MaxMP == playerStats.MP)
+                {
+                    playerStats.MP += valueChanged;
+                }
+                playerStats.MaxMP += valueChanged;
+                break;
+            case ItemAttributeName.HP:
+                if (playerStats.MaxHP - playerStats.HP > 0 )
+                {
+                    playerStats.HP = Mathf.Min(playerStats.HP + valueChanged, playerStats.MaxHP);
+                }
+                break;
+            case ItemAttributeName.MP:
+                if (playerStats.MaxMP - playerStats.MP > 0 )
+                {
+                    playerStats.MP = Mathf.Min(playerStats.MP + valueChanged, playerStats.MaxMP);
+                }
+                break;
+            case ItemAttributeName.ATK:
+                playerStats.ATK += valueChanged;
+                break;
+            case ItemAttributeName.AtkTime:
+                playerStats.AttackTime += valueChanged;
+                break;
+            case ItemAttributeName.DEF:
+                playerStats.DEF += valueChanged;
+                break;
+            case ItemAttributeName.SPEED:
+                playerStats.SPEED += valueChanged;
+                break;
+            case ItemAttributeName.CritChance:
+                playerStats.CritChance += valueChanged;
+                break;
+            case ItemAttributeName.CritChanRdc:
+                playerStats.CritChanRdc += valueChanged;
+                break;
+            case ItemAttributeName.CritDmgMult:
+                playerStats.CritDmgMult += valueChanged;
+                break;
+            case ItemAttributeName.CritDmgResis:
+                playerStats.CritDmgResis += valueChanged;
+                break;
+            case ItemAttributeName.DmgReduce:
+                playerStats.DmgReduce += valueChanged;
+                break;
+        }
+    }
+
+    public static void ChangePlayerStats(GeneralStatsObj playerStats, List<ItemAttribute> attributes)
+    {
+        foreach (ItemAttribute attr in attributes)
+        {
+            ChangePlayerStats(playerStats, attr);
+        }
+    }
+
+    public static bool CanConsumeItem(GeneralStatsObj playerStats, List<ItemAttribute> attributes)
+    {
+        foreach (var itemAttr in attributes)
+        {
+            switch (itemAttr.AtrbName)
+            {
+                case ItemAttributeName.HP:
+                    if (playerStats.MaxHP - playerStats.HP <= 0)
+                        return false;
+                    break;
+                case ItemAttributeName.MP:
+                    if (playerStats.MaxMP - playerStats.MP <= 0)
+                        return false;
+                    break;
+            }
+        }
+        return true;
+    }
+
+    public static void SetPivot(RectTransform rectTransform, Vector2 pivot)
+    {
+        if (rectTransform == null) return;
+
+        Vector2 size = rectTransform.rect.size;
+        Vector2 deltaPivot = rectTransform.pivot - pivot;
+        Vector3 deltaPosition = new Vector3(deltaPivot.x * size.x, deltaPivot.y * size.y);
+        rectTransform.pivot = pivot;
+        rectTransform.localPosition -= deltaPosition;
+    }
 }

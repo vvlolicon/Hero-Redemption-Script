@@ -10,32 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: F3_Ring
+  m_Name: TestPotion
   m_EditorClassIdentifier: 
-  itemName: Saviour Ring
-  itemType: 6
-  consumableItemType: 0
-  itemID: 3
-  itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 03680813b02d1fc45954be24811b3b2e, type: 3}
+  itemName: Small HP potion
+  itemType: 8
+  consumableItemType: 1
+  itemID: 10
+  itemDesc: This is a HP potion
+  itemIcon: {fileID: 21300000, guid: 6f7f9115be0e8604986699226a05ea01, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
-  maxStack: 1
-  setStack: 1
+  maxStack: 10
+  setStack: 3
   rarity: 0
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 250
-  - AtrbName: 2
-    AtrbValue: 250
-  - AtrbName: 4
-    AtrbValue: 50
-  - AtrbName: 6
+  - AtrbName: 1
     AtrbValue: 100
-  - AtrbName: 12
-    AtrbValue: 0.8
-  - AtrbName: 9
-    AtrbValue: 40
-  - AtrbName: 11
-    AtrbValue: 20

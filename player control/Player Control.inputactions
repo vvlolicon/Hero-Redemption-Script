@@ -85,6 +85,60 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_1",
+                    "type": "Button",
+                    "id": "891986f3-8d18-4448-bfad-3573e8959eb5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_2",
+                    "type": "Button",
+                    "id": "3202520d-1d7e-4590-9039-dcf243cc306d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_3",
+                    "type": "Button",
+                    "id": "4710e740-1a26-4f0e-a461-a5439f81aeb0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_4",
+                    "type": "Button",
+                    "id": "e776e489-e011-4b0a-b25c-45915b026042",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_5",
+                    "type": "Button",
+                    "id": "41cb647a-0d6f-40dc-b01b-4ffcbed07cdb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseHotbar_6",
+                    "type": "Button",
+                    "id": "1b902677-d1bb-4f13-aed9-d52b4fa7d2b9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -228,6 +282,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "ShowTestData",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "46e882b0-2cbc-4578-8b4b-395f88b61be3",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5856cabe-a5f3-40b9-925d-004196c97357",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a08dff8f-e1de-49df-b09e-b2c07fe55152",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63a4f15b-c120-4f2d-8aa2-88245a22278c",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "427e3025-1d48-44a1-aabe-3404d79c6d9e",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0cf53582-6691-42d2-99eb-2d1446476796",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseHotbar_6",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

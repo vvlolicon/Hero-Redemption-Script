@@ -2,27 +2,44 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
-public class ConsumableItem : MonoBehaviour, IConsumableItem
+public class ConsumableItem : MonoBehaviour
 {
     PlayerStateExecutor _executor;
-    Action ConsumeItemFunc;
+    Item item;
+    ItemDetail itemDetail;
     public void Awake()
     {
         _executor = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateExecutor>();
+        itemDetail = GetComponent<ItemDetail>();
+        item = itemDetail.item;
     }
-    public void OnItemConsume(Item item)
+    public void ConsumeItem()
     {
-        ConsumeItemFunc();
+        switch (item.consumableItemType)
+        {
+            case ConsumableItemType.InstantPotion:
+                UsePotion(item.itemAttributes);
+                break;
+        }
     }
 
-    public void testMethod()
+    public void UsePotion(List<ItemAttribute> attributes)
     {
-        Debug.Log("Item Consumed");
+        if (PlayerBaseMethods.CanConsumeItem(_executor.PlayerStats, attributes))
+        {
+            PlayerBaseMethods.ChangePlayerStats(_executor.PlayerStats, attributes);
+            item.curStack--;
+            itemDetail.UpdateStack();
+            if (item.curStack == 0)
+            {
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            //Debug.Log("cannot use this item");
+        }
     }
-}
-
-public interface IConsumableItem
-{
-    public void OnItemConsume(Item item);
 }

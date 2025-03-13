@@ -35,6 +35,20 @@ public class DraggableItem: MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         //Debug.Log("end drag" + eventData.pointerDrag.name);
         transform.SetParent(parentAfterDrag);
         image.raycastTarget = true;
+        SetItemShowScale(gameObject);
     }
 
+    public static void SetItemShowScale(GameObject item)
+    {
+        GameObject parentWindow = item.transform.parent.parent.gameObject;
+        //Debug.Log("parentWindow: " + parentWindow.name);
+        if (parentWindow.CompareTag("Player_HotbarItem"))
+        {
+            item.GetComponent<RectTransform>().localScale = new Vector3(0.8f, 0.8f, 0.8f);
+        }
+        else
+        {
+            item.GetComponent<RectTransform>().localScale = Vector3.one;
+        }
+    }
 }

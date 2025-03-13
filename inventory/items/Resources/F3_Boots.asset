@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Saviour Boots
   itemType: 4
+  consumableItemType: 0
   itemID: 4
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 719bf4f3417112d4a83f5ab09ef35369, type: 3}
+  itemIcon: {fileID: 21300000, guid: 29460775b666fa64292811816009a4d1, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 8

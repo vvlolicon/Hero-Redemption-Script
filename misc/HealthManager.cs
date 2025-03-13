@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -94,18 +95,26 @@ public class HealthManager : MonoBehaviour
             Vector2 randomOffset = new Vector2(Random.Range(0.5f, 1f) * RandomMethods.RandomPosNegNumber(), Random.Range(0, 1f));
             // multiply the offset to offset distance to enlarge the randomlise offset position
             Vector3 textPos = RandomMethods.ScreenPointOffset(_camera, dmgInfo.DmgTextPos.position, randomOffset * textPopupOffset);
-            GameObject dmgText = Instantiate(damageTextPrefab, textPos, Quaternion.identity);
+            
             string damageShow = "" + dmgInfo.damageShow;
             Color dmgColor = dmgInfo.TextColor;
             if (dmgInfo.IsCrit)
             {
                 // change the damage text color to red and enlarge 1.5 times size to show critical attack
                 dmgColor = Color.red;
-                dmgText.transform.localScale *= 1.5f;
                 damageShow += "!";
             }
-            dmgText.GetComponent<DamagePopup>().SetUp(damageShow, dmgColor, randomOffset);
+            GameObject dmgText = CreateMsgPopup(textPos, randomOffset, damageShow, dmgColor);
+            if (dmgInfo.IsCrit)
+                dmgText.transform.localScale *= 1.5f;
         }
+    }
+
+    public GameObject CreateMsgPopup(Vector3 textPos, Vector2 offset, string text, Color color)
+    {
+        GameObject dmgText = Instantiate(damageTextPrefab, textPos, Quaternion.identity);
+        dmgText.GetComponent<DamagePopup>().SetUp(text, color, offset);
+        return dmgText;
     }
     public void onHealthChange(float value)
     {

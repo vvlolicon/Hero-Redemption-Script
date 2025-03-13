@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
 
-public class PlayerStateExecutor : MonoBehaviour, IDamageable
+public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 {
     void Awake()
     {
@@ -191,6 +191,11 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable
     {
         if (!IsHit)
             CanMove = camMoveT;
+    }
+
+    public void OnPickItem(InstantEffectPickupItem pickedItem)
+    {
+        PlayerBaseMethods.ChangePlayerStats(PlayerStats, pickedItem.itemAttributes);
     }
 
     public void NewRoroutine(IEnumerator coroutine)

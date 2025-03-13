@@ -31,9 +31,9 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // if item is a consumable item(e.g. potion) and item is in player inventory or hot bar, use it 
             if (clickItem.itemType == ItemType.Consumable)
             {
-                if (item_at_interface.CompareTag("Player_Inventory"))
+                if (item_at_interface.CompareTag("Player_Inventory") || item_at_interface.CompareTag("Player_HotbarItem"))
                 {
-                    gameObject.GetComponent<ConsumableItem>().OnItemConsume(clickItem);
+                    GetComponent<ConsumableItem>().ConsumeItem();
                 }
 
             }

@@ -6,7 +6,7 @@ public class ItemAttribute
 {
     public ItemAttributeName AtrbName;
     public float AtrbValue;
-    public ItemAttribute(ItemAttributeName attributeName, int attributeValue)
+    public ItemAttribute(ItemAttributeName attributeName, float attributeValue)
     {
         this.AtrbName = attributeName;
         this.AtrbValue = attributeValue;    
@@ -15,7 +15,9 @@ public class ItemAttribute
 }
 public enum ItemAttributeName { 
     MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, 
-    CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce
+    CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce,
+    // these attributes should only use on pickup item
+    Money, EXP
 }
 [System.Serializable]
 public class ItemDropChance

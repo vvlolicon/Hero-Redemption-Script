@@ -16,7 +16,7 @@ MonoBehaviour:
   itemType: 9
   itemID: 2
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 853642d787f3bde43977bcab26e14618, type: 3}
+  itemIcon: {fileID: 21300000, guid: ce14ab7513a12694d9c56573c6d3be53, type: 3}
   itemModel: {fileID: 0}
   itemValue: 0
   itemWeight: 0

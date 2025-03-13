@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -14,11 +15,13 @@ public class PlayerInputData : MonoBehaviour
     [Header("UI settings")]
     GameObject inventoryUI;
     GameObject equipmentUI;
+    GameObject pauseMenu;
     public GameObject testData;
+    GameObject hotbarItemWindow;
 	//public Canvas UIWindow;
 
     private PlayerStateExecutor _executor;
-	List<GameObject> UIWindows = new List<GameObject>();
+	public List<GameObject> UIWindows = new List<GameObject>();
 
 	public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
@@ -30,8 +33,24 @@ public class PlayerInputData : MonoBehaviour
     private void Awake()
     {
         _executor = GetComponent<PlayerStateExecutor>();
-        GameObject[] windows = GameObject.FindGameObjectsWithTag("UIWindow");
-        UIWindows.AddRange(windows);
+        hotbarItemWindow = GameObject.FindGameObjectWithTag("Player_HotbarItem");
+        inventoryUI = GetUI_Window("Player_Inventory", 7);
+        equipmentUI = GetUI_Window("Player_Equipment", 7);
+        pauseMenu = GetUI_Window("PauseMenu", 7);
+    }
+
+    GameObject GetUI_Window(string tag, int layer)
+    {
+        GameObject[] windows = GameObject.FindGameObjectsWithTag(tag);
+        foreach (GameObject window in windows)
+        {
+            if (window.layer == layer)
+            {
+                UIWindows.Add(window);
+                return window;
+            }
+        }
+        return null;
     }
 
     private void Start()
@@ -103,31 +122,101 @@ public class PlayerInputData : MonoBehaviour
 
     public void OnOpenInventory()
 	{
-        foreach (GameObject ui in UIWindows)
+        if (InputEnable)
         {
-            ui.SetActive(true);
+            inventoryUI.SetActive(true);
+            equipmentUI.SetActive(true);
+            SetCursorState(false);
+            InputEnable = false;
+            _executor.OnOpenInventory();
         }
-        SetCursorState(false);
-		InputEnable = false;
-        _executor.OnOpenInventory();
     }
 
 	public void OnEscHit(InputValue value)
 	{
+        bool hasUIactive = false;
 		foreach(var UI in UIWindows)
 		{
-            if (UI.activeInHierarchy)
+            if (UI != null && UI.activeInHierarchy)
             {
+                hasUIactive = true;
                 UI.SetActive(false);
 				//break;
             }
         }
-        SetCursorState(true);
-        InputEnable = true;
+        if (hasUIactive)
+        {
+            SetCursorState(true);
+            InputEnable = true;
+        }
+        else
+        {
+            EnterPauseMenu(false);
+        }
+    }
+
+    public void EnterPauseMenu(bool b)
+    {
+        pauseMenu.SetActive(!b);
+        SetCursorState(b);
+        InputEnable = b;
+    }
+
+    public void OnUseHotbar_1(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(0);
+        }
+    }
+    public void OnUseHotbar_2(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(1);
+        }
+    }
+    public void OnUseHotbar_3(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(2);
+        }
+    }
+    public void OnUseHotbar_4(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(3);
+        }
+    }
+    public void OnUseHotbar_5(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(4);
+        }
+    }
+    public void OnUseHotbar_6(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            UseHotbarItemAtSlot(5);
+        }
     }
 #endif
 
-	public void OnUIQuit()
+    void UseHotbarItemAtSlot(int slotNum)
+    {
+        Debug.Log("Using hotbar at slot " + slotNum);
+        Transform slot = hotbarItemWindow.transform.GetChild(slotNum);
+        if (slot.childCount > 0)
+        {
+            slot.GetChild(0).GetComponent<ConsumableItem>().ConsumeItem();
+        }
+    }
+
+    public void OnUIQuit()
 	{
         StartCoroutine(CheckUIWindowActive());
     }
