@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48228403f17192e4ab8cdecf498040ce, type: 3}
-  m_Name: testStatsDmg
+  m_Name: Monster3
   m_EditorClassIdentifier: 
-  MaxHP: 0
-  HP: 0
+  MaxHP: 300
+  HP: 300
   MaxMP: 0
   MP: 0
   MP_Regen: 0
-  ATK: 100
-  SPEED: 0
-  DEF: 0
-  AttackTime: 0
-  CritChance: 400
+  ATK: 50
+  SPEED: 30
+  DEF: 30
+  AttackTime: 1
+  CritChance: 20
   CritChanRdc: 0
   CritDmgMult: 0
   CritDmgResis: 0
-  DmgReduction: 0
+  DmgReduce: 0
