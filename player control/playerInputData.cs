@@ -55,9 +55,8 @@ public class PlayerInputData : MonoBehaviour
 
     private void Start()
     {
-        SetCursorState(true);
-		InputEnable = true;
-        
+        EnableAllInput(true);
+
         // deactive ui windows after setting up vars
         foreach (GameObject ui in UIWindows)
         {
@@ -126,8 +125,7 @@ public class PlayerInputData : MonoBehaviour
         {
             inventoryUI.SetActive(true);
             equipmentUI.SetActive(true);
-            SetCursorState(false);
-            InputEnable = false;
+            EnableAllInput(false);
             _executor.OnOpenInventory();
         }
     }
@@ -151,17 +149,9 @@ public class PlayerInputData : MonoBehaviour
         }
         else
         {
-            EnterPauseMenu(false);
+            EnterPauseMenu();
         }
     }
-
-    public void EnterPauseMenu(bool b)
-    {
-        pauseMenu.SetActive(!b);
-        SetCursorState(b);
-        InputEnable = b;
-    }
-
     public void OnUseHotbar_1(InputValue value)
     {
         if (value.isPressed)
@@ -205,6 +195,17 @@ public class PlayerInputData : MonoBehaviour
         }
     }
 #endif
+    public void EnterPauseMenu()
+    {
+        pauseMenu.SetActive(true);
+        EnableAllInput(false);
+    }
+    public void ExitPauseMenu()
+    {
+        pauseMenu.SetActive(false);
+        EnableAllInput(true);
+    }
+
 
     void UseHotbarItemAtSlot(int slotNum)
     {
@@ -235,8 +236,7 @@ public class PlayerInputData : MonoBehaviour
         }
         if (!hasWindowActive)
         {
-            SetCursorState(true);
-            InputEnable = true;
+            EnableAllInput(true);
         }
     }
 
@@ -276,4 +276,10 @@ public class PlayerInputData : MonoBehaviour
         CursorLocked = newState;
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 	}
+
+    public void EnableAllInput(bool b)
+    {
+        SetCursorState(b);
+        InputEnable = b;
+    }
 }

@@ -13,6 +13,7 @@ public class Sword1 : MonoBehaviour
     private GameObject _player;
     private PlayerStateExecutor _executor;
     private GeneralStatsObj _playerStats;
+    List<Collider> attackedEnemy = new List<Collider>();
 
     void Awake()
     {
@@ -31,8 +32,11 @@ public class Sword1 : MonoBehaviour
 	{
         if (other.tag == "Enemy" && _executor.CurState.CurStateType() == PlayerStates.ATTACK)
         {
-            EnemyDmgInfo dmgInfo = new EnemyDmgInfo(_playerStats.ATK, _playerStats.CritChance, _playerStats.CritDmgMult, _dmgColor, transform, other.gameObject);
-            dmgInfo.CallDamageable(other.gameObject);
+            if (!attackedEnemy.Contains(other)) { 
+                attackedEnemy.Add(other);
+                EnemyDmgInfo dmgInfo = new EnemyDmgInfo(_playerStats.ATK, _playerStats.CritChance, _playerStats.CritDmgMult, _dmgColor, transform, other.gameObject);
+                dmgInfo.CallDamageable(other.gameObject);
+            }
         }
 	}
 
@@ -41,8 +45,9 @@ public class Sword1 : MonoBehaviour
         _coll.enabled = true;
     }
 
-    public void DisableColliders() //Called from the AnimatorEvent script
+    public void FinishAttack() //Called from the AnimatorEvent script
     {
         _coll.enabled = false;
+        attackedEnemy.Clear();
     }
 }

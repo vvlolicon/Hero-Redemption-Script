@@ -19,7 +19,7 @@ public class PlayerBaseMethods
             moveDirection = Vector3.zero;
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1); //Limits the vector magnitude to 1
         _executor.MovIndicator.transform.localPosition = moveDirection;
-        _executor.Animator.SetFloat("Speed", moveDirection.magnitude);
+        //_executor.Animator.SetFloat("Speed", moveDirection.magnitude);
         if (moveDirection.magnitude > 0) //Fixes the problem when there is no movement
         {
             //To rotate the controller when moving and position it correctly relative to the camera
@@ -66,16 +66,20 @@ public class PlayerBaseMethods
             {
                 _executor.MovementY = 0f;
                 _executor.WasGrounded = false;
-                _executor.Animator.SetBool("Jump", true); //Needed for activate the jump state if character falls
+                //_executor.Animator.SetBool("Jump", true); //Needed for activate the jump state if character falls
+                
                 _executor.Animator.CrossFade("Falling", 0.2f);
             }
         }
-        if (_executor.CharCont.velocity.y < 0) //If player is falling down
+        if (_executor.CharCont.velocity.y < 0)
+        {  //If player is falling down
+            Debug.Log($"falling for {_executor.FallTime}");
             _executor.FallTime += Time.deltaTime;
+        }
         _executor.WasGrounded = _executor.CharCont.isGrounded;
     }
 
-    float DistToGround() //Calculates the distance to the ground when starts to fall
+    public float DistToGround() //Calculates the distance to the ground when starts to fall
     {
         RaycastHit hit;
         if (Physics.Raycast(_executor.gameObject.transform.position, -Vector3.up, out hit, _executor.DistToGround + 999))

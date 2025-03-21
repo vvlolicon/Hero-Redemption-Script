@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class EnemyStateChase : EnemyBaseStates
 {
+    float chaseTimer;
     public EnemyStateChase(EnemyStateManager manager, EnemyStateExecutor executor) : base(manager, executor) { }
 
     public override AIStates CurStateType() { return AIStates.CHASE; }
     public override void EnterState()
     {
-        Executor.Agent.speed = Executor.Speed * 1.5f; // change to running speed
+        Executor.Agent.speed = Executor.Speed * 2f; // change to running speed
         Executor.Agent.isStopped = false;
-        Executor.Animator.ResetTrigger("isIdle");
         Executor.Animator.SetTrigger("isChasing");
+        chaseTimer = 0;
+        //Executor.Animator.SetTrigger("Walking");
     }
 
     protected override void CheckSwitchState()
@@ -24,21 +26,24 @@ public class EnemyStateChase : EnemyBaseStates
                 SwitchState(StateMan.Attack());
                 Executor.Agent.isStopped = true;
             }
-            else if (Methods.CanStopChase())
+            else if (!Executor.chasePlayerForever)
             {
-                if (Executor.PatrolPoints.Count > 0)
+                if (Methods.CanStopChase() || chaseTimer > Executor.ChaseTime)
                 {
-                    SwitchState(StateMan.Patrol());
-                }
-                else
-                {
-                    SwitchState(StateMan.Idle());
+                    if (Executor.PatrolPoints.Count > 1)
+                    {
+                        SwitchState(StateMan.Patrol());
+                    }
+                    else
+                    {
+                        SwitchState(StateMan.Idle());
+                    }
                 }
             }
         } 
         else
         {
-            if (Executor.PatrolPoints.Count > 0)
+            if (Executor.PatrolPoints.Count > 1)
             {
                 SwitchState(StateMan.Patrol());
             }
@@ -51,7 +56,9 @@ public class EnemyStateChase : EnemyBaseStates
 
     protected override void UpdateState()
     {
-        if(Executor.WaitTimer < Executor.AttackTime)
+        chaseTimer += Time.deltaTime;
+        Executor.Animator.SetTrigger("isChasing");
+        if (Executor.WaitTimer < Executor.AttackTime)
         {
             Executor.WaitTimer += Time.deltaTime;
         }

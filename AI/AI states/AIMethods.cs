@@ -1,3 +1,4 @@
+using GLTF.Schema;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class AIMethods
     float _visDist;
     float _visAngle;
     float _attackDist;
+    Animator _animator;
 
     public AIMethods(EnemyStateExecutor executor) { 
         _executor = executor;
@@ -18,6 +20,7 @@ public class AIMethods
         _visDist = _executor.VisDist;
         _visAngle = _executor.VisAngle;
         _attackDist = _executor.AttackDist;
+        _animator = _executor.Animator;
     }
 
     public bool CanSeePlayer()
@@ -42,6 +45,16 @@ public class AIMethods
         return false;
     }
 
+    public bool CanDamagePlayer()
+    {
+        Vector3 direction = _player.position - _enemy.position;
+        if (direction.magnitude < _attackDist * 2)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public bool CanStopChase() //Stop follow the player
     {
         Vector3 direction = _player.position - _enemy.position;
@@ -59,6 +72,17 @@ public class AIMethods
 
         if (direction != Vector3.zero)
             _enemy.rotation = Quaternion.Slerp(_enemy.rotation, Quaternion.LookRotation(direction), Time.deltaTime * speedRot);
+    }
+
+    public bool AnimatorIsPlaying(string stateName)
+    {
+        return AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+    }
+
+    bool AnimatorIsPlaying()
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).length >
+               _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
 }

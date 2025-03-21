@@ -30,6 +30,6 @@ public class AnimatorEvents : MonoBehaviour
     }
     public void DisableWeaponColl()
     {
-        weapon.DisableColliders();
+        weapon.FinishAttack();
     }
 }

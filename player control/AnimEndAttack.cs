@@ -19,9 +19,12 @@ public class AnimEndAttack : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //GameObject player = animator.gameObject;
-        ////Debug.Log(player.name + " end attack");
-        //player.GetComponent<AnimatorEvents>().EnableMove();
+        AnimatorEvents animEvent = animator.gameObject.GetComponent<AnimatorEvents>();
+        if (animEvent != null)
+        {
+            Debug.Log(animEvent.gameObject.name + " end attack");
+            animEvent.DisableWeaponColl();
+        }
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

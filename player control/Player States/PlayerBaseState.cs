@@ -44,9 +44,8 @@ public abstract class PlayerBaseState
 
     public void SwitchState(PlayerBaseState newState) 
     {
-        //Vector3 modelPos = Executor.transform.position;
         //modelPos.y -= 0.2f;
-        //Executor.ChildPlayer.transform.position = modelPos;
+        Executor.ChildPlayer.transform.localPosition = Executor.ChildPlayeriniPos;
         ExitState();
         //Executor.Animator.SetTrigger("Exit");
         newState.InitializeSubStates();

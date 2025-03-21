@@ -64,8 +64,10 @@ public class PlayerAttackState : PlayerBaseState
 
     private void Attack()
     {
+        Executor.Animator.CrossFade("Attack", 0.2f);
         Executor.Animator.Play("Attack");
         Executor.Animator.speed *= Executor.GetAtkSpeedMult();
+        Executor.AnimEvent.EnableWeaponColl();
         //Executor.SoundMan.PlaySound("Attack");
         Executor.AttackTimer = 0;
     }

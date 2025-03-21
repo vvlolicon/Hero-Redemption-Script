@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class EnemyStateExecutor : MonoBehaviour, IDamageable
 {
@@ -13,7 +12,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _anim = GetComponentInChildren<Animator>();
         _animEv = GetComponentInChildren<AnimatorEventsEn>();
         _soundMan = GetComponent<SoundManager>();
-        _enemyStaticStats = GetComponent<EnemyStaticStatsMono>();
+        _enemyStaticStatScript = GetComponent<EnemyStaticStatsMono>();
         _healthManager = GetComponent<HealthManager>();
         _healthManager._enemyExecutor = this;
         GameObject[] players;
@@ -47,12 +46,14 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         MaxHP = _enemyStats.MaxHP;
         HP = MaxHP;
 
+        
+
         Agent.speed = Speed;
         if(CurState!= null) {
             CurState.EnterState();
             if (CurState.SubState.CurStateType() == AIStates.PATROL)
             {
-                Agent.SetDestination(PatrolPoints[0].transform.position);
+                Agent.SetDestination(PatrolPoints[0].position);
             }
         }
     }
@@ -61,6 +62,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     {
         _stateMan = new EnemyStateManager(this);
         CurState = _stateMan.Ground();
+        if (PatrolPoints.Count == 0)
+        {
+            GameObject objTemp = new GameObject();
+            Vector3 thisPos = transform.position;
+            objTemp.transform.position = new Vector3(thisPos.x, thisPos.y, thisPos.z);
+            PatrolPoints.Add(objTemp.transform);
+        }
         initailizeStats();
         //healthManager.Initialize();
     }
@@ -68,17 +76,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     void Update()
     {
 
-        //test_showState.text = "Current enemy State:" + CurState.CurStateType();
-        //if (CurState.SubState != null)
-        //{
-        //    test_showState.text += "\n" + "current enemy Sub State: " + CurState.SubState.CurStateType();
-        //    if (CurState.SubState.CurStateType() == AIStates.PATROL)
-        //    {
-        //        EnemyStatePatrol partolState = (EnemyStatePatrol)CurState.SubState;
-        //        test_showState.text += "\n" + "curPatrolIndex: " + partolState.curPatrolIndex;
-        //    }
-        //    test_showState.text += "\n" + "enemy speed: " + Speed;
-        //}
+        test_showState.text = "Current enemy State:" + CurState.CurStateType();
+        test_showData.text = "";
+        if (CurState.SubState != null)
+        {
+            test_showState.text += "\n" + "current enemy Sub State: " + CurState.SubState.CurStateType();
+            test_showData.text += "\n" + "enemy speed: " + Speed;
+        }
         if (CurState != null)
         {
             CurState.UpdateStates();
@@ -106,7 +110,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     public void OnDying()
     {
-        transform.position = _enemyStaticStats.PatrolPoints[0].transform.position;
+        transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
         CurState.SwitchState(_stateMan.Ground());
         gameObject.SetActive(false);
         _billboard.SetActive(false);
@@ -122,10 +126,11 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     AnimatorEventsEn _animEv;
     Transform _player;
     EnemyStateManager _stateMan;
-    EnemyStaticStatsMono _enemyStaticStats;
+    EnemyStaticStatsMono _enemyStaticStatScript;
     public GameObject _billboard;
 
-    //public TMP_Text test_showState;
+    public TMP_Text test_showState;
+    public TMP_Text test_showData;
     public GeneralStatsObj _enemyStats;
 
     HealthManager _healthManager;
@@ -139,6 +144,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public Transform Player { get { return _player; } }
     public bool IsInvincible { get; set; }
 
+    [HideInInspector] public bool chasePlayerForever = false;
+
     // the stats below will change for different enemy individual,
     // so it cannot get the stats from static object directly, it needs to store locally
     public float HP { get; set; }
@@ -151,15 +158,17 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public float CritChance { get { return _enemyStats.CritChance; } }
     public float CritResis { get { return _enemyStats.CritDmgResis; } }
     public float CritMult { get { return _enemyStats.CritDmgMult; } }
-
-    public float ChaseTime { get { return _enemyStaticStats.ChaseTime; } }
-    public float VisDist { get { return _enemyStaticStats.VisDist; } }
-    public float VisAngle { get { return _enemyStaticStats.VisAngle; } }
-    public float AttackDist { get { return _enemyStaticStats.AttackDist; } }
     public float AttackTime { get { return _enemyStats.AttackTime; } }
-    public float AtkAnimTime { get { return _enemyStaticStats.AtkAnimTime; } }
+
+    public float ChaseTime { get { return _enemyStaticStatScript._stats._chaseTime; } }
+    public float VisDist { get { return _enemyStaticStatScript._stats._visDist; } }
+    public float VisAngle { get { return _enemyStaticStatScript._stats._visAngle; } }
+    public float AttackDist { get { return _enemyStaticStatScript._stats._attackDist; } }
+    public float PreAtkTime { get { return _enemyStaticStatScript._stats._preAtkTime; } }
+    public float AtkAnimTime { get { return _enemyStaticStatScript._stats._atkAnimTime; } }
+    public float HitAnimTime { get { return _enemyStaticStatScript._stats._hitAnimTime; } }
     public float WaitTimer { get; set; }
-    public List<GameObject> PatrolPoints { get { return _enemyStaticStats.PatrolPoints; } }
-    public Transform DmgTextPos { get { return _enemyStaticStats.DmgPos; } }
+    public List<Transform> PatrolPoints { get { return _enemyStaticStatScript.PatrolPoints; } }
+    public Transform DmgTextPos { get { return _enemyStaticStatScript.DmgPos; } }
 
 }

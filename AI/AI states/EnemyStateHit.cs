@@ -12,16 +12,27 @@ public class EnemyStateHit : EnemyBaseStates
     public override AIStates CurStateType() { return AIStates.HIT; }
     public override void EnterState()
     {
-        Executor.SoundManager.PlaySound("Hit");
-        Executor.Animator.SetTrigger("isHited");
-        Executor.Agent.isStopped = true;
+        //Executor.SoundManager.PlaySound("Hit");
+        Executor.Animator.SetTrigger("IsHit");
+        Executor.Animator.Play("Hit");
+        Executor.Animator.SetBool("CanAttack", false);
+        Executor.Animator.ResetTrigger("isIdle");
+        Executor.Animator.ResetTrigger("isPatrolling");
+        Executor.Animator.ResetTrigger("isMeleeAttacking");
+        Executor.Animator.ResetTrigger("isChasing");
+        Executor.Animator.ResetTrigger("isPatrolling");
+        Executor.Animator.SetTrigger("Exit");
+        Executor.chasePlayerForever = true;
+        if (Executor.Agent.isActiveAndEnabled)
+            Executor.Agent.isStopped = true;
         waitTimer = 0;
-        Executor.AnimatorEvents.EndAttack();
+        if(Executor.AnimatorEvents!= null)
+            Executor.AnimatorEvents.EndAttack();
     }
 
     protected override void CheckSwitchState()
     {
-        if (waitTimer >= 1.25f)
+        if (waitTimer >= Executor.HitAnimTime)
         {
             if (Methods.CanAttackPlayer())
                 SwitchState(StateMan.Attack());
@@ -44,7 +55,9 @@ public class EnemyStateHit : EnemyBaseStates
     }
     protected override void ExitState()
     {
-        Executor.Animator.ResetTrigger("isHited");
+        Executor.Animator.ResetTrigger("IsHit");
         waitTimer = 0;
     }
 }
+
+

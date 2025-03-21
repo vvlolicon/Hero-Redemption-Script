@@ -15,6 +15,7 @@ public class EnemyStateGrounded : EnemyBaseStates
         InitializeSubStates();
         SubState.EnterState();
         Executor.Agent.isStopped = false;
+        Executor.Animator.SetBool("CanAttack", false);
     }
 
     protected override void CheckSwitchState()
@@ -31,7 +32,7 @@ public class EnemyStateGrounded : EnemyBaseStates
         {
             SetSubState(StateMan.Chase());
         }
-        else if (Executor.PatrolPoints.Count > 0)
+        else if (Executor.PatrolPoints.Count > 1)
         {
             SetSubState(StateMan.Patrol());
         }

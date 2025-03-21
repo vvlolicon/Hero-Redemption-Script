@@ -15,6 +15,7 @@ public class PlayerFallingState : PlayerBaseState
         Executor.CanRun = false;
         Executor.CanJump = false;
         Executor.JumpPressed = false;
+        Executor.FallTime = 0f;
     }
     protected override void CheckSwitchState()
     {
@@ -31,7 +32,23 @@ public class PlayerFallingState : PlayerBaseState
 
     protected override void ExitState()
     {
-        //Executor.Animator.Play("Landing");
+        
+        if (Executor.FallTime > 0.2f)
+        {
+            //Executor.Animator.SetBool("Grounded", true);
+        }
+        if (Executor.FallTime > 0.5f)
+        {
+            Executor.SoundMan.PlaySound("Land");
+            Executor.OnLanding();
+            Executor.Animator.Play("Landing");
+        }
+        else
+        {
+            Executor.Animator.SetTrigger("Exit");
+        }
+        Executor.FallTime = 0f;
+        Executor.WasGrounded = Executor.CharCont.isGrounded;
     }
 
     protected override void UpdateState()

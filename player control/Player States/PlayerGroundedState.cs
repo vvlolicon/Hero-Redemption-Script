@@ -18,10 +18,11 @@ public class PlayerGroundedState : PlayerBaseState
         {
             SwitchState(StateMan.Jump());
         }
-        else if (!Executor.CharCont.isGrounded)
+        else if (!Executor.CharCont.isGrounded && PlayerMethods.DistToGround() > 0.5f)
         {
             //Debug.Log("Ground state switch to fall state, " + "isGrounded: " + Executor.CharCont.isGrounded + ", check Grounded: " + PlayerMethods.IsGrounded());
             SwitchState(StateMan.Fall());
+            Executor.Animator.Play("Falling");// from ground directly to fall
         }
         else if (Executor.AttackPressed)
         {
@@ -41,14 +42,7 @@ public class PlayerGroundedState : PlayerBaseState
         Executor.CanMove = true;
         Executor.CanJump = true;
         Executor.MovementY = Executor.GroundedGravity;
-        Executor.Animator.SetBool("Jump", false);
-        if (Executor.FallTime > 0.2f)
-        {
-            Executor.SoundMan.PlaySound("Land");
-            Executor.Animator.SetBool("Grounded", true);
-            //if (!hit)
-            //Executor.Animator.CrossFade("FallingEnd", 0.1f);
-        }
+        //Executor.Animator.SetBool("Jump", false);
         Executor.FallTime = 0f;
         Executor.WasGrounded = Executor.CharCont.isGrounded;
     }
