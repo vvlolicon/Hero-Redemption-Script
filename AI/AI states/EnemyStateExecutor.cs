@@ -75,13 +75,14 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     void Update()
     {
-
-        test_showState.text = "Current enemy State:" + CurState.CurStateType();
-        test_showData.text = "";
-        if (CurState.SubState != null)
-        {
-            test_showState.text += "\n" + "current enemy Sub State: " + CurState.SubState.CurStateType();
-            test_showData.text += "\n" + "enemy speed: " + Speed;
+        if (test_showState != null && test_showData != null) { 
+            test_showState.text = "Current enemy State:" + CurState.CurStateType();
+            test_showData.text = "";
+            if (CurState.SubState != null)
+            {
+                test_showState.text += "\n" + "current enemy Sub State: " + CurState.SubState.CurStateType();
+                test_showData.text += "\n" + "enemy speed: " + Speed;
+            }
         }
         if (CurState != null)
         {
@@ -128,8 +129,9 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     EnemyStateManager _stateMan;
     EnemyStaticStatsMono _enemyStaticStatScript;
     public GameObject _billboard;
-
+    [HideInInspector]
     public TMP_Text test_showState;
+    [HideInInspector]
     public TMP_Text test_showData;
     public GeneralStatsObj _enemyStats;
 

@@ -39,8 +39,10 @@ public class EnemyStateAttack : EnemyBaseStates
         Methods.LookPlayer(2.0f);
         Executor.WaitTimer += Time.deltaTime;
         _waitTimer = Executor.WaitTimer;
-        Executor.test_showData.text += "\n" + $"waitTimer: {Executor.WaitTimer}, Attack time: {Executor.AttackTime}, damage Time: {Executor.AttackTime + Executor.PreAtkTime}";
-
+        if (Executor.test_showData != null)
+        {
+            Executor.test_showData.text += "\n" + $"waitTimer: {Executor.WaitTimer}, Attack time: {Executor.AttackTime}, damage Time: {Executor.AttackTime + Executor.PreAtkTime}";
+        }
         if (_waitTimer > Executor.AttackTime)
         {
             _hasDamagePlayer = false;
