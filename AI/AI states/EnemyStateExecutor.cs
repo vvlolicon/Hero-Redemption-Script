@@ -15,6 +15,14 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _enemyStaticStatScript = GetComponent<EnemyStaticStatsMono>();
         _healthManager = GetComponent<HealthManager>();
         _healthManager._enemyExecutor = this;
+        for (int i = 0; i < transform.childCount; i++) {
+            Transform child = transform.GetChild(i);
+            if (child.CompareTag("MonsterCanvas"))
+            {
+                _billboard = transform.GetChild(i).gameObject;
+                break;
+            }
+        }
         GameObject[] players;
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
@@ -45,8 +53,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         Speed = _enemyStats.SPEED / 10f;
         MaxHP = _enemyStats.MaxHP;
         HP = MaxHP;
-
-        
 
         Agent.speed = Speed;
         if(CurState!= null) {
@@ -128,7 +134,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     Transform _player;
     EnemyStateManager _stateMan;
     EnemyStaticStatsMono _enemyStaticStatScript;
-    public GameObject _billboard;
+    GameObject _billboard;
     [HideInInspector]
     public TMP_Text test_showState;
     [HideInInspector]
