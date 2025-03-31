@@ -19,7 +19,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
             Transform child = transform.GetChild(i);
             if (child.CompareTag("MonsterCanvas"))
             {
-                _billboard = transform.GetChild(i).gameObject;
+                _billboard = child.gameObject;
                 break;
             }
         }
