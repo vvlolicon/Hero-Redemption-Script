@@ -19,3 +19,6 @@ MonoBehaviour:
   _atkAnimTime: 1.2
   _chaseTime: 5
   _hitAnimTime: 2.3
+  Interruptable: 1
+  _dieTime: 2
+  _AtkStrategy: 0

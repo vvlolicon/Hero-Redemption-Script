@@ -3,8 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class EnemyStateExecutor : MonoBehaviour, IDamageable
 {
@@ -48,12 +50,15 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     void initailizeStats()
     {
         IsInvincible = false;
+        IsDying = false;
+        chasePlayerForever = false;
+        IsHit = false;
+
         ATK = _enemyStats.ATK;
         DEF = _enemyStats.DEF;
         Speed = _enemyStats.SPEED / 10f;
         MaxHP = _enemyStats.MaxHP;
         HP = MaxHP;
-
         Agent.speed = Speed;
         //if(CurState!= null) {
         //    CurState.EnterState();
@@ -117,10 +122,34 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         }
     }
 
+    public void DamagePlayer(Vector3 impact)
+    {
+        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(ATK, impact, 250f);
+        dmgInfo.CallDamageable(Player.gameObject);
+    }
+
+    public void DamagePlayer()
+    {
+        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(ATK, Player.position - transform.position, 250f);
+        dmgInfo.CallDamageable(Player.gameObject);
+    }
+
     public void OnDying()
     {
+        _methods.ResetAllAnimationTriggers();
+        Agent.isStopped = true;
+        IsDying = true;
+        StartCoroutine(ExtendMethods.DelayAction(
+            _enemyStaticStatScript._stats._dieTime, () => { AfterDying(); }));
+       
+    }
+
+    void AfterDying()
+    {
+        Agent.isStopped = false;
+        IsDying = false;
         transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
-        CurState.SwitchState(_stateMan.Ground());
+        //CurState.SwitchState(_stateMan.Ground());
         gameObject.SetActive(false);
         _billboard.SetActive(false);
         // TODO: give exp and money to player and shows message in game
@@ -167,6 +196,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public float DEF { get; set; }
     public bool IsInvincible { get; set; }
     public bool IsHit { get; set; }
+    public bool IsDying { get; private set; }
     // these stats below will not change for same enemy type, so it can get directly from Script Object
     public float DmgReduc { get { return _enemyStats.DmgReduce; } }
     public float CritChance { get { return _enemyStats.CritChance; } }

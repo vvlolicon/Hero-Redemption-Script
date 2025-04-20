@@ -8,7 +8,7 @@ namespace Assets.AI.BehaviourTree
     public interface IStrategy
     {
         Node.Status Evaluate();
-        virtual void Reset() { }
+        public virtual void Reset() { }
 
         public virtual void OnStatusSuccess() { }
         public virtual void OnStatusRunning() { }

@@ -20,7 +20,7 @@ namespace Assets.AI.BehaviourTree
 
         void Update()
         {
-            if(gameObject.activeSelf)
+            if(gameObject.activeSelf && !_executor.IsDying)
                 _behaviorTree?.Evaluate();
         }
 
@@ -107,6 +107,12 @@ namespace Assets.AI.BehaviourTree
                     chaseSequence.AddChild(AI_Attack);
                     return;
                 }
+                AI_Attack = TryGetSubTree<AI_DetonateAttack>();
+                if (AI_Attack != null)
+                {
+                    chaseSequence.AddChild(AI_Attack);
+                    return;
+                }
             }
         }
 
@@ -116,7 +122,7 @@ namespace Assets.AI.BehaviourTree
             _executor.IsInvincible = true;
             _executor.Agent.ResetPath();
             _methods.ResetAllAnimationTriggers();
-            _executor.Animator.Play("Hit");
+            
             StartCoroutine(ExtendMethods.DelayAction(0.5f, 
                 () => { _executor.IsInvincible = false; }));
         }
@@ -173,6 +179,7 @@ namespace Assets.AI.BehaviourTree
         public void OnStatusRunning()
         {
             _hitTimer = _executor.HitAnimTime;
+            _executor.Animator.Play("Hit");
         }
 
         public void Reset() => _hitTimer = 0;

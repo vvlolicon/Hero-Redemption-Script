@@ -5,8 +5,12 @@ using UnityEngine;
 namespace Assets.AI.BehaviourTree
 {
 
-    public class AI_MeleeAttack : AI_AttackStrategyBase, IBehaviourSubTree
+    public class AI_MeleeAttack : MonoBehaviour, IBehaviourSubTree
     {
+        Node _behaviorTree;
+
+        EnemyStateExecutor _executor;
+        AIMethods _methods;
         public Node BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
         {
             _executor = executor;
@@ -73,11 +77,7 @@ namespace Assets.AI.BehaviourTree
                 if (_methods.CanDamagePlayer())
                 {
                     _hasDamagePlayer = true;
-                    PlayerDmgInfo dmgInfo = new PlayerDmgInfo(
-                        _executor.ATK,
-                        _executor.Player.position - _executor.transform.position,
-                        250f);
-                    dmgInfo.CallDamageable(_executor.Player.gameObject);
+                    _executor.DamagePlayer();
                 }
             }
         }

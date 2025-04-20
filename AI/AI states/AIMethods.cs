@@ -36,18 +36,18 @@ public class AIMethods
 
     public bool CanAttackPlayer()
     {
-        Vector3 direction = _player.position - _enemy.position;
-        if (direction.magnitude < _attackDist)
-        {
-            return true;
-        }
-        return false;
+        return IsPlayerInRange(_attackDist);
     }
 
     public bool CanDamagePlayer()
     {
+        return IsPlayerInRange(_attackDist * 2);
+    }
+
+    public bool IsPlayerInRange(float range)
+    {
         Vector3 direction = _player.position - _enemy.position;
-        if (direction.magnitude < _attackDist * 2)
+        if (direction.magnitude < range)
         {
             return true;
         }

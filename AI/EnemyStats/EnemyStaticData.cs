@@ -21,6 +21,7 @@ public class EnemyStaticData: ScriptableObject
     public float _hitAnimTime = 2.3f;
     [Tooltip("If the enemy can be interrupted by other player's attack")]
     public bool Interruptable = true;
+    public float _dieTime = 2.0f;
     public AttackStrategy _AtkStrategy;
 }
-public enum AttackStrategy { Melee, Weapon, Range }
+public enum AttackStrategy { Melee, Weapon, Range, Detonate }

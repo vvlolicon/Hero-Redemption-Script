@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fbfa19b59f00074a9e991113c9f7fcd, type: 3}
   m_Name: Monster3StaticStat
   m_EditorClassIdentifier: 
-  _visDist: 8
+  _visDist: 10
   _visAngle: 100
   _attackDist: 2.5
   _preAtkTime: 1.3
   _atkAnimTime: 4
   _chaseTime: 2
   _hitAnimTime: 1
-  _AtkStrategy: 0
+  Interruptable: 1
+  _AtkStrategy: 3

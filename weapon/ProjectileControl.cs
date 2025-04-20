@@ -27,8 +27,6 @@ public class ProjectileControl : MonoBehaviour
             0,
             target.z - _initialPosition.z).normalized;
 
-        // 应用重力到速度矢量
-        _velocity.y -= gravity * Time.fixedDeltaTime;
         // 保持水平速度恒定
         _velocity.x = horizontalDirection.x * _projectileStats.speed;
         _velocity.z = horizontalDirection.z * _projectileStats.speed;
@@ -38,8 +36,8 @@ public class ProjectileControl : MonoBehaviour
         {
             // 使用 SphereCast 检测与场景障碍物的碰撞
             Vector3 predictedPosition = transform.position + _velocity * Time.fixedDeltaTime;
-            if (Physics.SphereCast(transform.position, 2f, predictedPosition - transform.position, out hit,
-                _projectileStats.speed * Time.fixedDeltaTime * 15f, ~LayerMask.GetMask("Character")))
+            if (Physics.SphereCast(transform.position, 3f, predictedPosition - transform.position, out hit,
+                _projectileStats.speed * Time.fixedDeltaTime * 10f, ~LayerMask.GetMask("Character")))
             {
                 //Debug.Log("Hit something");
                 if (CheckProjectileHit(hit.collider))
@@ -64,6 +62,8 @@ public class ProjectileControl : MonoBehaviour
                 }
             }
         }
+        // 应用重力到速度矢量
+        _velocity.y -= gravity * Time.fixedDeltaTime;
 
         // 执行位移
         transform.Translate(_velocity * Time.fixedDeltaTime, Space.World);
@@ -93,32 +93,29 @@ public class ProjectileControl : MonoBehaviour
 
             return true;
         }
-
-        void OnProjectileCollides()
-        {
-            // 如果检测到碰撞且 DestroyOnTouch 为 true，则销毁投射物或爆炸
-            if (_projectileStats.DestroyOnTouch)
-            {
-                if (_projectileStats.IsAOE)
-                {
-                    Explode();
-                }
-                Destroy(gameObject);
-            }
-        }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == Sender.gameObject) return;
         if(other.gameObject.layer == LayerMask.NameToLayer("Character"))
         {
             Damage(other.gameObject);
-            if (_projectileStats.DestroyOnTouch)
+            OnProjectileCollides();
+        }
+    }
+
+    void OnProjectileCollides()
+    {
+        // 如果检测到碰撞且 DestroyOnTouch 为 true，则销毁投射物或爆炸
+        if (_projectileStats.DestroyOnTouch)
+        {
+            if (_projectileStats.IsAOE)
             {
-                if (_projectileStats.IsAOE)
-                {
-                    Explode();
-                }
+                Explode();
+            }
+            else
+            {
                 Destroy(gameObject);
             }
         }
@@ -136,6 +133,21 @@ public class ProjectileControl : MonoBehaviour
 
             // 对每个在范围内的对象调用 Damage 方法
             Damage(hitCollider.gameObject);
+        }
+        _isExploding = true;
+        StartCoroutine(ExtendMethods.DelayAction(3f, () => { 
+            _isExploding = false; 
+            Destroy(gameObject);
+        }));
+    }
+
+    bool _isExploding = false;
+    void OnDrawGizmos()
+    {
+        if (_isExploding)
+        {
+            Gizmos.color = Color.red; // 设置绘制颜色
+            Gizmos.DrawWireSphere(transform.position, _projectileStats.AOERadius); // 绘制一个球形范围
         }
     }
 
@@ -163,9 +175,11 @@ public class ProjectileControl : MonoBehaviour
         {
             if (victim.CompareTag("Player"))
             {
-                PlayerDmgInfo dmgInfo = new PlayerDmgInfo(
-                    enemy.ATK, victim.transform.position - transform.position, 250f);
-                dmgInfo.CallDamageable(victim);
+                if (!damagedEnemy.Contains(victim))
+                {
+                    damagedEnemy.Add(victim);
+                    enemy.DamagePlayer(victim.transform.position - transform.position);
+                }
             }
         }
     }

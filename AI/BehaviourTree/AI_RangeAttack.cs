@@ -5,8 +5,12 @@ using UnityEngine;
 namespace Assets.AI.BehaviourTree
 {
 
-    public class AI_RangeAttack : AI_AttackStrategyBase, IBehaviourSubTree
+    public class AI_RangeAttack : MonoBehaviour, IBehaviourSubTree
     {
+        Node _behaviorTree;
+
+        EnemyStateExecutor _executor;
+        AIMethods _methods;
         public ProjectileStats _projectileStats;
         public Transform _firePosition;
         Transform _aimPosition;
