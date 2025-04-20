@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game Functions/Game Stats/Enemy Drop Data")]
+[CreateAssetMenu(menuName = "Enemy/Drop Data")]
 public class EnemyDropData : ScriptableObject 
 {
     public int EXP_drop;

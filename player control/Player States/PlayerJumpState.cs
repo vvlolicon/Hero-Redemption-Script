@@ -32,8 +32,7 @@ public class PlayerJumpState : PlayerBaseState
         Executor.CanJump = false;
         Executor.MovementY = Executor.JumpSpeed;
         Executor.Animator.SetFloat("SpeedY", Executor.MovementY);
-        Executor.Animator.Play("Falling");
-        Executor.Animator.SetBool("Jump", true);
+        Executor.Animator.Play("StartJump");
     }
 
     protected override void UpdateState()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _healthMan._playerExecutor = this;
         DistToGround = _charCont.bounds.extents.y;
         setValue();
+        AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
         //_playerInput = new PlayerInputMethods();
         //_playerInput.PlayerControl.Move.started += OnMove;
         //_playerInput.PlayerControl.Move.performed += OnMove;
@@ -58,6 +60,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     }
     void Start()
     {
+        ChildPlayeriniPos = ChildPlayer.transform.localPosition;
         _stateMan = new PlayerStatsManager(this);
         CurState = _stateMan.Grounded();
         CurState.EnterState();
@@ -120,23 +123,17 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             //Animator.SetTrigger("Jump");
             //Animator.SetFloat("SpeedY", 8f);
             //Animator.Play("StartJump");
-            //NewRoroutine(Jump(0.4f));
+            //NewRoroutine(DelayAction(0.4f));
             JumpPressed = true;
         }
     }
-    public IEnumerator Jump(float delay)
+    public IEnumerator DelayAction(float delay, Action delayAction )
     {
-        Debug.Log("start Enumerator");
-        StartJump = false;
         // Wait for the specified delay time
         yield return new WaitForSeconds(delay);
 
         // Action to perform after the delay
-        Debug.Log("start Jump");
-        JumpPressed = true;
-        MovementY = JumpSpeed;
-        //SoundMan.PlaySound("Jump");
-        StartJump = true;
+        delayAction?.Invoke();
     }
     public void OnRunPressed()
     {
@@ -203,6 +200,15 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         StartCoroutine(coroutine);
     }
 
+    public void OnLanding()
+    {
+        _playerInput.InputEnable = false;
+        StartCoroutine(DelayAction(0.7f, () => {
+            _playerInput.InputEnable = true;
+            Animator.SetTrigger("Exit");
+        }));
+    }
+
     public void OnDying()
     {
         // TODO: player dead state;
@@ -220,6 +226,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public Camera _camera;
     public GameObject _movIndicator; //Where is the character moving to
     public PlayerStaticData _playerStaticData;
+    public Transform _rangeAtkAim;
 
     float _currentDashTime;
     Vector3 _dashDir;
@@ -275,6 +282,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public bool Attacking { get; set; }
     public bool IsHit { get; set; }
     public float AttackTimer { get; set; }
+    public Vector3 ChildPlayeriniPos{ get; private set; }
 
     public Animator Animator { get { return _animator; } }
     public GameObject MovIndicator { get { return _movIndicator; } }
@@ -283,6 +291,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public Camera Camera { get { return _camera; } }
     public SoundManager SoundMan { get { return _soundMan; } }
     public GeneralStatsObj PlayerStats { get { return _playerStats; } }
+    public AnimatorEvents AnimEvent { get; private set; }
 
     public bool IsDashing() //Checks if player if dashing
     {

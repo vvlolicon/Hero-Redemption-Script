@@ -34,7 +34,8 @@ public abstract class EnemyBaseStates : PlayerBaseState
 
     public void SwitchState(EnemyBaseStates newState)
     {
-
+        Executor.transform.GetChild(0).localRotation = Quaternion.Euler(Vector3.zero);
+        Executor.transform.GetChild(0).localPosition = Vector3.zero;    
         ExitState();
         newState.InitializeSubStates();
         newState.EnterState();

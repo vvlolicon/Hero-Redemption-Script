@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerHitState : PlayerBaseState
 {
-    
+    float hitTimer;
     public PlayerHitState(PlayerStatsManager manager, PlayerStateExecutor executor)
     : base(manager, executor) {
         IsRootState = true;
@@ -42,6 +42,8 @@ public class PlayerHitState : PlayerBaseState
         Executor.CanRun = false;
         Executor.RunPressed = false;
         Executor.Attacking = false;
+        Executor.Animator.SetTrigger("Exit");
+        hitTimer = 0f;
     }
     protected override void ExitState()
     {
@@ -56,6 +58,7 @@ public class PlayerHitState : PlayerBaseState
 
     void HitUpdate()
     {
+        hitTimer += Time.deltaTime;
         Vector3 moveDirection = Executor.CurMovement;
         Vector3 impact = Executor.Impact;
         moveDirection.y -= Executor.Gravity * Time.deltaTime;
@@ -66,10 +69,13 @@ public class PlayerHitState : PlayerBaseState
         // consumes the impact energy each cycle:
         impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
 
-        if (Executor.CharCont.isGrounded && impact.magnitude <= 0.2f)
+        if (Executor.CharCont.isGrounded &&
+            //impact.magnitude <= 0.2f)
+            hitTimer > 1.3f)
         {
             Executor.IsHit = false;
-            Executor.Animator.Play("Idle"); //To unlock the animation in some weird cases
+            //Executor.Animator.SetTrigger("Exit");
+            //Executor.Animator.Play("Idle"); //To unlock the animation in some weird cases
         }
         Executor.CurMovement = moveDirection;
         Executor.Impact = impact;
@@ -82,7 +88,7 @@ public class PlayerHitState : PlayerBaseState
 
         dir.Normalize();
         if (dir.y < 0) dir.y = -dir.y; //Reflect down force on the ground
-        Executor.Impact += dir.normalized * force / Executor.Mass;
+            Executor.Impact += dir.normalized * force / Executor.Mass;
     }
 
     public void ApplyDamage(PlayerDmgInfo info) //Apply damage to the player

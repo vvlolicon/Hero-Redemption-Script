@@ -17,8 +17,8 @@ public class EnemyStatePatrol : EnemyBaseStates
         float lastDist = Mathf.Infinity;
         for (int i = 0; i < Executor.PatrolPoints.Count; i++)
         {
-            GameObject thisWP = Executor.PatrolPoints[i];
-            float distance = Vector3.Distance(Executor.transform.position, thisWP.transform.position);
+            Vector3 thisWP = Executor.PatrolPoints[i].position;
+            float distance = Vector3.Distance(Executor.transform.position, thisWP);
             if (distance < lastDist)
             {
                 curPatrolIndex = i - 1; //Because in the update it will be added one
@@ -44,7 +44,7 @@ public class EnemyStatePatrol : EnemyBaseStates
                 curPatrolIndex = 0;
             else
                 curPatrolIndex++;
-            Executor.Agent.SetDestination(Executor.PatrolPoints[curPatrolIndex].transform.position);
+            Executor.Agent.SetDestination(Executor.PatrolPoints[curPatrolIndex].position);
         }
     }
 

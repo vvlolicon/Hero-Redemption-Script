@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game Functions/Game Stats/Enemy Drop Table")]
+[CreateAssetMenu(menuName = "Enemy/Enemy Drop Table")]
 public class RandomDropTable : ScriptableObject
 {
     [SerializeField]

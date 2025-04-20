@@ -15,5 +15,7 @@ MonoBehaviour:
   _visDist: 10
   _visAngle: 90
   _attackDist: 2.5
-  _chaseTime: 5
+  _preAtkTime: 0.6
   _atkAnimTime: 1.2
+  _chaseTime: 5
+  _hitAnimTime: 2.3

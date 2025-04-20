@@ -22,27 +22,29 @@ public class PlayerWalkState : PlayerBaseState
     }
 
     public override void EnterState(){
-        //Executor.Animator.SetBool("Walk", true);
+        Executor.Animator.SetBool("Walk", true);
     }
 
     protected override void ExitState()
     {
-        //Executor.Animator.SetBool("Walk", false);
+        Executor.Animator.SetBool("Walk", false);
+        Executor.Animator.SetBool("Run", false);
         //Executor.Animator.SetTrigger("Exit");
     }
 
     protected override void UpdateState()
     {
+        Executor.Animator.SetBool("Walk", true);
         //Executor.Animator.SetFloat("Speed", Executor.InputMoveXZ.magnitude);
 
-        //if (Executor.RunPressed)
-        //{
-        //    Executor.Animator.SetBool("Run", true);
-        //}
-        //else
-        //{
-        //    Executor.Animator.SetBool("Run", false);
-        //}
+        if (Executor.RunPressed)
+        {
+            Executor.Animator.SetBool("Run", true);
+        }
+        else
+        {
+            Executor.Animator.SetBool("Run", false);
+        }
         if (Executor.Attacking)
         {
             Executor.CurPlayerSpeed = Executor.PlayerSpeed * Executor.AtkSpeedMult;
