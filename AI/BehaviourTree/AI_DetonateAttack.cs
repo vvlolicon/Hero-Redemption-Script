@@ -14,13 +14,18 @@ namespace Assets.AI.BehaviourTree
         EnemyStateExecutor _executor;
         AIMethods _methods;
 
-        public float DetonateTime = 3f;
         public float RecoveryTime = 1f;
         public float DetonateRange = 5f;
         public float scaleMult = 1.85f;
 
+        Vector3 _originScale;
         bool _detonateFailed = false;
         float _timer;
+
+        private void Start()
+        {
+            _originScale = gameObject.transform.localScale;
+        }
         public Node BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
         {
             _executor = executor;
@@ -30,7 +35,7 @@ namespace Assets.AI.BehaviourTree
                 new Condition(() => { return _methods.CanAttackPlayer(); })));
             _behaviorTree.AddChild(new Leaf("Detonate Countdown",
                 new Strategy_AI_DetonateAttack(
-                    methods, executor, DetonateTime, DetonateRange, scaleMult,
+                    methods, executor, DetonateRange, scaleMult, _originScale,
                     () => { 
                         _detonateFailed = true;
                         _timer = 0;
@@ -46,12 +51,12 @@ namespace Assets.AI.BehaviourTree
             {
                 _timer += Time.deltaTime;
                 gameObject.transform.localScale = Vector3.Lerp(
-                    Vector3.one * scaleMult, Vector3.one * 1.5f, _timer / RecoveryTime);
+                    Vector3.one * scaleMult, _originScale, _timer / RecoveryTime);
                 if (_timer >= RecoveryTime)
                 {
                     _detonateFailed = false;
                     _timer = 0;
-                    gameObject.transform.localScale = Vector3.one * 1.5f;
+                    gameObject.transform.localScale = _originScale;
                 }
             }
         }
@@ -92,6 +97,7 @@ namespace Assets.AI.BehaviourTree
         float _timer = 0;
         float _detonateRange;
         float _scaleMult;
+        Vector3 _originScale;
         Action _failedCallback;
         Action _successCallback;
 
@@ -100,14 +106,15 @@ namespace Assets.AI.BehaviourTree
         public Strategy_AI_DetonateAttack(
             AIMethods methods,
             EnemyStateExecutor executor, 
-            float detonateTime, float detonateRange, float sizeMult,
+            float detonateRange, float sizeMult, Vector3 originScale,
             Action failedCallback, Action successCallback)
         {
             _methods = methods;
             _executor = executor;
-            _detonateTime = detonateTime;
+            _detonateTime = executor.AttackTime;
             _detonateRange = detonateRange;
             _scaleMult = sizeMult;
+            _originScale = originScale;
             _failedCallback = failedCallback;
             _successCallback = successCallback;
         }
@@ -117,8 +124,7 @@ namespace Assets.AI.BehaviourTree
             if (detonated) return Node.Status.RUNNING;
             _timer += Time.deltaTime;
             _executor.gameObject.transform.localScale = Vector3.Lerp(
-                Vector3.one * 1.5f,
-                Vector3.one * _scaleMult, _timer / _detonateTime);
+                _originScale, Vector3.one * _scaleMult, _timer / _detonateTime);
 
             if (_timer >= _detonateTime)
             {
@@ -161,7 +167,7 @@ namespace Assets.AI.BehaviourTree
 
         public void Reset()
         {
-            Debug.Log("Reset Strategy_AI_DetonateAttack");
+            //Debug.Log("Reset Strategy_AI_DetonateAttack");
             detonated = false;
             _timer = 0;
         }
