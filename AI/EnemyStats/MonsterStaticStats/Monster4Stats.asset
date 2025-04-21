@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fbfa19b59f00074a9e991113c9f7fcd, type: 3}
-  m_Name: Monster3StaticStat
+  m_Name: Monster4Stats
   m_EditorClassIdentifier: 
-  _visDist: 8
-  _visAngle: 100
-  _attackDist: 6
+  _visDist: 7
+  _visAngle: 90
+  _attackDist: 3
   _preAtkTime: 1.3
-  _atkAnimTime: 4
-  _chaseTime: 2
+  _atkAnimTime: 2
+  _chaseTime: 3
   _hitAnimTime: 1
   Interruptable: 1
   _dieTime: 2
-  _AtkStrategy: 2
+  _AtkStrategy: 0
