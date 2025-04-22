@@ -14,19 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sliver Armor
   itemType: 2
-  itemID: 4
+  consumableItemType: 0
+  itemID: 15
   itemDesc: This is a Sliver Armor
   itemIcon: {fileID: 21300000, guid: d13012f4abce7b241900001bf716f66e, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
-    AtrbValue: 100
+    AtrbValue: 250
+  - AtrbName: 2
+    AtrbValue: 30
   - AtrbName: 6
-    AtrbValue: 100
-  - AtrbName: 9
-    AtrbValue: 100
+    AtrbValue: 50

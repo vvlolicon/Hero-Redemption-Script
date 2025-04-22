@@ -10,17 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Golden Armor
+  m_Name: Steel Gloves
   m_EditorClassIdentifier: 
-  itemName: 
-  itemType: 2
-  itemID: 0
-  itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 22012799e7b2d3f41b2c05e0c71541f6, type: 3}
+  itemName: Steel Gloves
+  itemType: 3
+  consumableItemType: 0
+  itemID: 26
+  itemDesc: This is a Steel Gloves
+  itemIcon: {fileID: 21300000, guid: d08090c03cca5494da4f8f79251153ea, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 1
+  itemValue: 250
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
-  itemAttributes: []
+  itemAttributes:
+  - AtrbName: 4
+    AtrbValue: 90
+  - AtrbName: 8
+    AtrbValue: 25
+  - AtrbName: 5
+    AtrbValue: 1.05

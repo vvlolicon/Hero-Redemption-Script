@@ -14,15 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sliver Helmet
   itemType: 1
-  itemID: 5
+  consumableItemType: 0
+  itemID: 17
   itemDesc: This is a Sliver Helmet
   itemIcon: {fileID: 21300000, guid: 98f5e61dc86e9814d8c8d9e8e54ac417, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 50
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - attributeName: DEF
-    attributeValue: 30
+  - AtrbName: 0
+    AtrbValue: 150
+  - AtrbName: 2
+    AtrbValue: 50
+  - AtrbName: 6
+    AtrbValue: 30

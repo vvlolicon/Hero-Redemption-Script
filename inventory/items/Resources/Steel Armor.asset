@@ -14,17 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Steel Armor
   itemType: 2
-  itemID: 0
+  consumableItemType: 0
+  itemID: 25
   itemDesc: This is a Steel Armor
   itemIcon: {fileID: 21300000, guid: f5e3bff24c9077445a126833256147bd, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 1
+  itemValue: 250
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - attributeName: DEF
-    attributeValue: 50
-  - attributeName: MaxHP
-    attributeValue: 200
+  - AtrbName: 0
+    AtrbValue: 500
+  - AtrbName: 2
+    AtrbValue: 50
+  - AtrbName: 6
+    AtrbValue: 100

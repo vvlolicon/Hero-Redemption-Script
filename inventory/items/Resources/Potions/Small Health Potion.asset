@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Golden Ring
+  m_Name: Small Health Potion
   m_EditorClassIdentifier: 
-  itemName: Golden Ring
-  itemType: 6
-  itemID: 1
-  itemDesc: This is a Golden Ring
-  itemIcon: {fileID: 21300000, guid: 3248178fb7b42f946b60dd3cda33c16e, type: 3}
+  itemName: Small Health Potion
+  itemType: 8
+  consumableItemType: 1
+  itemID: 11
+  itemDesc: 
+  itemIcon: {fileID: 21300000, guid: abcf74e1d10656842af1b13cefdfbe23, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 40
   itemWeight: 0
-  maxStack: 1
-  indexItemInList: 999
+  maxStack: 64
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 2
-    AtrbValue: 100
-  - AtrbName: 9
-    AtrbValue: 1.5
+  - AtrbName: 1
+    AtrbValue: 80

@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Golden Earing
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  itemName: Golden Ring
-  itemType: 5
-  itemID: 1
-  itemDesc: This is a Golden Ring
-  itemIcon: {fileID: 21300000, guid: 3010a40ac3a71ba419b4d98ff9d2a2cb, type: 3}
+  itemName: Sword
+  itemType: 9
+  consumableItemType: 0
+  itemID: 10
+  itemDesc: A half broken given by bandit
+  itemIcon: {fileID: 21300000, guid: e1d84a8f895ad92499ea3cd90b4de0cf, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 25
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
+  - AtrbName: 4
+    AtrbValue: 35
+  - AtrbName: 8
+    AtrbValue: 15

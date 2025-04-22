@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Bow
   m_EditorClassIdentifier: 
-  itemName: weapon range
+  itemName: Bow
   itemType: 10
-  itemID: 0
+  consumableItemType: 0
+  itemID: 22
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 0e339651ef1902f4ab920e292bae4847, type: 3}
+  itemIcon: {fileID: 21300000, guid: ea8c1dc6581654b4a9e7d6257135fbe9, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 1
+  itemValue: 125
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 7
-    AtrbValue: 0
+  - AtrbName: 4
+    AtrbValue: 35
+  - AtrbName: 8
+    AtrbValue: 10

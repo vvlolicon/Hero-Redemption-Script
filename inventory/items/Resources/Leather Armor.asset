@@ -14,21 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Leather Armor
   itemType: 2
+  consumableItemType: 0
   itemID: 7
   itemDesc: This is a Leather armor
   itemIcon: {fileID: 21300000, guid: fcd8bd2db18e92d42a7d14fc0e395888, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 15
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
     AtrbValue: 150
   - AtrbName: 4
     AtrbValue: 10
-  - AtrbName: 8
-    AtrbValue: 5
   - AtrbName: 6
     AtrbValue: 20

@@ -10,26 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Ruby Necklance
+  m_Name: Fiery Sword
   m_EditorClassIdentifier: 
-  itemName: Ruby Necklance
-  itemType: 5
+  itemName: Fiery Sword
+  itemType: 9
   consumableItemType: 0
-  itemID: 30
-  itemDesc: This is a Ruby Necklance
-  itemIcon: {fileID: 21300000, guid: 4ca4da0f88df7c64cba9c1934d6930cc, type: 3}
+  itemID: 40
+  itemDesc: This is a Fiery Sword
+  itemIcon: {fileID: 21300000, guid: 390b8e27675f52a42b58c1ecfd9c3ace, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 275
+  itemValue: 350
   itemWeight: 0
   maxStack: 1
   setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 50
-  - AtrbName: 2
-    AtrbValue: 125
   - AtrbName: 4
-    AtrbValue: 60
+    AtrbValue: 250
   - AtrbName: 8
-    AtrbValue: 25
+    AtrbValue: 50
+  - AtrbName: 5
+    AtrbValue: 1.2

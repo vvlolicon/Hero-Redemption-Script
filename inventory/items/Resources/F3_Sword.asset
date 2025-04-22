@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Saviour sword
   itemType: 9
+  consumableItemType: 0
   itemID: 2
   itemDesc: 
   itemIcon: {fileID: 21300000, guid: ce14ab7513a12694d9c56573c6d3be53, type: 3}
@@ -21,14 +22,12 @@ MonoBehaviour:
   itemValue: 0
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 4
-    AtrbValue: 200
+    AtrbValue: 1000
   - AtrbName: 5
     AtrbValue: 1.3
   - AtrbName: 8
     AtrbValue: 200
-  - AtrbName: 10
-    AtrbValue: 50

@@ -10,21 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Knight Helmet
+  m_Name: Weakness potion
   m_EditorClassIdentifier: 
-  itemName: Golden Ring
-  itemType: 6
-  itemID: 1
-  itemDesc: This is a Golden Ring
-  itemIcon: {fileID: 21300000, guid: 3fc1e59e3cadbd64f851216dffacedc6, type: 3}
+  itemName: Weakness potion
+  itemType: 8
+  consumableItemType: 1
+  itemID: 23
+  itemDesc: 
+  itemIcon: {fileID: 21300000, guid: d8de0f78aa75dc047901674e2cd0ba6d, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
-  itemAttributes:
-  - attributeName: MaxHp
-    attributeValue: 100
-  - attributeName: ATK
-    attributeValue: 100
+  itemAttributes: []

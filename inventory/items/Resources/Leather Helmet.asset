@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Leather Helmet
   itemType: 1
+  consumableItemType: 0
   itemID: 6
   itemDesc: This is a Leather Helmet
   itemIcon: {fileID: 21300000, guid: 63dca6d4e4e873a4cb09997656d54082, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 5
+  itemValue: 15
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0

@@ -27,9 +27,7 @@ MonoBehaviour:
   itemAttributes:
   - AtrbName: 8
     AtrbValue: 20
-  - AtrbName: 10
-    AtrbValue: 25
   - AtrbName: 6
     AtrbValue: 50
   - AtrbName: 7
-    AtrbValue: 20
+    AtrbValue: 30

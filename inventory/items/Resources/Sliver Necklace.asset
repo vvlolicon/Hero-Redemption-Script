@@ -12,17 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Sliver Necklace
   m_EditorClassIdentifier: 
-  itemName: Sliver Ring
+  itemName: Sliver Necklace
   itemType: 6
-  itemID: 1
-  itemDesc: This is a Sliver Ring
+  consumableItemType: 0
+  itemID: 18
+  itemDesc: This is a Sliver Necklace
   itemIcon: {fileID: 21300000, guid: 530195fb308aa4e49b9bd17ce93e679a, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - attributeName: MaxMP
-    attributeValue: 100
+  - AtrbName: 0
+    AtrbValue: 200
+  - AtrbName: 2
+    AtrbValue: 20
+  - AtrbName: 4
+    AtrbValue: 15
+  - AtrbName: 8
+    AtrbValue: 20

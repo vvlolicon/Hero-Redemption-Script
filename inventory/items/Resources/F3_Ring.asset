@@ -30,12 +30,8 @@ MonoBehaviour:
   - AtrbName: 2
     AtrbValue: 250
   - AtrbName: 4
-    AtrbValue: 50
-  - AtrbName: 6
     AtrbValue: 100
+  - AtrbName: 6
+    AtrbValue: 90
   - AtrbName: 12
     AtrbValue: 0.8
-  - AtrbName: 9
-    AtrbValue: 40
-  - AtrbName: 11
-    AtrbValue: 20

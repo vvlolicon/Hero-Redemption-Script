@@ -10,26 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Ruby Necklance
+  m_Name: Small Mana Potion
   m_EditorClassIdentifier: 
-  itemName: Ruby Necklance
-  itemType: 5
-  consumableItemType: 0
-  itemID: 30
-  itemDesc: This is a Ruby Necklance
-  itemIcon: {fileID: 21300000, guid: 4ca4da0f88df7c64cba9c1934d6930cc, type: 3}
+  itemName: Small Mana Potion
+  itemType: 8
+  consumableItemType: 1
+  itemID: 12
+  itemDesc: 
+  itemIcon: {fileID: 21300000, guid: 233e8a48a171d674abff59fa2e598fc1, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 275
+  itemValue: 40
   itemWeight: 0
-  maxStack: 1
+  maxStack: 64
   setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 50
-  - AtrbName: 2
-    AtrbValue: 125
-  - AtrbName: 4
-    AtrbValue: 60
-  - AtrbName: 8
-    AtrbValue: 25
+  - AtrbName: 3
+    AtrbValue: 15

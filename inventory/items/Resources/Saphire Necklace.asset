@@ -12,17 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Saphire Necklace
   m_EditorClassIdentifier: 
-  itemName: Sliver Ring
+  itemName: Saphire Necklace
   itemType: 5
-  itemID: 1
-  itemDesc: This is a Sliver Ring
+  consumableItemType: 0
+  itemID: 31
+  itemDesc: This is a Saphire Necklace
   itemIcon: {fileID: 21300000, guid: 25b937a2275146744815687e7d7c28a6, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 275
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
-    AtrbValue: 0
+    AtrbValue: 400
+  - AtrbName: 2
+    AtrbValue: 100
+  - AtrbName: 6
+    AtrbValue: 40
+  - AtrbName: 12
+    AtrbValue: 10

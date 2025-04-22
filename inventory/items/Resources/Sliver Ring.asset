@@ -14,15 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sliver Ring
   itemType: 6
-  itemID: 1
+  consumableItemType: 0
+  itemID: 19
   itemDesc: This is a Sliver Ring
   itemIcon: {fileID: 21300000, guid: 59325fb223d6a884ea601d720c136075, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - attributeName: MaxMP
-    attributeValue: 100
+  - AtrbName: 0
+    AtrbValue: 50
+  - AtrbName: 4
+    AtrbValue: 25
+  - AtrbName: 8
+    AtrbValue: 15
+  - AtrbName: 6
+    AtrbValue: 10

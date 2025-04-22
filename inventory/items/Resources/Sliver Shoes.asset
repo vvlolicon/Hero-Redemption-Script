@@ -12,19 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Sliver Shoes
   m_EditorClassIdentifier: 
-  itemName: Sliver Shoe
+  itemName: Sliver Shoes
   itemType: 4
-  itemID: 1
-  itemDesc: This is a Sliver Shoe
+  consumableItemType: 0
+  itemID: 20
+  itemDesc: This is a Sliver Shoes
   itemIcon: {fileID: 21300000, guid: c4b30d660b4c34941a38c601b97323ec, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 10
+  itemValue: 100
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
+  - AtrbName: 0
+    AtrbValue: 100
   - AtrbName: 6
-    AtrbValue: 100
-  - AtrbName: 7
-    AtrbValue: 100
+    AtrbValue: 20

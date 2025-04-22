@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 261925ed2f7dec74eadf27d9aa6a62ff, type: 3}
-  m_Name: testItem
+  m_Name: ATK_Ruby
   m_EditorClassIdentifier: 
-  itemID: 1
-  itemModel: {fileID: 280603017441614630, guid: ca1f220e275c75e4abefb29742757ab5, type: 3}
+  itemID: 13
+  itemModel: {fileID: 7046050308793112747, guid: 5bfdd3cb782dde145a84d90c80c62ce4, type: 3}
   itemAttributes:
-  - AtrbName: 0
-    AtrbValue: 100
-  - AtrbName: 0
-    AtrbValue: 100
+  - AtrbName: 4
+    AtrbValue: 3

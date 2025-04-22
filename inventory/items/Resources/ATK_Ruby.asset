@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Small Health Potion
+  m_Name: ATK_Ruby
   m_EditorClassIdentifier: 
-  itemName: Small Health Potion
+  itemName: ATK_Ruby
   itemType: 8
-  itemID: 10
+  consumableItemType: 1
+  itemID: 13
   itemDesc: 
-  itemIcon: {fileID: 21300000, guid: abcf74e1d10656842af1b13cefdfbe23, type: 3}
+  itemIcon: {fileID: 21300000, guid: a2dc374c2642bc844afc22a445e521e6, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 5
+  itemValue: 20
   itemWeight: 0
-  maxStack: 64
-  indexItemInList: 999
+  maxStack: 1
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - AtrbName: 1
-    AtrbValue: 150
+  - AtrbName: 4
+    AtrbValue: 3

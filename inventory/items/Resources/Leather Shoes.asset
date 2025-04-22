@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Leather Shoes
   itemType: 4
+  consumableItemType: 0
   itemID: 9
   itemDesc: This is a Leather Shoes
   itemIcon: {fileID: 21300000, guid: 3677eacbc4390644e97df27f50b96587, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 5
+  itemValue: 15
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0

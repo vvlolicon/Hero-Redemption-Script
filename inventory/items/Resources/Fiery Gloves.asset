@@ -12,17 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
   m_Name: Fiery Gloves
   m_EditorClassIdentifier: 
-  itemName: Leather Shoes
+  itemName: Fiery Gloves
   itemType: 3
-  itemID: 3
-  itemDesc: This is a Leather Shoes
+  consumableItemType: 0
+  itemID: 37
+  itemDesc: This is a Fiery Gloves
   itemIcon: {fileID: 21300000, guid: df7a37d7dc21be044aa7783c967a653d, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 5
+  itemValue: 350
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
-    AtrbValue: 0
+    AtrbValue: 200
+  - AtrbName: 2
+    AtrbValue: 100
+  - AtrbName: 4
+    AtrbValue: 100
+  - AtrbName: 8
+    AtrbValue: 25
+  - AtrbName: 6
+    AtrbValue: 15

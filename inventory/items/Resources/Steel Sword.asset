@@ -14,15 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Steel Sword
   itemType: 9
-  itemID: 0
-  itemDesc: 
-  itemIcon: {fileID: 21300000, guid: 3b73b7280fa1b434c9fd968c6923295d, type: 3}
+  consumableItemType: 0
+  itemID: 32
+  itemDesc: This is a Steel Sword
+  itemIcon: {fileID: 21300000, guid: 150981152df3f0648870ac9f778192b9, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 1
+  itemValue: 300
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
-  - attributeName: ATK
-    attributeValue: 100
+  - AtrbName: 4
+    AtrbValue: 80
+  - AtrbName: 8
+    AtrbValue: 25
+  - AtrbName: 5
+    AtrbValue: 1.05

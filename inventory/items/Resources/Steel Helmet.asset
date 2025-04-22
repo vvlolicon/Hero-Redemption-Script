@@ -10,31 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb4d20eb9540f8e4f9b33ba6f1258012, type: 3}
-  m_Name: Example
+  m_Name: Steel Helmet
   m_EditorClassIdentifier: 
-  itemName: 
-  itemType: 0
-  itemID: 0
-  itemDesc: 
-  itemIcon: {fileID: 0}
+  itemName: Steel Helmet
+  itemType: 1
+  consumableItemType: 0
+  itemID: 27
+  itemDesc: This is a Steel Helmet
+  itemIcon: {fileID: 21300000, guid: 52b1e3fc60614e446b61e1c6bb148f57, type: 3}
   itemModel: {fileID: 0}
-  itemValue: 1
+  itemValue: 250
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
-  - AtrbName: 0
-    AtrbValue: 0
+    AtrbValue: 300
+  - AtrbName: 6
+    AtrbValue: 60

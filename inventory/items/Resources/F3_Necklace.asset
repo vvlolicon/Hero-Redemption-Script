@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Saviour Necklace
   itemType: 5
+  consumableItemType: 0
   itemID: 5
   itemDesc: 
   itemIcon: {fileID: 21300000, guid: b56e4d94c8e11de4eb6520f584a1b04a, type: 3}
@@ -21,7 +22,7 @@ MonoBehaviour:
   itemValue: 0
   itemWeight: 0
   maxStack: 1
-  indexItemInList: 999
+  setStack: 1
   rarity: 0
   itemAttributes:
   - AtrbName: 0
@@ -29,8 +30,6 @@ MonoBehaviour:
   - AtrbName: 2
     AtrbValue: 50
   - AtrbName: 4
-    AtrbValue: 100
+    AtrbValue: 90
   - AtrbName: 8
     AtrbValue: 80
-  - AtrbName: 10
-    AtrbValue: 25
