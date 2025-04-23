@@ -73,7 +73,7 @@ namespace Assets.AI.BehaviourTree
         }
         public Node.Status Evaluate()
         {
-            if (!_methods.CanAttackPlayer())
+            if (_methods.CanStopAttack())
             {
                 Reset();
                 return Node.Status.FAILURE;

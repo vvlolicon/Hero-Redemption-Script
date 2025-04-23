@@ -6,12 +6,11 @@ using UnityEngine.EventSystems;
 
 public class ShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public TooltipWindow tooltipWindow { get; private set; }
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
+    TooltipWindow tooltipWindow { get { return UI_Controller.GetUIScript<TooltipWindow>(); } }
 
-    private void OnEnable()
+    private void Start()
     {
-        // assign if null
-        tooltipWindow ??= GameObject.FindGameObjectWithTag("Tooltip_Window").transform.GetChild(0).GetComponent<TooltipWindow>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -20,10 +19,11 @@ public class ShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         tooltipWindow?.ShowTooltip(curPointItem);
         if (transform.parent.parent != null && transform.parent.parent.CompareTag("Player_HotbarItem"))
         {
-            PlayerBaseMethods.SetPivot(tooltipWindow.GetComponent<RectTransform>(), new Vector2(0.5f, 0));
-        } else
+            tooltipWindow.GetComponent<RectTransform>().SetPivot(new Vector2(0.5f, 0));
+        } 
+        else
         {
-            PlayerBaseMethods.SetPivot(tooltipWindow.GetComponent<RectTransform>(), new Vector2(0, 1));
+            tooltipWindow.GetComponent<RectTransform>().SetPivot(new Vector2(0, 1));
         }
     }
 

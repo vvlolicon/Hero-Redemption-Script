@@ -98,7 +98,8 @@ public class ProjectileControl : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == Sender.gameObject) return;
-        if(other.gameObject.layer == LayerMask.NameToLayer("Character"))
+        if (other.CompareTag("Weapon")) return;
+        if (other.gameObject.layer == LayerMask.NameToLayer("Character"))
         {
             Damage(other.gameObject);
             OnProjectileCollides();
@@ -121,10 +122,12 @@ public class ProjectileControl : MonoBehaviour
         }
     }
 
+    readonly Collider[] hitColliders = new Collider[10]; // 根据实际情况调整数组大小
     void Explode()
     {
+        Physics.OverlapSphereNonAlloc(transform.position, _projectileStats.AOERadius, hitColliders);
         // 获取所有在爆炸范围内的 Collider
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _projectileStats.AOERadius);
+        //Collider[] hitColliders = Physics.OverlapSphere(transform.position, _projectileStats.AOERadius);
 
         foreach (var hitCollider in hitColliders)
         {
@@ -135,7 +138,7 @@ public class ProjectileControl : MonoBehaviour
             Damage(hitCollider.gameObject);
         }
         _isExploding = true;
-        StartCoroutine(ExtendMethods.DelayAction(3f, () => { 
+        StartCoroutine(ExtendIEnumerator.DelayAction(3f, () => { 
             _isExploding = false; 
             Destroy(gameObject);
         }));

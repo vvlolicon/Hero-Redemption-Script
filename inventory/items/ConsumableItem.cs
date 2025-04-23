@@ -27,9 +27,9 @@ public class ConsumableItem : MonoBehaviour
 
     public void UsePotion(List<ItemAttribute> attributes)
     {
-        if (PlayerBaseMethods.CanConsumeItem(_executor.PlayerStats, attributes))
+        if (_executor.PlayerStats.CanConsumeItem(attributes))
         {
-            PlayerBaseMethods.ChangePlayerStats(_executor.PlayerStats, attributes);
+            _executor.PlayerStats.ChangePlayerStats(attributes);
             item.curStack--;
             itemDetail.UpdateStack();
             if (item.curStack == 0)

@@ -70,7 +70,7 @@ namespace Assets.AI.BehaviourTree
                 _executor.DamagePlayer();
             }
             _executor.OnDying();
-            StartCoroutine(ExtendMethods.DelayAction(1.9f, () =>
+            StartCoroutine(ExtendIEnumerator.DelayAction(1.9f, () =>
             {
                 _executor.Animator.gameObject.SetActive(true);
                 _behaviorTree.Reset();
@@ -122,6 +122,12 @@ namespace Assets.AI.BehaviourTree
         public Node.Status Evaluate()
         {
             if (detonated) return Node.Status.RUNNING;
+            if (_methods.CanStopAttack())
+            {
+                _failedCallback();
+                return Node.Status.FAILURE;
+            }
+            _methods.LookPlayer(2.0f);
             _timer += Time.deltaTime;
             _executor.gameObject.transform.localScale = Vector3.Lerp(
                 _originScale, Vector3.one * _scaleMult, _timer / _detonateTime);
@@ -131,11 +137,6 @@ namespace Assets.AI.BehaviourTree
                 detonated = true;
                 _successCallback();
                 return Node.Status.SUCCESS;
-            }
-            if (!_methods.IsPlayerInRange(_detonateRange * 1.5f))
-            {
-                _failedCallback();
-                return Node.Status.FAILURE;
             }
             return Node.Status.RUNNING;
         }

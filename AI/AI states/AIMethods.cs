@@ -80,6 +80,14 @@ public class AIMethods
         if (direction != Vector3.zero)
             _enemy.rotation = Quaternion.Slerp(_enemy.rotation, Quaternion.LookRotation(direction), Time.deltaTime * speedRot);
     }
+    public bool IsInterrupteByAttack()
+    {
+        return _executor.IsHit && _executor.Interruptable;
+    }
+    public bool CanStopAttack()
+    {
+        return !CanAttackPlayer() || IsInterrupteByAttack();
+    }
 
     public bool AnimatorIsPlaying(string stateName)
     {

@@ -57,18 +57,19 @@ namespace Assets.AI.BehaviourTree
             visual.Initialize(_behaviorTree);
             visual.CreateChildVisualizers(_behaviorTree, _visualParent);
             visual.DestroyVisualizers(_behaviorTree);
-            StartCoroutine(ExtendMethods.DelayAction(0.1f, () =>
+            StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
             {
+                _visualParent.gameObject.SetActive(true);
                 VisualNode script = TryGetVisualTree(out Transform rootTree);
                 if(rootTree != null && script != null)
                     script.RebalanceChildren(rootTree);
-            }));
-            StartCoroutine(ExtendMethods.DelayAction(0.2f, () =>
-            {
-                VisualNode script = TryGetVisualTree(out Transform rootTree);
-                if (rootTree != null && script != null)
-                    script.RebalanceSubTree(rootTree);
-                _visualParent.gameObject.SetActive(false);
+
+                StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
+                {
+                    if (rootTree != null && script != null)
+                        script.RebalanceSubTree(rootTree);
+                    _visualParent.gameObject.SetActive(false);
+                }));
             }));
 
             Node TryGetSubTree<T>()
@@ -91,6 +92,7 @@ namespace Assets.AI.BehaviourTree
                     rootTree = child;
                     break;
                 }
+                if (rootTree == null) return null;
                 return rootTree.GetComponent<VisualNode>();
             }
 
@@ -123,7 +125,7 @@ namespace Assets.AI.BehaviourTree
             _executor.Agent.ResetPath();
             _methods.ResetAllAnimationTriggers();
             
-            StartCoroutine(ExtendMethods.DelayAction(0.5f, 
+            StartCoroutine(ExtendIEnumerator.DelayAction(0.5f, 
                 () => { _executor.IsInvincible = false; }));
         }
     }

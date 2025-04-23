@@ -154,7 +154,7 @@ namespace Assets.AI.BehaviourTree
                 }
                 if(multiplier == 0)
                 {
-                    StartCoroutine(ExtendMethods.ActionInNextFrame(() =>
+                    StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
                     {
                         parentTransform.localPosition = parentTransform.localPosition.ChangeAxisValue(
                             ExtendVector3.Axis.X, 0);

@@ -7,12 +7,9 @@ public class TooltipWindow : MonoBehaviour
 {
     TMP_Text _itemName;
     TMP_Text _itemDesc;
-    private void Start()
+    private void Awake()
     {
-        _itemName = transform.GetChild(0).GetComponent<TMP_Text>();
-        _itemDesc = transform.GetChild(1).GetComponent<TMP_Text>();
-        gameObject.SetActive(false);
-
+        TryAllocTextComp();
     }
     private void LateUpdate()
     {
@@ -22,9 +19,20 @@ public class TooltipWindow : MonoBehaviour
         }
     }
 
+    void TryAllocTextComp()
+    {
+        transform.parent.gameObject.SetActive(true);
+        _itemName = transform.GetChild(0).GetComponent<TMP_Text>();
+        _itemDesc = transform.GetChild(1).GetComponent<TMP_Text>();
+        transform.parent.gameObject.SetActive(false);
+    }
+
     public void ShowTooltip(Item item)
     {
-        gameObject.SetActive(true);
+        if (item == null) return;
+        if (_itemName == null || _itemDesc == null) TryAllocTextComp();
+        if (_itemName == null || _itemDesc == null) return;
+        transform.parent.gameObject.SetActive(true);
 
         _itemName.text = item.itemName;
         string itemDesc = item.itemDesc + "\n" + "\n";
@@ -41,6 +49,6 @@ public class TooltipWindow : MonoBehaviour
 
     public void DisableTooltip()
     {
-        gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
     }
 }

@@ -4,24 +4,13 @@ using UnityEditor.PackageManager.UI;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using static UnityEngine.InputManagerEntry;
 #endif
 
-public class PlayerInputData : MonoBehaviour
+public class PlayerInputData : Singleton<PlayerInputData>
 {
-
-	//[Header("Movement Settings")]
-	//public bool analogMovement;
-
-    [Header("UI settings")]
-    GameObject inventoryUI;
-    GameObject equipmentUI;
-    GameObject pauseMenu;
-    public GameObject testData;
-    GameObject hotbarItemWindow;
-	//public Canvas UIWindow;
-
     private PlayerStateExecutor _executor;
-	public List<GameObject> UIWindows = new List<GameObject>();
 
 	public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
@@ -29,39 +18,21 @@ public class PlayerInputData : MonoBehaviour
     public bool InputEnable { get; set; }
     public Vector2 InputMove { get; private set; }
     public Vector2 InputLook { get; private set; }
-
-    private void Awake()
-    {
-        _executor = GetComponent<PlayerStateExecutor>();
-        hotbarItemWindow = GameObject.FindGameObjectWithTag("Player_HotbarItem");
-        inventoryUI = GetUI_Window("Player_Inventory", 7);
-        equipmentUI = GetUI_Window("Player_Equipment", 7);
-        pauseMenu = GetUI_Window("PauseMenu", 7);
-    }
-
-    GameObject GetUI_Window(string tag, int layer)
-    {
-        GameObject[] windows = GameObject.FindGameObjectsWithTag(tag);
-        foreach (GameObject window in windows)
-        {
-            if (window.layer == layer)
-            {
-                UIWindows.Add(window);
-                return window;
-            }
-        }
-        return null;
-    }
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; }}
 
     private void Start()
     {
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            Initialize(); // load if current scene is dungeon
+        }
+    }
+    private void Initialize()
+    {
+        _executor = GetComponent<PlayerStateExecutor>();
         EnableAllInput(true);
 
         // deactive ui windows after setting up vars
-        foreach (GameObject ui in UIWindows)
-        {
-            ui.SetActive(false);
-        }
     }
 
 #if ENABLE_INPUT_SYSTEM
@@ -123,8 +94,8 @@ public class PlayerInputData : MonoBehaviour
 	{
         if (InputEnable)
         {
-            inventoryUI.SetActive(true);
-            equipmentUI.SetActive(true);
+            UI_Controller.SetUIActive(UI_Window.InventoryUI, true);
+            UI_Controller.SetUIActive(UI_Window.EquipmentUI, true);
             EnableAllInput(false);
             _executor.OnOpenInventory();
         }
@@ -132,24 +103,14 @@ public class PlayerInputData : MonoBehaviour
 
 	public void OnEscHit(InputValue value)
 	{
-        bool hasUIactive = false;
-		foreach(var UI in UIWindows)
-		{
-            if (UI != null && UI.activeInHierarchy)
-            {
-                hasUIactive = true;
-                UI.SetActive(false);
-				//break;
-            }
-        }
-        if (hasUIactive)
+        if (UI_Controller.HasClosableWindowActive())
         {
-            SetCursorState(true);
-            InputEnable = true;
+            UI_Controller.CloseAllClosableWindows();
+            UI_Controller.ShowInteractTooltipIfHasInteractable();
         }
         else
         {
-            EnterPauseMenu();
+            OpenPauseMenu();
         }
     }
     public void OnUseHotbar_1(InputValue value)
@@ -194,23 +155,32 @@ public class PlayerInputData : MonoBehaviour
             UseHotbarItemAtSlot(5);
         }
     }
-#endif
-    public void EnterPauseMenu()
+
+    public void OnInteract()
     {
-        pauseMenu.SetActive(true);
+        if (UI_Controller.HasClosableWindowActive()) return;
+        UI_Controller.GetUIScript<InteractObject>().InteractWithObject();
+        EnableAllInput(false);
+    }
+
+#endif
+    public void OpenPauseMenu()
+    {
+        UI_Controller.SetUIActive(UI_Window.PauseMenu, true);
+        Time.timeScale = 0;
         EnableAllInput(false);
     }
     public void ExitPauseMenu()
     {
-        pauseMenu.SetActive(false);
-        EnableAllInput(true);
+        UI_Controller.GetUIScript<PauseMenu>().OnExitWindow();
     }
 
 
     void UseHotbarItemAtSlot(int slotNum)
     {
+        Transform hotbarItemWindow = UI_Controller.UI_Windows[UI_Window.HotBar].transform.GetChild(0);
         Debug.Log("Using hotbar at slot " + slotNum);
-        Transform slot = hotbarItemWindow.transform.GetChild(slotNum);
+        Transform slot = hotbarItemWindow.GetChild(slotNum);
         if (slot.childCount > 0)
         {
             slot.GetChild(0).GetComponent<ConsumableItem>().ConsumeItem();
@@ -225,16 +195,7 @@ public class PlayerInputData : MonoBehaviour
     public IEnumerator CheckUIWindowActive()
 	{
         yield return new WaitForSeconds(0.1f);
-        bool hasWindowActive = false;
-        foreach (var UI in UIWindows)
-        {
-            if (UI.activeInHierarchy)
-            {
-                hasWindowActive = true;
-                break;
-            }
-        }
-        if (!hasWindowActive)
+        if (!UI_Controller.HasClosableWindowActive())
         {
             EnableAllInput(true);
         }
@@ -242,7 +203,7 @@ public class PlayerInputData : MonoBehaviour
 
     public void OnShowTestData(InputValue value)
 	{
-        testData.SetActive(!testData.activeInHierarchy);
+        UI_Controller.TestStatics.SetActive(!UI_Controller.TestStatics.activeSelf);
     }
 
 

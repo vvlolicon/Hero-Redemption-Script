@@ -223,9 +223,6 @@ MonoBehaviour:
   prefabs:
   - {fileID: 4279711695059586291, guid: d8346d0e966956842a39cf418f918d47, type: 3}
   - {fileID: 4279711695059586291, guid: fc7074c32aba2b4499f03ad3091917d2, type: 3}
-  childSpacing: 2
-  parentOffsetPerLeaf: 0.1
-  parentOffsetPerChild: 0.6
 --- !u!1 &7719829346660555289
 GameObject:
   m_ObjectHideFlags: 0

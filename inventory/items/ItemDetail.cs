@@ -11,6 +11,17 @@ public class ItemDetail : MonoBehaviour
     ConsumableItem _consumeScript;
     private void OnEnable()
     {
+        UpdateItem();
+    }
+
+    public void SetItem(Item item)
+    {
+        this.item = item;
+        UpdateItem();
+    }
+
+    void UpdateItem()
+    {
         if (item != null)
         {
             transform.GetChild(0).GetComponent<Image>().overrideSprite = item.itemIcon;
@@ -22,7 +33,7 @@ public class ItemDetail : MonoBehaviour
             {
                 transform.GetChild(1).GetComponent<TMP_Text>().text = "";
             }
-            if(item.curStack > item.maxStack)
+            if (item.curStack > item.maxStack)
             {
                 item.curStack = item.maxStack;
             }

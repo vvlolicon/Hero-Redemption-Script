@@ -43,7 +43,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     void OnEnable()
     {
-        // reset stats everytime it enable
+        // reset stats everytime it enable(for placed Monster)
         initailizeStats();
     }
 
@@ -60,42 +60,46 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         MaxHP = _enemyStats.MaxHP;
         HP = MaxHP;
         Agent.speed = Speed;
-        //if(CurState!= null) {
-        //    CurState.EnterState();
-        //    if (CurState.SubState.CurStateType() == AIStates.PATROL)
-        //    {
-        //        Agent.SetDestination(PatrolPoints[0].position);
-        //    }
-        //}
+        WaitTimer = 0;
     }
 
     void Start()
     {
         _stateMan = new EnemyStateManager(this);
-        //CurState = _stateMan.Ground();
-        initailizeStats();
+        
         _methods = new AIMethods(this);
         _defaultStrategy.BuildBehaviorTree(this, AIMethods);
         //_healthManager.Initialize();
     }
 
-    void Update()
+    public void SetupMonster(OnMonsterDeathEvent e, bool IsPlacedMonster)
     {
-        //if (test_showState != null && test_showData != null) { 
-        //    test_showState.text = "Current enemy State:" + CurState.CurStateType();
-        //    test_showData.text = "";
-        //    if (CurState.SubState != null)
-        //    {
-        //        test_showState.text += "\n" + "current enemy Sub State: " + CurState.SubState.CurStateType();
-        //        test_showData.text += "\n" + "enemy speed: " + Speed;
-        //    }
-        //}
-        //if (CurState != null)
-        //{
-        //    CurState.UpdateStates();
-        //}
-
+        OnMonsterDeath += e;
+        initailizeStats();
+        if (IsPlacedMonster)
+        {
+            InitializeMonster();
+        }
     }
+
+    public void ResetMonster()
+    {
+        initailizeStats();
+        InitializeMonster();
+    }
+
+    void InitializeMonster()
+    {
+        Agent.isStopped = false;
+        Agent.ResetPath();
+        IsDying = false;
+        gameObject.SetActive(true);
+        transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
+    }
+
+    //void Update()
+    //{
+    //}
 
     public void ApplyDamage(DmgInfo data)
     {
@@ -104,9 +108,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
             EnemyDmgInfo info = (EnemyDmgInfo)data;
             if (!IsInvincible && info.Target == this.gameObject)
             {
-
                 _defaultStrategy.OnHit();
-                StartCoroutine(ExtendMethods.DelayAction(0.2f, () =>
+                StartCoroutine(ExtendIEnumerator.DelayAction(0.2f, () =>
                 {
                     IsInvincible = false;
                 }));
@@ -139,23 +142,20 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _methods.ResetAllAnimationTriggers();
         Agent.isStopped = true;
         IsDying = true;
-        StartCoroutine(ExtendMethods.DelayAction(
-            _enemyStaticStatScript._stats._dieTime, () => { AfterDying(); }));
-       
+        OnMonsterDeath?.Invoke();
+        StartCoroutine(ExtendIEnumerator.DelayAction(
+            _enemyStaticStatScript._stats._dieTime, () => { 
+                AfterDying();
+                OnMonsterDeath = null;
+        }));
     }
 
     void AfterDying()
     {
-        Agent.isStopped = false;
-        IsDying = false;
-        transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
-        //CurState.SwitchState(_stateMan.Ground());
         gameObject.SetActive(false);
         _billboard.SetActive(false);
         // TODO: give exp and money to player and shows message in game
         // TODO: drop item in drop table
-
-        gameObject.SetActive(true);
     }
 
     NavMeshAgent _agent;
@@ -165,7 +165,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     Transform _player;
     EnemyStateManager _stateMan;
     EnemyStaticStatsMono _enemyStaticStatScript;
-    GameObject _billboard;
+    [SerializeField] GameObject _billboard;
     AIMethods _methods;
     [HideInInspector]
     public TMP_Text test_showState;
@@ -175,6 +175,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     HealthManager _healthManager;
     AI_DefaultStrategy _defaultStrategy;
+
+    [HideInInspector]
+    public event OnMonsterDeathEvent OnMonsterDeath;
+    [HideInInspector]
+    public delegate void OnMonsterDeathEvent();
+    [HideInInspector]
+    public bool IsPlacedMonster;
 
     // getters and setters
     public AIMethods AIMethods { get { return _methods; } }

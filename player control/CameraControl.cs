@@ -24,7 +24,7 @@ public class CameraControl : MonoBehaviour
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
 
-    PlayerInputData _playerInputData;
+    PlayerInputData _playerInputData { get { return PlayerInputData.Instance; } }
     PlayerInput _playerInput;
     Vector2 _input;
     private const float _threshold = 0.01f;
@@ -35,7 +35,6 @@ public class CameraControl : MonoBehaviour
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        _playerInputData = GetComponent<PlayerInputData>();
     }
 
     private void Start()
@@ -53,6 +52,7 @@ public class CameraControl : MonoBehaviour
     private void CameraRotation()
     {
         Vector2 lookAt = _playerInputData.InputLook;
+        //Debug.Log("Look at: " + lookAt.ToString());
         // if there is an input and camera position is not fixed
         if (lookAt.sqrMagnitude >= _threshold && !LockCameraPosition)
         {

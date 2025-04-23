@@ -16,13 +16,13 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _charCont = GetComponent<CharacterController>();
         _soundMan = GetComponent<SoundManager>();
         _animator = GetComponentInChildren<Animator>();
-        _playerInput = GetComponent<PlayerInputData>();
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
         _healthMan._playerExecutor = this;
         DistToGround = _charCont.bounds.extents.y;
         setValue();
         AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
+        
         //_playerInput = new PlayerInputMethods();
         //_playerInput.PlayerControl.Move.started += OnMove;
         //_playerInput.PlayerControl.Move.performed += OnMove;
@@ -86,7 +86,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
            + "\n" + " , curDashTime: " + _currentDashTime + " , isGrounded: " + CharCont.isGrounded + ", MovePressed: " + MovePressed + ", PlayerSpeed: " + PlayerSpeed;
         }
         // Move the controller
-        _charCont.Move(CurMovement * Time.deltaTime);
+        if(!TransportPlayer)
+            _charCont.Move(CurMovement * Time.deltaTime);
         _atkTimeCD = _playerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
         if (AttackTimer > 0)
         {
@@ -126,14 +127,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             //NewRoroutine(DelayAction(0.4f));
             JumpPressed = true;
         }
-    }
-    public IEnumerator DelayAction(float delay, Action delayAction )
-    {
-        // Wait for the specified delay time
-        yield return new WaitForSeconds(delay);
-
-        // Action to perform after the delay
-        delayAction?.Invoke();
     }
     public void OnRunPressed()
     {
@@ -192,7 +185,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     public void OnPickItem(InstantEffectPickupItem pickedItem)
     {
-        PlayerBaseMethods.ChangePlayerStats(PlayerStats, pickedItem.itemAttributes);
+        PlayerStats.ChangePlayerStats(pickedItem.itemAttributes);
     }
 
     public void NewRoroutine(IEnumerator coroutine)
@@ -203,7 +196,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public void OnLanding()
     {
         _playerInput.InputEnable = false;
-        StartCoroutine(DelayAction(0.7f, () => {
+        StartCoroutine(ExtendIEnumerator.DelayAction(0.7f, () => {
             _playerInput.InputEnable = true;
             Animator.SetTrigger("Exit");
         }));
@@ -217,14 +210,26 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         // TODO: SL system;
     }
 
+    public void TransportPlayerTo(Vector3 newPos)
+    {
+        TransportPlayer = true;
+        _charCont.enabled = false;
+        transform.position = newPos;
+        StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
+        {
+            TransportPlayer = false;
+            _charCont.enabled = true;
+        }));
+    }
+
     //public void OnEnable()
     //{
     //    _playerInput.PlayerControl.Enable();
     //}
 
     public GameObject _childPlayer;
-    public Camera _camera;
-    public GameObject _movIndicator; //Where is the character moving to
+    [SerializeField] Camera _camera;
+    [SerializeField] GameObject _movIndicator; //Where is the character moving to
     public PlayerStaticData _playerStaticData;
     public Transform _rangeAtkAim;
 
@@ -233,11 +238,12 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     Vector3 _groundNormal;
     float _mpRegenTimer;
     float _atkTimeCD;
+    bool TransportPlayer = false;
 
     CharacterController _charCont;
     Animator _animator;
     SoundManager _soundMan;
-    PlayerInputData _playerInput;
+    PlayerInputData _playerInput { get{ return PlayerInputData.Instance; } }
     HealthManager _healthMan;
 
     //states variables
