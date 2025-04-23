@@ -7,7 +7,8 @@ public class StageMapButtons : MonoBehaviour
 {
     public StageSettings _stage;
     Button _stageButton;
-    [SerializeField] StageMapController _mapController;
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
+    StageMapController _mapController { get{ return UI_Controller.GetUIScript<StageMapController>(); } }
 
     private void Awake()
     {
