@@ -79,11 +79,6 @@ public class MoveItem : MonoBehaviour, IDropHandler
             }
             else
             {
-                if (dropItemOriginWindow.CompareTag("Box_Inventory") && !targetSlotWindow.CompareTag("Box_Inventory"))
-                { // take things away from box
-                    dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
-                        dropItemOriginSlot.transform.GetIndexOfChild(), targetItem);
-                }
                 exchangeItem(targetDragItem, dropDragItem);
             }
         }
@@ -107,6 +102,12 @@ public class MoveItem : MonoBehaviour, IDropHandler
                 dropItem(dropDragItem);
             }
 
+        }
+
+        if (dropItemOriginWindow.CompareTag("Box_Inventory") && !targetSlotWindow.CompareTag("Box_Inventory"))
+        { // take things away from box
+            dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
+                dropItemOriginSlot.transform.GetIndexOfChild(), droppedItem, true);
         }
         //Debug.Log("##########Test Variables End##########");
     }

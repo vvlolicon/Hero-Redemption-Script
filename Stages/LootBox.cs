@@ -28,11 +28,11 @@ public class LootBox : MonoBehaviour, IInteractableObject
     }
 
     public List<Item> GetItems() => _containItems;
-    public void SetItemAtIndex(int index, Item item)
+    public void SetItemAtIndex(int index, Item item, bool deleteItem)
     {
-        if (item == null)
+        if (deleteItem)
         {
-            _containItems.RemoveAt(index);
+            _containItems.Remove(item);
             return;
         }
         _containItems[index] = item;

@@ -18,6 +18,15 @@ public class StageMapController : MonoBehaviour
     {
         curStage = StartStage;
     }
+
+    private void OnEnable()
+    {
+        foreach (Transform child in transform.GetChild(0))
+        {
+            if (child.TryGetComponent<StageMapButtons>(out var stageButton))
+                stageButton.InitializeButton();
+        }
+    }
     public void OnExitWindow()
     {
         UI_Controller.OnClosableWindowExit(gameObject);

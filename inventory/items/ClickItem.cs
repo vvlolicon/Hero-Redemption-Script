@@ -80,7 +80,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 else if (item_at_interface.CompareTag("Box_Inventory") && inventory_ui.activeInHierarchy)
                 {// if item is in Box, try to put it back to inventory
                     item_at_interface.GetComponent<InventorySlotManager>().InvokeEvent(
-                        itemSlot.transform.GetIndexOfChild(), null);
+                        itemSlot.transform.GetIndexOfChild(), clickItem, true);
                     MoveItemTo(itemSlot.transform, inventory_ui.transform, clickDragItem);
                 }
             }

@@ -18,16 +18,18 @@ public class BoxInventoryController : MonoBehaviour
     {
         curBox = box;
         List<Item> itemsShow = box.GetItems();
-        manager.ForceSetSlotNum(itemsShow.Count);
-        for(int i = 0; i< itemsShow.Count; i++)
-        {
-            manager.SetItemAtSlot(i, itemsShow[i]);
-        }
         gameObject.SetActive(true);
+        manager.ForceSetSlotNum(itemsShow.Count);
+        StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() => {
+            for (int i = 0; i < itemsShow.Count; i++)
+            {
+                manager.SetItemAtSlot(i, itemsShow[i]);
+            }
+        }));
     }
 
-    public void OnItemChange(int slotIndex, Item item)
+    public void OnItemChange(int slotIndex, Item item, bool deteleItem)
     {
-        curBox.SetItemAtIndex(slotIndex, item);
+        curBox.SetItemAtIndex(slotIndex, item, deteleItem);
     }
 }

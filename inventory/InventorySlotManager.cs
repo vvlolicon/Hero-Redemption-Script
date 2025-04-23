@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 
 public class InventorySlotManager : MonoBehaviour
 {
@@ -12,7 +8,7 @@ public class InventorySlotManager : MonoBehaviour
     [SerializeField] GameObject slotObject;
     [SerializeField] GameObject itemObject;
 
-    public event Action<int, Item> SlotChangeAction;
+    public event Action<int, Item, bool> SlotChangeAction;
 
     private void Awake()
     {
@@ -27,10 +23,10 @@ public class InventorySlotManager : MonoBehaviour
         }
     }
 
-    public void InvokeEvent(int slotIndex, Item item)
+    public void InvokeEvent(int slotIndex, Item item, bool deleteItem = false)
     {
         if(gameObject.CompareTag("Box_Inventory"))
-            SlotChangeAction?.Invoke(slotIndex, item);
+            SlotChangeAction?.Invoke(slotIndex, item, deleteItem);
     }
 
     public void SetSlotNum(int value)
@@ -65,20 +61,27 @@ public class InventorySlotManager : MonoBehaviour
             int decrease_value = value * -1;
             int deleteSlotAt = transform.childCount-1;
             int destroySlots = 0;
-            bool isDestroySlot;
+            if (forceDeleteItem)
+            {
+                Debug.Log($"transform.childCount: {transform.childCount}, Destroy slot number : " + deleteSlotAt);
+                for (int i = 0; i < decrease_value; i++)
+                {
+                    Debug.Log($"Deleteing slot At {deleteSlotAt}");
+                    DestroySlot(deleteSlotAt, true);
+                    deleteSlotAt--;
+                }
+                return;
+            }
             for (int i = 0 ; i < decrease_value; i++)
             {
-                isDestroySlot = false;
-                while (!isDestroySlot && deleteSlotAt > 0)
+                while (deleteSlotAt > 0)
                 {
                     // if the slot does not have item inside, destroy it, otherwise find next one until a slot dont have item.
                     var slot = transform.GetChild(deleteSlotAt);
-                    var itemScript = slot.GetComponentInChildren<ItemDetail>();
-                    if (slot.childCount == 0 || itemScript.item == null)
+                    if (DestroySlot(deleteSlotAt))
                     {
-                        Destroy(slot.gameObject);
                         destroySlots++;
-                        isDestroySlot = true;
+                        break;
                     }
                     deleteSlotAt--;
                 }
@@ -86,20 +89,30 @@ public class InventorySlotManager : MonoBehaviour
             if(destroySlots < decrease_value)
             {
                 Debug.Log("slots left because item occupied");
-                if (forceDeleteItem)
-                {
-                    deleteSlotAt = transform.childCount - 1;
-                    for (int i = 0; i < decrease_value - destroySlots; i++)
-                    {
-                        Debug.Log($"Deleteing slot At {deleteSlotAt}");
-                        var slot = transform.GetChild(deleteSlotAt);
-                        var itemScript = slot.GetComponentInChildren<ItemDetail>();
-                        Destroy(slot.gameObject);
-                        deleteSlotAt--;
-                    }
-                }
             }
         }
+    }
+
+    bool DestroySlot(int slotIndex, bool forceDelete = false)
+    {
+        var slot = transform.GetChild(slotIndex);
+        if (forceDelete)
+        {
+            Debug.Log($"Deleteing slot At {slotIndex}");
+            Destroy(slot.gameObject);
+            return true;
+        }
+        var itemScript = slot.GetComponentInChildren<ItemDetail>();
+        if (slot.childCount == 0 || itemScript.item == null)
+        {
+            Debug.Log($"Deleteing slot At {slotIndex}");
+            StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() => {
+                slot.gameObject.SetActive(false);
+                Destroy(slot.gameObject);
+            }));
+            return true;
+        }
+        return false;
     }
 
     public void SetItemAtSlot(int slotIndex, Item item)
