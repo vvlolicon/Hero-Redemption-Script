@@ -18,8 +18,14 @@ public class StageMapButtons : MonoBehaviour
 
     public void InitializeButton()
     {
+        if (_stageButton == null)
+        {
+            gameObject.SetActive(true);
+            _stageButton = GetComponentInChildren<Button>();
+        }
         gameObject.SetActive(!_stage.IsStageLocked());
-        _stageButton.interactable = !(_mapController.curStage == _stage);
+        if (_mapController.curStage!= null)
+            _stageButton.interactable = !(_mapController.curStage == _stage);
     }
 
     public void OnEnterStage()
