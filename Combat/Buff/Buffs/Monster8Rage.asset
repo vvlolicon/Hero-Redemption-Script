@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: perc
+  m_Name: Monster8Rage
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: 
-    buffDescription: 
+    buffName: Rage
+    buffDescription: 'It rage (increase atk speed and speed) below 50% health '
     buffIcon: {fileID: 0}
     affectStats:
-    - AtbrType: 5
-      Value: -100
+    - AtbrType: 6
+      Value: 50
+    - AtbrType: 8
+      Value: 50
     interval: 0
-    duration: 10
+    duration: 9999
     priority: 10
-    usePercentage: 0
+    usePercentage: 1
     stackable: 0
-    isNerf: 1
+    isNerf: 0
