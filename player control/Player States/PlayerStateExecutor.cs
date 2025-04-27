@@ -32,6 +32,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         //_playerInput.PlayerControl.Move.canceled += OnMove;
     }
 
+    public void InitializeCombatStats()
+    {
+        PlayerCombatStats.HP = PlayerCombatStats.MaxHP;
+        PlayerCombatStats.MP = PlayerCombatStats.MaxMP;
+        OnStatsChanged?.Invoke();
+        HasInitialized = true;
+    }
+
     void setValue()
     {
         IsHit = false;
@@ -67,7 +75,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _stateMan = new PlayerStatsManager(this);
         CurState = _stateMan.Grounded();
         CurState.EnterState();
-        //setValue();
     }
 
 
@@ -268,6 +275,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     float _mpRegenTimer;
     float _atkTimeCD;
     bool TransportPlayer = false;
+    public bool HasInitialized = false;
 
     CharacterController _charCont;
     Animator _animator;

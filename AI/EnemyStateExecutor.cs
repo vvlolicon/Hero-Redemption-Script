@@ -195,7 +195,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     AnimatorEventsEn _animEv;
     Transform _player;
     EnemyStaticStatsMono _enemyStaticStatScript;
-    [SerializeField] GameObject _billboard;
+    GameObject _billboard;
     AIMethods _methods;
     [HideInInspector]
     public TMP_Text test_showState;

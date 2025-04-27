@@ -86,6 +86,13 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
     void FixedUpdate()
     {
         HandleStats();
+        if (_isPlayer)
+        {
+            if (!_playerExecutor.HasInitialized)
+            {
+                _playerExecutor.InitializeCombatStats();
+            }
+        }
     }
 
     void HandleStats()
