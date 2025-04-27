@@ -49,7 +49,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         if (_isPlayer)
         {
             _playerExecutor.OnStatsChanged += HandleExternalStatsChange;
-            PlayerBackpack.OnStatsChanged += HandleExternalStatsChange;
+            PlayerBackpack.OnStatsChanged += HandleEquipmentChange;
             _statsAfterChanges.SetStats(_playerExecutor.PlayerCombatStats);
         }
         else 
@@ -65,7 +65,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         if (_isPlayer)
         {
             _playerExecutor.OnStatsChanged -= HandleExternalStatsChange;
-            PlayerBackpack.OnStatsChanged -= HandleExternalStatsChange;
+            PlayerBackpack.OnStatsChanged -= HandleEquipmentChange;
         }
         else
         {
@@ -117,17 +117,55 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         Debug.Log($"external stats change {_statsAfterChanges.HP}, {_statsAfterChanges.MP}");
     }
 
+    void HandleEquipmentChange()
+    {
+        Debug.Log($"_curCombatStats.HP = {_curCombatStats.HP}, _curCombatStats.MaxHP = {_curCombatStats.MaxHP}");
+        Debug.Log($"_lastChangedStats.HP = {_lastChangedStats.HP}, _lastChangedStats.MaxHP = {_lastChangedStats.MaxHP}");
+        ResetStats();
+        SetStatsForObject();
+    }
+
     #region Stats Calculation
     void ResetStats()
     {
         _statsAfterChanges.SetStats(_originStats);
         if (_isPlayer)
         {
-            bool HPfull = _statsAfterChanges.HP >= _statsAfterChanges.MaxHP;
-            bool MPfull = _statsAfterChanges.MP >= _statsAfterChanges.MaxMP;
+            bool HPfull = _curCombatStats.HP >= _curCombatStats.MaxHP;
+            bool MPfull = _curCombatStats.MP >= _curCombatStats.MaxMP;
             _statsAfterChanges.AddStatsRange(PlayerBackpack.GetEquippedItemStats());
-            if (HPfull) _statsAfterChanges.HP = _statsAfterChanges.MaxHP;
-            if (MPfull) _statsAfterChanges.MP = _statsAfterChanges.MaxMP;
+            
+            if(_statsAfterChanges.MaxHP < _lastChangedStats.MaxHP)
+            {
+                if(_lastChangedStats.HP > _statsAfterChanges.MaxHP)
+                    _statsAfterChanges.HP = _statsAfterChanges.MaxHP - (_lastChangedStats.MaxHP - _lastChangedStats.HP);
+                else
+                    _statsAfterChanges.HP = _lastChangedStats.HP;
+            }
+            else if(_statsAfterChanges.MaxHP > _lastChangedStats.MaxHP)
+            {
+                _statsAfterChanges.HP = (HPfull) ? _statsAfterChanges.MaxHP : _lastChangedStats.HP;
+            }
+            else
+            {
+                _statsAfterChanges.HP = _lastChangedStats.HP;
+            }
+
+            if (_statsAfterChanges.MaxMP < _lastChangedStats.MaxMP)
+            {
+                if (_lastChangedStats.MP > _statsAfterChanges.MaxMP)
+                    _statsAfterChanges.MP = _statsAfterChanges.MaxMP - (_lastChangedStats.MaxMP - _lastChangedStats.MP);
+                else
+                    _statsAfterChanges.MP = _lastChangedStats.MP;
+            }
+            else if (_statsAfterChanges.MaxMP > _lastChangedStats.MaxMP)
+            {
+                _statsAfterChanges.MP = (MPfull) ?_statsAfterChanges.MaxMP: _lastChangedStats.MP;
+            }
+            else
+            {
+                _statsAfterChanges.MP = _lastChangedStats.MP;
+            }
         }
     }
     float[] GetStatsChanges()

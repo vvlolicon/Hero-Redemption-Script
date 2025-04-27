@@ -275,7 +275,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     float _mpRegenTimer;
     float _atkTimeCD;
     bool TransportPlayer = false;
-    public bool HasInitialized = false;
+    [SerializeField] public bool HasInitialized = false;
 
     CharacterController _charCont;
     Animator _animator;
