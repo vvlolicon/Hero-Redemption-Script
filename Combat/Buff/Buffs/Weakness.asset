@@ -10,18 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: test self buff
+  m_Name: Weakness
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: TestBuffIncreaseATK
-    buffDescription: 
+    buffName: Weakness
+    buffDescription: Will Inflicts weakness to player when hitting player (weakness
+      time duration 15sec cause DEF and ATK * 0.8) can be cured by weakness potion
     buffIcon: {fileID: 0}
     affectStats:
     - AtbrType: 5
-      Value: -200
+      Value: -20
+    - AtbrType: 7
+      Value: -20
     interval: 0
-    duration: 9999
-    priority: 2
-    usePercentage: 0
+    duration: 15
+    priority: 1
+    usePercentage: 1
     stackable: 0
     isNerf: 1

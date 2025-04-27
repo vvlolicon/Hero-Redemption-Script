@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: New Combat Buff
+  m_Name: Paralysis
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: 
-    buffDescription: 
+    buffName: Paralysis
+    buffDescription: On hit gives player a "paralysis" effect, which slows down the
+      player's movement speed. (Player speed * 0.8 for 10 sec duration)
     buffIcon: {fileID: 0}
     affectStats:
-    - AtbrType: 1
-      Value: -5
-    interval: 1
+    - AtbrType: 6
+      Value: -0.8
+    interval: 0
     duration: 10
     priority: 0
     usePercentage: 1
     stackable: 0
-    isNerf: 0
+    isNerf: 1

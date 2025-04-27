@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: test buff2
+  m_Name: Poison
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: TestBuffReduceMP
-    buffDescription: 
+    buffName: Poison
+    buffDescription: 'Will Inflicts poison to player when hitting player (posion
+      time duration 10sec cause MaxHP*0.05 damage per sec) can be cured by posion
+      potion '
     buffIcon: {fileID: 0}
     affectStats:
-    - AtbrType: 2
-      Value: -100
-    interval: 0
-    duration: 2
-    priority: 0
-    usePercentage: 0
+    - AtbrType: 0
+      Value: -0.05
+    interval: 1
+    duration: 10
+    priority: 5
+    usePercentage: 1
     stackable: 0
-    isNerf: 0
+    isNerf: 1

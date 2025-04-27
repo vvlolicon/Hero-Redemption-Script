@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fbfa19b59f00074a9e991113c9f7fcd, type: 3}
   m_Name: Monster5Stats
   m_EditorClassIdentifier: 
-  _visDist: 7
+  _visDist: 8
   _visAngle: 90
   _attackDist: 10
   _preAtkTime: 1.3
