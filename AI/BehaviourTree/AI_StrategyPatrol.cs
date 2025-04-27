@@ -85,7 +85,7 @@ namespace Assets.AI.BehaviourTree
         {
             Debug.Log("Strategy Patrol running");
             _methods.ResetAllAnimationTriggers();
-            _executor.Agent.speed = _executor.Speed;
+            _executor.Agent.speed = _executor.CombatStats.Speed / 10;
             _executor.Agent.isStopped = false;
             _executor.WaitTimer = 0;
             if (_patrolPoints.Count <= 1)

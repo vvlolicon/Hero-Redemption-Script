@@ -8,8 +8,11 @@ using UnityEngine.UI;
 
 public class PlayerStatDisplay  : MonoBehaviour
 {
-    public GeneralStatsObj playerStats;
-    public GeneralStatsObj initialPlayerStat;
+    GeneralCombatStats _playerCombatStats { 
+        get { 
+            return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>().PlayerCombatStats; 
+        } 
+    }
     public TMP_Text HUD_HP_text;
     public TMP_Text HUD_MP_text;
     public GameObject StatsPanel;
@@ -33,7 +36,6 @@ public class PlayerStatDisplay  : MonoBehaviour
     private void Start()
     {
         //playerController = GetComponent<ThirdPersonController>();
-        playerStats.setStats(initialPlayerStat);
         Stats_MaxHP_text = StatsPanel.transform.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
         Stats_MaxMP_text = StatsPanel.transform.GetChild(1).GetChild(1).GetComponent<TMP_Text>();
         Stats_ATK_text = StatsPanel.transform.GetChild(2).GetChild(1).GetComponent<TMP_Text>();
@@ -53,10 +55,11 @@ public class PlayerStatDisplay  : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float MaxHP = playerStats.MaxHP;
-        float HP = playerStats.HP;
-        float MaxMP = playerStats.MaxMP;
-        float MP = playerStats.MP;
+        GeneralCombatStats playerCombatStats = this._playerCombatStats;
+        float MaxHP = playerCombatStats.MaxHP;
+        float HP = playerCombatStats.HP;
+        float MaxMP = playerCombatStats.MaxMP;
+        float MP = playerCombatStats.MP;
         float HPperc = HP / MaxHP;
         float MPperc = MP / MaxMP;
 
@@ -67,40 +70,32 @@ public class PlayerStatDisplay  : MonoBehaviour
 
         if (StatsPanel.activeInHierarchy)
         {
-            float CritChance = playerStats.CritChance;
-            float CritChanRdc = playerStats.CritChanRdc;
-            float CritDmgMult = playerStats.CritDmgMult;
+            float CritChance = playerCombatStats.CritChance;
+            float CritChanRdc = playerCombatStats.CritChanRdc;
+            float CritDmgMult = playerCombatStats.CritDmgMult;
             // if the stats contains digits, show only 2 digits
-            RoundToXDecimal(MaxHP, 2);
-            RoundToXDecimal(MaxMP, 2);
-            RoundToXDecimal(CritChance, 2);
-            RoundToXDecimal(CritChanRdc, 2);
-            RoundToXDecimal(CritDmgMult, 2);
+            MaxHP.RoundToXDecimal(2);
+            MaxMP.RoundToXDecimal(2);
+            CritChance.RoundToXDecimal(2);
+            CritChanRdc.RoundToXDecimal(2);
+            CritDmgMult.RoundToXDecimal(2);
 
             // restrict the maximum value to 100%
-            float critResisPerc = Mathf.Min(playerStats.CritDmgResis, 100);
-            float dmgReducePerc = Mathf.Min(playerStats.DmgReduce, 100);
+            float critResisPerc = Mathf.Min(playerCombatStats.CritDmgResis, 100);
+            float dmgReducePerc = Mathf.Min(playerCombatStats.DmgReduce, 100);
 
             Stats_MaxHP_text.text = "" + MaxHP;
             Stats_MaxMP_text.text = "" + MaxMP;
-            Stats_ATK_text.text = "" + playerStats.ATK;
-            Stats_AtkTime_text.text = "" + playerStats.AttackTime * 100 + "%";
-            Stats_DEF_text.text = "" + playerStats.DEF;
-            Stats_SPEED_text.text = "" + playerStats.SPEED;
-            Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerStats.CritChance,0) + "%";
+            Stats_ATK_text.text = "" + playerCombatStats.ATK;
+            Stats_AtkTime_text.text = "" + playerCombatStats.AttackTime * 100 + "%";
+            Stats_DEF_text.text = "" + playerCombatStats.DEF;
+            Stats_SPEED_text.text = "" + playerCombatStats.Speed;
+            Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerCombatStats.CritChance,0) + "%";
             //Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
             //Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
             //Stats_CritResis_text.text = "" + critResisPerc + "%";
             Stats_DmgReduce_text.text = "" + dmgReducePerc + "%";
         }
         //playerController.MoveSpeed = playerStats.SPEED/10;
-    }
-
-    void RoundToXDecimal(float value, int numDecimal)
-    {
-        if (value % 1 != 0)
-        {
-            value = (float)Math.Round(value, numDecimal);
-        }
     }
 }

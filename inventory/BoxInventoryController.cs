@@ -8,6 +8,7 @@ public class BoxInventoryController : MonoBehaviour
     [SerializeField] TMP_Text title;
     [SerializeField] InventorySlotManager manager;
     LootBox curBox;
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
 
     private void Start()
     {
@@ -18,14 +19,7 @@ public class BoxInventoryController : MonoBehaviour
     {
         curBox = box;
         List<Item> itemsShow = box.GetItems();
-        gameObject.SetActive(true);
-        manager.ForceSetSlotNum(itemsShow.Count);
-        StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() => {
-            for (int i = 0; i < itemsShow.Count; i++)
-            {
-                manager.SetItemAtSlot(i, itemsShow[i]);
-            }
-        }));
+        UI_Controller.OpenInventoryUI(UI_Window.BoxInventoryUI, itemsShow);
     }
 
     public void OnItemChange(int slotIndex, Item item, bool deteleItem)

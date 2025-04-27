@@ -20,6 +20,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _healthManager = GetComponent<HealthManager>();
         _defaultStrategy = GetComponent<AI_DefaultStrategy>();
         _healthManager._enemyExecutor = this;
+        OriginStats.InitializeStats();
+        CombatStats.SetStats(OriginStats.GetCombatStats());
         for (int i = 0; i < transform.childCount; i++) {
             Transform child = transform.GetChild(i);
             if (child.CompareTag("MonsterCanvas"))
@@ -53,20 +55,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         IsDying = false;
         chasePlayerForever = false;
         IsHit = false;
-
-        ATK = _enemyStats.ATK;
-        DEF = _enemyStats.DEF;
-        Speed = _enemyStats.SPEED / 10f;
-        MaxHP = _enemyStats.MaxHP;
-        HP = MaxHP;
-        Agent.speed = Speed;
+        CombatStats.HP = CombatStats.MaxHP;
+        Agent.speed = CombatStats.Speed / 10;
         WaitTimer = 0;
     }
 
     void Start()
     {
-        _stateMan = new EnemyStateManager(this);
-        
         _methods = new AIMethods(this);
         _defaultStrategy.BuildBehaviorTree(this, AIMethods);
         //_healthManager.Initialize();
@@ -117,24 +112,60 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                     _billboard.SetActive(true);
                 
                 //CurState.SwitchState(_stateMan.Hit());
-                DmgResult dmgResult = HealthManager.calculateDamage(info.ATK, _enemyStats.DEF, info.CritChance, _enemyStats.CritChanRdc, DmgReduc, info.CritMult, _enemyStats.CritDmgResis);
+                DmgResult dmgResult = HealthManager.calculateDamage(
+                    CombatStats.ATK, CombatStats.DEF, info.CritChance, CombatStats.CritChanRdc,
+                    CombatStats.DmgReduce, info.CritMult, CombatStats.CritDmgResis);
                 int dmgShow = (int)Mathf.Floor(dmgResult.Dmg);
                 _healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));
                 _healthManager.Damage(dmgResult.Dmg);
+                CombatStats.HP -= dmgResult.Dmg;
+                OnStatsChanged?.Invoke();
+                SendBuffToSelf();
             }
         }
     }
 
-    public void DamagePlayer(Vector3 impact)
-    {
-        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(ATK, impact, 250f);
-        dmgInfo.CallDamageable(Player.gameObject);
-    }
-
     public void DamagePlayer()
     {
-        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(ATK, Player.position - transform.position, 250f);
+        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(
+            CombatStats.ATK, CombatStats.CritChance, CombatStats.CritDmgMult, 
+            Player.position - transform.position, 250f);
         dmgInfo.CallDamageable(Player.gameObject);
+        SendBuffToPlayer(Player.gameObject);
+    }
+
+    public void DamagePlayer(Vector3 impact)
+    {
+        PlayerDmgInfo dmgInfo = new PlayerDmgInfo(
+            CombatStats.ATK, CombatStats.CritChance, CombatStats.CritDmgMult, impact, 250f);
+        dmgInfo.CallDamageable(Player.gameObject);
+        SendBuffToPlayer(Player.gameObject);
+    }
+
+    void SendBuffToPlayer(GameObject player)
+    {
+        BuffSender[] senders = GetComponents<BuffSender>();
+        if (senders.Length == 0) return;
+        foreach (var sender in senders)
+        {
+            if (sender.howToAttachBuff == AttachBuffWays.Damage)
+            {
+                sender.SendBuff(player);
+            }
+        }
+    }
+
+    void SendBuffToSelf()
+    {
+        BuffSender[] senders = GetComponents<BuffSender>();
+        if (senders.Length == 0) return;
+        foreach (var sender in senders)
+        {
+            if (sender.howToAttachBuff == AttachBuffWays.Self)
+            {
+                sender.SendBuffToSelf();
+            }
+        }
     }
 
     public void OnDying()
@@ -163,7 +194,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     SoundManager _soundMan;
     AnimatorEventsEn _animEv;
     Transform _player;
-    EnemyStateManager _stateMan;
     EnemyStaticStatsMono _enemyStaticStatScript;
     [SerializeField] GameObject _billboard;
     AIMethods _methods;
@@ -171,7 +201,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public TMP_Text test_showState;
     [HideInInspector]
     public TMP_Text test_showData;
-    public GeneralStatsObj _enemyStats;
+    public GeneralStatsObj OriginStats;
+    public GeneralCombatStats CombatStats = new();
 
     HealthManager _healthManager;
     AI_DefaultStrategy _defaultStrategy;
@@ -182,10 +213,12 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public delegate void OnMonsterDeathEvent();
     [HideInInspector]
     public bool IsPlacedMonster;
+    [HideInInspector]
+    public float MoveSpeed;
+    public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
 
     // getters and setters
     public AIMethods AIMethods { get { return _methods; } }
-    public EnemyBaseStates CurState { get; set; }
     public NavMeshAgent Agent { get { return _agent; } }
     public Animator Animator { get { return _anim; } }
     public SoundManager SoundManager { get { return _soundMan; } }
@@ -194,22 +227,9 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     [HideInInspector] public bool chasePlayerForever = false;
 
-    // the stats below will change for different enemy individual,
-    // so it cannot get the stats from static object directly, it needs to store locally
-    public float HP { get; set; }
-    public float MaxHP { get; set; }
-    public float Speed { get; set; }
-    public float ATK { get; set; }
-    public float DEF { get; set; }
     public bool IsInvincible { get; set; }
     public bool IsHit { get; set; }
     public bool IsDying { get; private set; }
-    // these stats below will not change for same enemy type, so it can get directly from Script Object
-    public float DmgReduc { get { return _enemyStats.DmgReduce; } }
-    public float CritChance { get { return _enemyStats.CritChance; } }
-    public float CritResis { get { return _enemyStats.CritDmgResis; } }
-    public float CritMult { get { return _enemyStats.CritDmgMult; } }
-    public float AttackTime { get { return _enemyStats.AttackTime; } }
 
     public float ChaseTime { get { return _enemyStaticStatScript._stats._chaseTime; } }
     public float VisDist { get { return _enemyStaticStatScript._stats._visDist; } }

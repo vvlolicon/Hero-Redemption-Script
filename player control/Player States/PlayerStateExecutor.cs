@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
+using static BuffSender;
 
 public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 {
@@ -19,6 +20,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
         _healthMan._playerExecutor = this;
+        PlayerOriginStats.InitializeStats();
+        PlayerCombatStats.SetStats(PlayerOriginStats.GetCombatStats());
         DistToGround = _charCont.bounds.extents.y;
         setValue();
         AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
@@ -47,14 +50,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         CanRun = true;
         AttackTimer = 0;
 
-        RunSpeedMult = _playerStaticData._runSpeedMult;
-        AtkSpeedMult = _playerStaticData._atkSpeedMult;
-        JumpSpeed = _playerStaticData._jumpSpeed;
-        Gravity = _playerStaticData._gravity;
-        GroundedGravity = _playerStaticData._groundedGravity;
-        Mass = _playerStaticData._mass;
-        MaxDashTime = _playerStaticData._maxDashTime;
-        DashSpeed = _playerStaticData._dashSpeed;
+        RunSpeedMult = PlayerStaticData._runSpeedMult;
+        AtkSpeedMult = PlayerStaticData._atkSpeedMult;
+        JumpSpeed = PlayerStaticData._jumpSpeed;
+        Gravity = PlayerStaticData._gravity;
+        GroundedGravity = PlayerStaticData._groundedGravity;
+        Mass = PlayerStaticData._mass;
+        MaxDashTime = PlayerStaticData._maxDashTime;
+        DashSpeed = PlayerStaticData._dashSpeed;
 
         _currentDashTime = MaxDashTime;
     }
@@ -71,7 +74,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     // Update is called once per frame
     void Update()
     {
-        PlayerSpeed = _playerStats.SPEED / 10;
+        PlayerSpeed = PlayerCombatStats.Speed / 10;
         CurState.UpdateStates();
         //test
         if (test_showState.gameObject.activeInHierarchy)
@@ -88,27 +91,27 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         // Move the controller
         if(!TransportPlayer)
             _charCont.Move(CurMovement * Time.deltaTime);
-        _atkTimeCD = _playerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
+        _atkTimeCD = PlayerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
         if (AttackTimer > 0)
         {
             AttackTimer -= Time.deltaTime;
-            Debug.Log("AttackTimer: " + AttackTimer + " / atkTimeCD: " + _atkTimeCD);
+            //Debug.Log("AttackTimer: " + AttackTimer + " / atkTimeCD: " + _atkTimeCD);
         }
     }
 
     public float GetAtkSpeedMult()
     {
-        return Mathf.Min((1 + _playerStats.AttackTime), 10f);
+        return Mathf.Min((1 + PlayerCombatStats.AttackTime), 10f);
     }
 
     void FixedUpdate()
     {
         // for every MP regen frequency(default 1s), recover player MP for value of MP_Regen
         // to ensure actual time frequency, use fixed update for this
-        if (_mpRegenTimer > _playerStaticData._mpRegenFreq)
+        if (_mpRegenTimer > PlayerStaticData._mpRegenFreq)
         {
             // ensure MP does not exceed maximum MP
-            PlayerStats.MP = Mathf.Min(PlayerStats.MaxMP, PlayerStats.MP + PlayerStats.MP_Regen);
+            PlayerCombatStats.MP = Mathf.Min(PlayerCombatStats.MaxMP, PlayerCombatStats.MP + PlayerCombatStats.MP_Regen);
             _mpRegenTimer = 0;
         } else
         {
@@ -171,10 +174,36 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             }
             // apply damage whether or not player is at hit state
             DmgResult dmgResult = HealthManager.calculateDamage(
-                info.ATK, PlayerStats.DEF, info.CritChance, PlayerStats.CritChanRdc, 
-                PlayerStats.DmgReduce, info.CritMult, PlayerStats.CritDmgResis);
+                info.ATK, PlayerCombatStats.DEF, info.CritChance, PlayerCombatStats.CritChanRdc,
+                PlayerCombatStats.DmgReduce, info.CritMult, PlayerCombatStats.CritDmgResis);
             _healthMan.Damage(dmgResult.Dmg);
-            Debug.Log("You get damage: " + dmgResult.Dmg + " Is critial hit: " + dmgResult.IsCritHit);
+            PlayerCombatStats.HP -= dmgResult.Dmg;
+            OnStatsChanged?.Invoke();
+            //Debug.Log("You get damage: " + dmgResult.Dmg + " Is critial hit: " + dmgResult.IsCritHit);
+        }
+    }
+
+    public void DamageEnemy(GameObject victim, Color dmgColor)
+    {
+        EnemyDmgInfo dmgInfo = new EnemyDmgInfo(
+                        PlayerCombatStats.ATK,
+                        PlayerCombatStats.CritChance,
+                        PlayerCombatStats.CritDmgMult,
+                        dmgColor, transform, victim);
+        dmgInfo.CallDamageable(victim);
+        SendBuffToTarget(victim);
+    }
+
+    void SendBuffToTarget(GameObject victim)
+    {
+        BuffSender[] senders = GetComponents<BuffSender>();
+        if (senders.Length == 0) return;
+        foreach (var sender in senders)
+        {
+            if (sender.howToAttachBuff == AttachBuffWays.Damage)
+            {
+                sender.SendBuff(victim);
+            }
         }
     }
     public void EnableMove(bool camMoveT) //Enables or disables the character movement
@@ -185,7 +214,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     public void OnPickItem(InstantEffectPickupItem pickedItem)
     {
-        PlayerStats.ChangePlayerStats(pickedItem.itemAttributes);
+        PlayerCombatStats.ChangePlayerStats(pickedItem.itemAttributes);
     }
 
     public void NewRoroutine(IEnumerator coroutine)
@@ -230,7 +259,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public GameObject _childPlayer;
     [SerializeField] Camera _camera;
     [SerializeField] GameObject _movIndicator; //Where is the character moving to
-    public PlayerStaticData _playerStaticData;
+    public PlayerStaticData PlayerStaticData;
     public Transform _rangeAtkAim;
 
     float _currentDashTime;
@@ -254,7 +283,9 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public TMP_Text test_showState;
     public TMP_Text test_MovementY;
 
-    public GeneralStatsObj _playerStats;
+    public GeneralStatsObj PlayerOriginStats;
+    public GeneralCombatStats PlayerCombatStats = new();
+    public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
 
 
     //getter and setter
@@ -296,7 +327,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public CharacterController CharCont { get { return _charCont; } }
     public Camera Camera { get { return _camera; } }
     public SoundManager SoundMan { get { return _soundMan; } }
-    public GeneralStatsObj PlayerStats { get { return _playerStats; } }
+
+
     public AnimatorEvents AnimEvent { get; private set; }
 
     public bool IsDashing() //Checks if player if dashing

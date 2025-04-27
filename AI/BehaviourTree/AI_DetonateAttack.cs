@@ -25,7 +25,7 @@ namespace Assets.AI.BehaviourTree
         private void Awake()
         {
             _originScale = gameObject.transform.localScale;
-            Debug.Log($"{gameObject.name} Local Scale is {_originScale.x}");
+            //Debug.Log($"{gameObject.name} Local Scale is {_originScale.x}");
         }
         public Node BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
         {
@@ -112,13 +112,12 @@ namespace Assets.AI.BehaviourTree
         {
             _methods = methods;
             _executor = executor;
-            _detonateTime = executor.AttackTime;
+            _detonateTime = executor.CombatStats.AttackTime;
             _detonateRange = detonateRange;
             _scaleMult = sizeMult;
             _originScale = originScale;
             _failedCallback = failedCallback;
             _successCallback = successCallback;
-            Debug.Log($"origin Scale is {_originScale.x}, _scaleMult is {_scaleMult}");
         }
 
         public Node.Status Evaluate()

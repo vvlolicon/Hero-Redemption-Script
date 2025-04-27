@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
+    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
     GameObject equipmentItemContainer { get { return UI_Controller.GetInventoryItemContainer(UI_Window.EquipmentUI); } }
     GameObject inventory_ui { get { return UI_Controller.GetInventoryItemContainer(UI_Window.InventoryUI); } }
     GameObject BoxInventoryContainer { get { return UI_Controller.GetInventoryItemContainer(UI_Window.BoxInventoryUI); } }
@@ -18,7 +19,6 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        
         // check if the item is in any slot (drag func will change the parent it to somewhere)
         if (transform.parent.parent != null)
         {
@@ -28,22 +28,25 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             //Debug.Log("click Item: " + clickItem.itemName);
             GameObject item_at_interface = transform.parent.parent.gameObject;
             GameObject itemSlot = transform.parent.gameObject;
+            StoredItemPlaceType windowPlaceType = item_at_interface.GetStoredPlaceType();
+            int slotIndex = itemSlot.transform.GetIndexInParent();
             //Debug.Log("item_at_interface: " + item_at_interface.name);
             //Debug.Log("equipment_ui: " + equipment_ui.name);
             //Debug.Log("inventory ui: " + inventory_ui.name);
             // if item is a consumable item(e.g. potion) and item is in player inventory or hot bar, use it 
-            if (clickItem.itemType == ItemType.Consumable)
+            if (clickItem.itemType == ItemType.Consumable && 
+                windowPlaceType != StoredItemPlaceType.Box)
             {
-                if (item_at_interface.CompareTag("Player_Inventory") || item_at_interface.CompareTag("Player_HotbarItem"))
+                if (windowPlaceType == StoredItemPlaceType.PlayerBackpack ||
+                    windowPlaceType == StoredItemPlaceType.PlayerHotbar)
                 {
                     GetComponent<ConsumableItem>().ConsumeItem();
                 }
-
             }
             // if equipment ui is opened and item is in player inventory, try to put item into equipment slot
             else
             {
-                if (item_at_interface.CompareTag("Player_Inventory"))
+                if (windowPlaceType == StoredItemPlaceType.PlayerBackpack)
                 {
                     if (equipmentItemContainer.activeInHierarchy)
                     {
@@ -58,8 +61,11 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                                 // if equipment slot don't contain any item, put it
                                 if (equipment_slot.childCount == 0)
                                 {
-                                    equipment_slot.GetComponent<MoveItem>().UpdateItemAttribute(clickItem);
                                     //Debug.Log("find slot: " + equipment_slot.gameObject.name);
+                                    PlayerBackpack.SetPlayerEquippedItem(clickItem, i); 
+                                    PlayerBackpack.SetItemInPlayerBackpack(
+                                        null, itemSlot.transform.GetIndexInParent(), windowPlaceType);
+                                    equipment_slot.GetComponent<MoveItem>().UpdateItemAttribute(clickItem);
                                     clickDragItem.parentAfterDrag = equipment_slot;
                                     transform.SetParent(equipment_slot);
                                     break;
@@ -72,15 +78,16 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                         Debug.Log("Try to move object from player inventory to box");
                     }
                 }
-
-                else if (item_at_interface.CompareTag("Player_Equipment") && inventory_ui.activeInHierarchy)
+                else if (windowPlaceType == StoredItemPlaceType.PlayerEquipment && inventory_ui.activeInHierarchy)
                 {// if item is in player equipment, try to put it back to inventory
+                    PlayerBackpack.SetPlayerEquippedItem(null, slotIndex);
+                    itemSlot.GetComponent<MoveItem>().UpdateItemAttribute(null);
                     MoveItemTo(itemSlot.transform, inventory_ui.transform, clickDragItem);
                 }
-                else if (item_at_interface.CompareTag("Box_Inventory") && inventory_ui.activeInHierarchy)
+                else if (windowPlaceType == StoredItemPlaceType.Box && inventory_ui.activeInHierarchy)
                 {// if item is in Box, try to put it back to inventory
                     item_at_interface.GetComponent<InventorySlotManager>().InvokeEvent(
-                        itemSlot.transform.GetIndexOfChild(), clickItem, true);
+                        itemSlot.transform.GetIndexInParent(), clickItem, true);
                     MoveItemTo(itemSlot.transform, inventory_ui.transform, clickDragItem);
                 }
             }
@@ -89,6 +96,10 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void MoveItemTo(Transform originSlot, Transform targetInventory, DraggableItem clickDragItem)
     {
+        StoredItemPlaceType originWindowPlaceType = originSlot.parent.gameObject.GetStoredPlaceType();
+        StoredItemPlaceType targetWindowPlaceType = targetInventory.gameObject.GetStoredPlaceType();
+        Item itemMoved = clickDragItem.GetComponent<ItemDetail>().item;
+        int originSlotIndex = originSlot.GetIndexInParent();
         for (int i = 0; i < targetInventory.childCount; i++)
         {
             Transform inventory_slot = targetInventory.GetChild(i);
@@ -97,10 +108,12 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 //Debug.Log("remove item at slot: " + transform.parent.gameObject.name);
                 //Debug.Log("remove item name: " + transform.parent.GetComponent<MoveItem>().curSlotItem.itemName);
-                if (originSlot.CompareTag("Player_Equipment") &&
-                    !targetInventory.CompareTag("Player_Equipment"))
+                PlayerBackpack.SetItemInPlayerBackpack(itemMoved, i, targetWindowPlaceType);
+                PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+                if (originWindowPlaceType == StoredItemPlaceType.PlayerEquipment &&
+                    targetWindowPlaceType != StoredItemPlaceType.PlayerEquipment)
                 {
-                    originSlot.GetComponent<MoveItem>().removeItemAttribute();
+                    originSlot.GetComponent<MoveItem>().RemoveItemAttribute();
                 }
                 clickDragItem.parentAfterDrag = inventory_slot;
                 transform.SetParent(inventory_slot);

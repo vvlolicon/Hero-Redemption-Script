@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class ConsumableItem : MonoBehaviour
 {
@@ -27,9 +26,9 @@ public class ConsumableItem : MonoBehaviour
 
     public void UsePotion(List<ItemAttribute> attributes)
     {
-        if (_executor.PlayerStats.CanConsumeItem(attributes))
+        if (_executor.PlayerCombatStats.CanConsumeItem(attributes))
         {
-            _executor.PlayerStats.ChangePlayerStats(attributes);
+            _executor.PlayerCombatStats.ChangePlayerStats(attributes);
             item.curStack--;
             itemDetail.UpdateStack();
             if (item.curStack == 0)

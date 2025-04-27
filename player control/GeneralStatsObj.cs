@@ -20,18 +20,25 @@ public class GeneralStatsObj : ScriptableObject
     public float CritDmgResis;
     public float DmgReduce;
 
-    private void OnEnable()
+    GeneralCombatStats _combatStats;
+
+    public void InitializeStats()
     {
         HP = MaxHP;
         MP = MaxMP;
+        if (_combatStats == null)
+            _combatStats = new GeneralCombatStats(this);
+        else
+            _combatStats.SetStats(this);
     }
 
-    public void setStats(GeneralStatsObj stats)
+    public void SetStats(GeneralStatsObj stats)
     {
         MaxHP = stats.MaxHP;
         HP = MaxHP;
         MaxMP = stats.MaxMP;
         MP = MaxMP;
+        MP_Regen = stats.MP_Regen;
         ATK = stats.ATK;
         DEF = stats.DEF;
         SPEED = stats.SPEED;
@@ -42,4 +49,10 @@ public class GeneralStatsObj : ScriptableObject
         CritDmgResis = stats.CritDmgResis;
         DmgReduce = stats.DmgReduce;
     }
+
+    public GeneralCombatStats GetCombatStats() => _combatStats;
+
+    public float GetStats(CombatStatsType type) => _combatStats.GetStats(type);
+    public void SetStats(CombatStatsType type, float value) => _combatStats.SetStats(type, value);
+    public void ChangeStats(CombatStatsType type, float value) => _combatStats.ChangeStats(type, value);
 }

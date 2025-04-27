@@ -108,7 +108,7 @@ public class PlayerBaseMethods
 
 public static partial class ExtendMethods
 {
-    public static bool CanConsumeItem(this GeneralStatsObj playerStats, List<ItemAttribute> attributes)
+    public static bool CanConsumeItem(this GeneralCombatStats playerStats, List<ItemAttribute> attributes)
     {
         foreach (var itemAttr in attributes)
         {
@@ -126,14 +126,14 @@ public static partial class ExtendMethods
         }
         return true;
     }
-    public static void ChangePlayerStats(this GeneralStatsObj playerStats, List<ItemAttribute> attributes)
+    public static void ChangePlayerStats(this GeneralCombatStats playerStats, List<ItemAttribute> attributes)
     {
         foreach (ItemAttribute attr in attributes)
         {
             playerStats.ChangePlayerStats(attr);
         }
     }
-    public static void ChangePlayerStats(this GeneralStatsObj playerStats, ItemAttribute itemAttr)
+    public static void ChangePlayerStats(this GeneralCombatStats playerStats, ItemAttribute itemAttr)
     {
         float valueChanged = itemAttr.AtrbValue;
         switch (itemAttr.AtrbName)
@@ -176,7 +176,7 @@ public static partial class ExtendMethods
                 playerStats.DEF += valueChanged;
                 break;
             case ItemAttributeName.SPEED:
-                playerStats.SPEED += valueChanged;
+                playerStats.Speed += valueChanged;
                 break;
             case ItemAttributeName.CritChance:
                 playerStats.CritChance += valueChanged;

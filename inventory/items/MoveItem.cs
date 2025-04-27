@@ -11,7 +11,9 @@ using static UnityEditor.Progress;
 public class MoveItem : MonoBehaviour, IDropHandler
 {
     public ItemType ThisSlotType;
-    public GeneralStatsObj playerStats;
+    PlayerStateExecutor Player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    GeneralCombatStats PlayerStats { get { return Player.PlayerCombatStats; } }
     [HideInInspector]public Item curSlotItem;
 
     public void OnDrop(PointerEventData eventData)
@@ -19,11 +21,21 @@ public class MoveItem : MonoBehaviour, IDropHandler
         GameObject dropObject = eventData.pointerDrag;
         DraggableItem dropDragItem = dropObject.GetComponent<DraggableItem>();
         ItemType dropItemType = dropObject.GetComponent<ItemDetail>().item.itemType;
+
         GameObject dropItemOriginSlot = dropDragItem.parentAfterDrag.gameObject;
         GameObject dropItemOriginWindow = dropDragItem.parentAfterDrag.parent.gameObject;
+        StoredItemPlaceType originWindowPlaceType = dropItemOriginWindow.GetStoredPlaceType();
+
         GameObject targetSlotWindow = transform.parent.gameObject;
+        GameObject targetSlot = gameObject;
+        StoredItemPlaceType targetWindowPlaceType = targetSlotWindow.GetStoredPlaceType();
+
+        int targetSlotIndex = transform.GetIndexInParent();
+        int originSlotIndex = dropItemOriginSlot.transform.GetIndexInParent();
         Item droppedItem = dropObject.GetComponent<ItemDetail>().item;
 
+        Item targetItem;
+        DraggableItem targetDragItem;
         //Debug.Log("##########Test Variables##########");
         //Debug.Log("target slot has item inside");
         //Debug.Log("dropItemOriginWindow" + dropItemOriginWindow.name);
@@ -32,102 +44,112 @@ public class MoveItem : MonoBehaviour, IDropHandler
         //Debug.Log("transform.childCount: " + transform.childCount);
         if (transform.childCount > 0) // has item in target dropped window
         {
-            Item targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
-            //Debug.Log("targetItem: " + targetItem.name);
-            DraggableItem targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
-            if (targetSlotWindow.CompareTag(dropItemOriginWindow.tag) && 
-                !targetSlotWindow.CompareTag("Player_Equipment") && 
-                !dropItemOriginWindow.CompareTag("Player_Equipment"))
+            targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
+            targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
+            if (targetWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
             {
-                //Debug.Log("dropping item from inventory to inventory");
-                exchangeItem(targetDragItem, dropDragItem);
-            }
-            else if (targetSlotWindow.CompareTag("Player_Equipment"))
-            {
-                if (dropItemOriginWindow.CompareTag("Player_Inventory"))
+                if (originWindowPlaceType == StoredItemPlaceType.PlayerBackpack)
                 { // item is drag from player inventory slot to equipment slot
-                    //Debug.Log("dropping item from inventory to equipment");
-                    //if target exchange item type is equal to drag item type, exchange the position of target item with drag item 
+
+                    //if target exchange item type is equal to drag item type,
+                    //exchange the position of target item with drag item 
                     if (dropItemType.CompareItemType(ThisSlotType))
                     {// if item is the type that the equipment slot restricted
                         //Debug.Log("droppedItem: " + droppedItem.itemName + " / targetItem: " + targetItem.itemName);
                         UpdateItemAttribute(droppedItem);
-                        exchangeItem(targetDragItem, dropDragItem);
+                        exchangeItem();
                     }
                 }
             }
-            else if (targetSlotWindow.CompareTag("Player_Inventory"))
+            else if (targetWindowPlaceType == StoredItemPlaceType.PlayerBackpack)
             {
-                if (dropItemOriginWindow.CompareTag("Player_Equipment"))
+                if (originWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
                 {// item is drag from equipment slot to player inventory slot
                     if (targetItem.itemType.CompareItemType(ThisSlotType))
                     { // if item is the type that the equipment slot restricted
                         //Debug.Log("droppedItem: " + droppedItem.itemName + " / targetItem: " + targetItem.itemName);
                         UpdateItemAttribute(droppedItem);
-                        exchangeItem(targetDragItem, dropDragItem);
+                        exchangeItem();
                     }
                     else
-                    {
+                    { // target item does not match the equipment slot restriction
+                      // move dropped item to empty space of player inventory
+                        PlayerBackpack.SetPlayerEquippedItem(null, originSlotIndex);
                         dropObject.GetComponent<ClickItem>().MoveItemTo(
-                            dropItemOriginSlot.transform, targetSlotWindow.transform, dropDragItem);
+                            dropItemOriginSlot.transform, 
+                            targetSlotWindow.transform, 
+                            dropDragItem);
                     }
                 }
             }
-            else if (targetSlotWindow.CompareTag("Player_HotbarItem") && dropItemType == ItemType.Consumable)
+            else if (targetWindowPlaceType == StoredItemPlaceType.PlayerHotbar &&
+                dropItemType == ItemType.Consumable)
             {
-                exchangeItem(targetDragItem, dropDragItem);
+                exchangeItem();
             }
             else
             {
-                exchangeItem(targetDragItem, dropDragItem);
+                exchangeItem();
             }
         }
         else // does not have item in target dropped window
         {
-            if (targetSlotWindow.CompareTag("Player_Inventory"))
+            switch (targetWindowPlaceType)
             {
-                dropItem(dropDragItem);
-                if (dropItemOriginWindow.CompareTag("Player_Equipment"))
-                {
-                    dropItemOriginSlot.GetComponent<MoveItem>().removeItemAttribute();
-                }
+                case StoredItemPlaceType.PlayerEquipment:
+                    if (dropItemType.CompareItemType(ThisSlotType))
+                    {
+                        UpdateItemAttribute(droppedItem);
+                        dropItem();
+                    }
+                    break;
+                case StoredItemPlaceType.PlayerHotbar:
+                    if (dropItemType == ItemType.Consumable)
+                    {
+                        dropItem();
+                    }
+                    break;
+                default:
+                    dropItem();
+                    break;
             }
-            else if (targetSlotWindow.CompareTag("Player_Equipment") && dropItemType.CompareItemType(ThisSlotType))
+            if(originWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
             {
-                UpdateItemAttribute(droppedItem);
-                dropItem(dropDragItem);
+                dropItemOriginSlot.GetComponent<MoveItem>().RemoveItemAttribute();
             }
-            else if (targetSlotWindow.CompareTag("Player_HotbarItem") && dropItemType == ItemType.Consumable)
-            {
-                dropItem(dropDragItem);
-            }
-
         }
 
-        if (dropItemOriginWindow.CompareTag("Box_Inventory") && !targetSlotWindow.CompareTag("Box_Inventory"))
+        if (originWindowPlaceType == StoredItemPlaceType.Box && 
+            targetWindowPlaceType != StoredItemPlaceType.Box)
         { // take things away from box
             dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
-                dropItemOriginSlot.transform.GetIndexOfChild(), droppedItem, true);
+                dropItemOriginSlot.transform.GetIndexInParent(), droppedItem, true);
         }
         //Debug.Log("##########Test Variables End##########");
-    }
-
-    private void exchangeItem(DraggableItem itemInSlot, DraggableItem itemDrop)
-    {
-        itemInSlot.parentAfterDrag = itemDrop.parentAfterDrag;
-        itemInSlot.gameObject.transform.SetParent(itemDrop.parentAfterDrag);
-        itemDrop.parentAfterDrag = transform;
-    }
-
-    public void dropItem(DraggableItem itemDrop)
-    {
-        itemDrop.parentAfterDrag = transform;
+        void exchangeItem()
+        {
+            if (targetDragItem == null) return;
+            targetDragItem.parentAfterDrag = dropDragItem.parentAfterDrag;
+            targetDragItem.gameObject.transform.SetParent(dropDragItem.parentAfterDrag);
+            dropDragItem.parentAfterDrag = transform;
+            PlayerBackpack.SetItemInPlayerBackpack(droppedItem, targetSlotIndex, targetWindowPlaceType);
+            PlayerBackpack.SetItemInPlayerBackpack(targetItem, originSlotIndex, originWindowPlaceType);
+        }
+        void dropItem()
+        {
+            dropDragItem.parentAfterDrag = transform;
+            PlayerBackpack.SetItemInPlayerBackpack(droppedItem, targetSlotIndex, targetWindowPlaceType);
+            PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+        }
     }
 
     public void UpdateItemAttribute(Item item)
     {
         if (curSlotItem != null) {
-            //Debug.Log("curSlotItem: " + curSlotItem.itemName + " / reg item:" + item.itemName);
+            if(item != null)
+                Debug.Log($"curSlot: {gameObject.name}, curSlotItem: {curSlotItem.itemName} / reg item: {item.itemName}");
+            else 
+                Debug.Log($"curSlot: {gameObject.name}, unregister {curSlotItem.itemName}");
             if (item != curSlotItem)
             {
                 registerItemAttribute(item);
@@ -142,14 +164,16 @@ public class MoveItem : MonoBehaviour, IDropHandler
 
     private void registerItemAttribute(Item item)
     {
-        removeItemAttribute();
+        RemoveItemAttribute();
         curSlotItem = item;
-        //Debug.Log("Register item attribute: " + curSlotItem.name);
-
-        playerStats.ChangePlayerStats(item.itemAttributes);
+        if (item != null)
+        {
+            //Debug.Log("Register item attribute: " + curSlotItem.name);
+            PlayerStats.ChangePlayerStats(item.itemAttributes);
+        }
     }
 
-    public void removeItemAttribute()
+    public void RemoveItemAttribute()
     {
         if (curSlotItem != null)
         {
@@ -157,7 +181,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
             foreach (ItemAttribute itemAttr in curSlotItem.itemAttributes)
             {
                 float value = itemAttr.AtrbValue * -1;
-                playerStats.ChangePlayerStats(new ItemAttribute(itemAttr.AtrbName, value));
+                PlayerStats.ChangePlayerStats(new ItemAttribute(itemAttr.AtrbName, value));
             }
             curSlotItem = null;
         }

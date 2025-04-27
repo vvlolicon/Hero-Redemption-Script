@@ -163,14 +163,8 @@ public class ProjectileControl : MonoBehaviour
             {
                 if (!damagedEnemy.Contains(victim))
                 {
-                    GeneralStatsObj _playerStats = player.PlayerStats;
                     damagedEnemy.Add(victim);
-                    EnemyDmgInfo dmgInfo = new EnemyDmgInfo(
-                        _playerStats.ATK, 
-                        _playerStats.CritChance, 
-                        _playerStats.CritDmgMult, 
-                        _dmgColor, transform, victim);
-                    dmgInfo.CallDamageable(victim);
+                    player.DamageEnemy(victim, _dmgColor);
                 }
             }
         }

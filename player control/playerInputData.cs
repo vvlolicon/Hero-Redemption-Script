@@ -11,8 +11,10 @@ using static UnityEngine.InputManagerEntry;
 public class PlayerInputData : Singleton<PlayerInputData>
 {
     private PlayerStateExecutor _executor;
+    PlayerBackpack _playerBackpack;
 
-	public bool InputJump { get; set; }
+
+    public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
     public bool CursorLocked { get; private set; }
     public bool InputEnable { get; set; }
@@ -30,6 +32,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     private void Initialize()
     {
         _executor = GetComponent<PlayerStateExecutor>();
+        _playerBackpack = GetComponent<PlayerBackpack>();
         EnableAllInput(true);
 
         // deactive ui windows after setting up vars
@@ -94,8 +97,10 @@ public class PlayerInputData : Singleton<PlayerInputData>
 	{
         if (InputEnable)
         {
-            UI_Controller.SetUIActive(UI_Window.InventoryUI, true);
-            UI_Controller.SetUIActive(UI_Window.EquipmentUI, true);
+            UI_Controller.OpenInventoryUI(UI_Window.InventoryUI,
+                _playerBackpack.GetPlayerBackpackItems());
+            UI_Controller.OpenInventoryUI(UI_Window.EquipmentUI,
+                _playerBackpack.GetPlayerEquippedItems());
             EnableAllInput(false);
             _executor.OnOpenInventory();
         }
@@ -178,7 +183,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
 
     void UseHotbarItemAtSlot(int slotNum)
     {
-        Transform hotbarItemWindow = UI_Controller.UI_Windows[UI_Window.HotBar].transform.GetChild(0);
+        Transform hotbarItemWindow = UI_Controller.Hotbar.transform.GetChild(0);
         Debug.Log("Using hotbar at slot " + slotNum);
         Transform slot = hotbarItemWindow.GetChild(slotNum);
         if (slot.childCount > 0)

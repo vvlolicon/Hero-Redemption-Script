@@ -31,13 +31,13 @@ public class EnemyStaticStatsMono : MonoBehaviour
         if (_patrolPoints.Count == 1)
         {
             // 如果只有一个巡逻点，直接使用该点
-            Debug.Log($"Only one patrol point detected for {gameObject.name}. Using it as the initial point.");
+            //Debug.Log($"Only one patrol point detected for {gameObject.name}. Using it as the initial point.");
         }
 
-        Debug.Log($"Initial patrol points count: {_patrolPoints.Count}");
+        //Debug.Log($"Initial patrol points count: {_patrolPoints.Count}");
         void CreateNewPatrolPoint()
         {
-            Debug.Log("Creating new patrol point");
+            //Debug.Log("Creating new patrol point");
             GameObject virtualPoint = new GameObject($"SpawnPoint of {gameObject.name}");
             virtualPoint.transform.position = gameObject.transform.position;
             _patrolPoints = new List<Transform> { virtualPoint.transform };

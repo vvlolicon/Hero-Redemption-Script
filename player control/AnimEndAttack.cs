@@ -22,7 +22,7 @@ public class AnimEndAttack : StateMachineBehaviour
         AnimatorEvents animEvent = animator.gameObject.GetComponent<AnimatorEvents>();
         if (animEvent != null)
         {
-            Debug.Log(animEvent.gameObject.name + " end attack");
+            //Debug.Log(animEvent.gameObject.name + " end attack");
             animEvent.DisableWeaponColl();
         }
     }

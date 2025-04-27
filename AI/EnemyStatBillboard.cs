@@ -26,8 +26,8 @@ public class EnemyStatBillboard : MonoBehaviour
 
     private void LateUpdate()
     {
-        float maxHP = _executor.MaxHP;
-        float HP = _executor.HP;
+        float maxHP = _executor.CombatStats.MaxHP;
+        float HP = _executor.CombatStats.HP;
         _hpBar.value = HP / maxHP;
         if (HP % 1 != 0)
         {

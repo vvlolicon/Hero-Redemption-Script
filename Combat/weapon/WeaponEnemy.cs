@@ -22,7 +22,7 @@ public class WeaponEnemy : MonoBehaviour
 	{
         if (other.tag == "Player")
         {
-            PlayerDmgInfo dmgInfo = new PlayerDmgInfo(_executor.ATK, other.transform.position - transform.position, 250f);
+            PlayerDmgInfo dmgInfo = new PlayerDmgInfo(_executor.CombatStats.ATK, other.transform.position - transform.position, 250f);
             dmgInfo.CallDamageable(other.gameObject);
             // ensure only cause damage once;
             _executor.AnimatorEvents.EndAttack();

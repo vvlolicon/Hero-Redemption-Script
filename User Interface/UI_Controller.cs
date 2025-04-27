@@ -26,24 +26,6 @@ public class UI_Controller : Singleton<UI_Controller>
         CloseAllClosableWindows();
     }
 
-    public static T GetUIScript<T>() where T : Component
-    {
-        Type type = typeof(T);
-        if (_UIComponents.ContainsKey(type) && _UIComponents[type] is T uiComponent)
-        {
-            return uiComponent;
-        }
-        else
-        {
-            T component = GetUIComponent<T>();
-            if (component != null)
-            {
-                _UIComponents[type] = component;
-            }
-            return component;
-        }
-    }
-
     public void SetUIActive(UI_Window window, bool active)
     {
         if (UI_Windows.ContainsKey(window))
@@ -144,7 +126,42 @@ public class UI_Controller : Singleton<UI_Controller>
         else return null;
     }
 
-#region some nasty getComponent methods
+    public void OpenInventoryUI(UI_Window window, List<Item> itemsShow)
+    {
+        SetUIActive(window, true);
+        IDisplayItem itemDisplayer = 
+            GetInventoryItemContainer(window).GetComponent<IDisplayItem>();
+        if (window == UI_Window.InventoryUI || 
+            window == UI_Window.BoxInventoryUI)
+        {
+            InventorySlotManager manager = 
+                GetInventoryItemContainer(window).GetComponent<InventorySlotManager>();
+            manager.ForceSetSlotNum(itemsShow.Count);
+        }
+        for (int i = 0; i < itemsShow.Count; i++)
+        {
+            itemDisplayer.SetItemAtSlot(itemsShow[i], i);
+        }
+    }
+
+    #region some nasty getComponent methods
+    public static T GetUIScript<T>() where T : Component
+    {
+        Type type = typeof(T);
+        if (_UIComponents.ContainsKey(type) && _UIComponents[type] is T uiComponent)
+        {
+            return uiComponent;
+        }
+        else
+        {
+            T component = GetUIComponent<T>();
+            if (component != null)
+            {
+                _UIComponents[type] = component;
+            }
+            return component;
+        }
+    }
     static T GetUIComponent<T>() where T : Component
     {
         Type type = typeof(T);
@@ -194,19 +211,25 @@ public class UI_Controller : Singleton<UI_Controller>
             }
         }
         Debug.LogError("UI_WindowType not found for type " + typeof(T).Name);
-        return UI_Window.Null;
+        return UI_Window.None;
     }
 #endregion
     //Dictionary<>
     UI_Manager _UI_Manager;
     public GameObject TestStatics { get; private set; }
-    public Dictionary<UI_Window, GameObject> UI_Windows { get { return _UI_Manager.UI_Windows; } }
+    Dictionary<UI_Window, GameObject> UI_Windows { get { return _UI_Manager.UI_Windows; } }
 
     static Dictionary<UI_Window, Type> UI_WindowTypes = new Dictionary<UI_Window, Type>();
     static Dictionary<Type, UnityEngine.Object> _UIComponents = new();
 
-    public TooltipWindow EquimentTooltipScript { get; private set; }
-    public InteractObject InteractTooltipScript { get; private set; }
-    public PauseMenu PauseMenuScript { get; private set; }
     PlayerInputData Inputdata { get { return PlayerInputData.Instance; } }
+
+    public GameObject InventoryUI { get { return UI_Windows[UI_Window.InventoryUI]; } }
+    public GameObject EquipmentUI { get { return UI_Windows[UI_Window.EquipmentUI]; } }
+    public GameObject Hotbar { get { return UI_Windows[UI_Window.HotBar]; } }
+    public GameObject PauseMenu { get { return UI_Windows[UI_Window.PauseMenu]; } }
+    public GameObject EquimentTooltip { get { return UI_Windows[UI_Window.EquimentTooltip]; } }
+    public GameObject InteractToolip { get { return UI_Windows[UI_Window.InteractToolip]; } }
+    public GameObject BoxInventoryUI { get { return UI_Windows[UI_Window.BoxInventoryUI]; } }
+    public GameObject StageMap { get { return UI_Windows[UI_Window.StageMap]; } }
 }

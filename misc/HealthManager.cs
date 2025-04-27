@@ -20,9 +20,9 @@ public class HealthManager : MonoBehaviour
     { 
         get {
             if (_playerExecutor != null)
-                return _playerExecutor.PlayerStats.HP;
+                return _playerExecutor.PlayerCombatStats.HP;
             else if (_enemyExecutor != null)
-                return _enemyExecutor.HP;
+                return _enemyExecutor.CombatStats.HP;
             else
                 return Mathf.Infinity;
         }
@@ -30,12 +30,12 @@ public class HealthManager : MonoBehaviour
         {
             if (_playerExecutor != null)
             {
-                _playerExecutor.PlayerStats.HP = value;
+                _playerExecutor.PlayerCombatStats.HP = value;
             }
             else if (_enemyExecutor != null)
             {
-                _enemyExecutor.HP = value;
-                Debug.Log(gameObject.name + " HP left: " + maxHealth + " / " + health);
+                _enemyExecutor.CombatStats.HP = value;
+                //Debug.Log(gameObject.name + " HP left: " + maxHealth + " / " + health);
             }
             else
                 Debug.Log("cannnot find object to set HP");
@@ -46,18 +46,18 @@ public class HealthManager : MonoBehaviour
         get
         {
             if (_playerExecutor != null)
-                return _playerExecutor.PlayerStats.MaxHP;
+                return _playerExecutor.PlayerCombatStats.MaxHP;
             else if (_enemyExecutor != null)
-                return _enemyExecutor.MaxHP;
+                return _enemyExecutor.CombatStats.MaxHP;
             else
                 return Mathf.Infinity;
         }
         set
         {
             if (_playerExecutor != null)
-                _playerExecutor.PlayerStats.MaxHP = value;
+                _playerExecutor.PlayerCombatStats.MaxHP = value;
             else if (_enemyExecutor != null)
-                _enemyExecutor.MaxHP = value;
+                _enemyExecutor.CombatStats.MaxHP = value;
             else
                 Debug.Log("cannnot find object to set HP");
         }

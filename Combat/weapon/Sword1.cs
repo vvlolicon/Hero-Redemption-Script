@@ -25,7 +25,6 @@ public class Sword1 : MonoBehaviour
         if (_player == null)
             _player = GameObject.FindWithTag("Player");
         _executor = _player.GetComponent<PlayerStateExecutor>();
-        _playerStats = _executor.PlayerStats;
     }
 
 	private void OnTriggerEnter(Collider other)
@@ -34,8 +33,7 @@ public class Sword1 : MonoBehaviour
         {
             if (!attackedEnemy.Contains(other)) { 
                 attackedEnemy.Add(other);
-                EnemyDmgInfo dmgInfo = new EnemyDmgInfo(_playerStats.ATK, _playerStats.CritChance, _playerStats.CritDmgMult, _dmgColor, transform, other.gameObject);
-                dmgInfo.CallDamageable(other.gameObject);
+                _executor.DamageEnemy(other.gameObject, _dmgColor);
             }
         }
 	}

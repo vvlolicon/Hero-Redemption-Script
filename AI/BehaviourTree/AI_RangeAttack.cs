@@ -82,13 +82,13 @@ namespace Assets.AI.BehaviourTree
             _executor.WaitTimer += Time.deltaTime;
             _waitTimer = _executor.WaitTimer;
 
-            if (_waitTimer > _executor.AttackTime)
+            if (_waitTimer > _executor.CombatStats.AttackTime)
             {
                 _animator.SetTrigger("IsMeleeAttacking");
                 _executor.chasePlayerForever = false;// stop consider chase player until finish a attack
             }
             // if the animation finish plays, fire projectile and wait for attack CD
-            if (_waitTimer > _executor.AttackTime + _executor.AtkAnimTime)
+            if (_waitTimer > _executor.CombatStats.AttackTime + _executor.AtkAnimTime)
             {
                 _actionFireProjectile();
                 _methods.ResetModel();

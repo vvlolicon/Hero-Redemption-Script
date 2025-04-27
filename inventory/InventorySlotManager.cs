@@ -2,12 +2,16 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class InventorySlotManager : MonoBehaviour
+public interface IDisplayItem
+{
+    public void SetItemAtSlot(Item item, int slotIndex);
+}
+
+public class InventorySlotManager : MonoBehaviour, IDisplayItem
 {
     public int slot_num = 0;
     [SerializeField] GameObject slotObject;
     [SerializeField] GameObject itemObject;
-
     public event Action<int, Item, bool> SlotChangeAction;
 
     private void Awake()
@@ -115,7 +119,7 @@ public class InventorySlotManager : MonoBehaviour
         return false;
     }
 
-    public void SetItemAtSlot(int slotIndex, Item item)
+    public void SetItemAtSlot(Item item, int slotIndex)
     {
         int curSlotNum = transform.childCount;
         if (slotIndex > curSlotNum - 1)
@@ -123,22 +127,27 @@ public class InventorySlotManager : MonoBehaviour
             int diffSlotNum = slotIndex - (curSlotNum - 1);
             ChangeSlotNum(diffSlotNum);
         }
-        SetSlotItem(slotIndex, item);
+        SetSlotItem(item, slotIndex);
     }
 
-    void SetSlotItem(int slotIndex, Item item)
+    void SetSlotItem(Item item, int slotIndex)
     {
         Transform slot = transform.GetChild(slotIndex);
         if (slot.childCount > 0)
         {
-            slot.GetComponentInChildren<ItemDetail>().SetItem(item);
+            if (item == null)
+            {
+                Destroy(slot.GetChild(0).gameObject);
+            }
+            else
+            {
+                slot.GetComponentInChildren<ItemDetail>().SetItem(item);
+            }
         }
-        else
+        else if (item != null)
         { // create item if there is no item in the slot
             GameObject newItem = Instantiate(itemObject, slot.transform);
             newItem.GetComponent<ItemDetail>().SetItem(item);
         }
-        //
     }
-
 }

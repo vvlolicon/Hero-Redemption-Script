@@ -50,20 +50,20 @@ namespace Assets.AI.BehaviourTree
             _executor.WaitTimer += Time.deltaTime;
             _waitTimer = _executor.WaitTimer;
 
-            if (_waitTimer > _executor.AttackTime)
+            if (_waitTimer > _executor.CombatStats.AttackTime)
             {
                 _hasDamagePlayer = false;
                 _animator.SetTrigger("IsMeleeAttacking");
                 _executor.chasePlayerForever = false;// stop consider chase player until finish a attack
             }
             if (!_hasDamagePlayer && _waitTimer.IsBetweenOf(
-                _executor.AttackTime + _executor.PreAtkTime,
-                _executor.AttackTime + _executor.PreAtkTime + 2 * Time.deltaTime))
+                _executor.CombatStats.AttackTime + _executor.PreAtkTime,
+                _executor.CombatStats.AttackTime + _executor.PreAtkTime + 2 * Time.deltaTime))
             {
                 DamageTarget();
             }
             // if the animation finish plays, stop attack and wait for attack CD
-            if (_waitTimer > _executor.AttackTime + _executor.AtkAnimTime)
+            if (_waitTimer > _executor.CombatStats.AttackTime + _executor.AtkAnimTime)
             {
                 _methods.ResetModel();
                 _hasDamagePlayer = false;

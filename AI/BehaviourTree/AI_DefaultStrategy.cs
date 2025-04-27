@@ -218,7 +218,7 @@ namespace Assets.AI.BehaviourTree
                 return Node.Status.SUCCESS;
             }
             _chaseTimer += Time.deltaTime;
-            if (_executor.WaitTimer < _executor.AttackTime)
+            if (_executor.WaitTimer < _executor.CombatStats.AttackTime)
                 _executor.WaitTimer += Time.deltaTime;
             _executor.Agent.SetDestination(_executor.Player.position);
 
@@ -227,7 +227,7 @@ namespace Assets.AI.BehaviourTree
 
         public void OnStatusRunning()
         {
-            _executor.Agent.speed = _executor.Speed * 1.5f; // change to running speed
+            _executor.Agent.speed = _executor.CombatStats.Speed /10 * 1.5f; // change to running speed
             _executor.Agent.isStopped = false;
             _chaseTimer = 0;
         }

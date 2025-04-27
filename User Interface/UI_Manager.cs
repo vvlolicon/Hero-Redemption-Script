@@ -36,7 +36,8 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] UIWindowPair[] uiWindowPairs;
     public Dictionary<UI_Window, GameObject> UI_Windows { get; private set; }
 }
-public enum UI_Window { InventoryUI, EquipmentUI, HUD, 
+public enum UI_Window {
+    None, InventoryUI, EquipmentUI, HUD, 
     HotBar, PauseMenu, EquimentTooltip, InteractToolip, 
-    StageMap, BoxInventoryUI, TestStatics, Null
+    StageMap, BoxInventoryUI, TestStatics
 }
