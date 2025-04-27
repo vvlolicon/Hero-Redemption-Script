@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _visDist: 7
   _visAngle: 120
-  _attackDist: 6
+  _attackDist: 10
   _preAtkTime: 3
   _atkAnimTime: 2.7
   _chaseTime: 3

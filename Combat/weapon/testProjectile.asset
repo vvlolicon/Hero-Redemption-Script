@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d2248ad2b89d0479a436fd58474008, type: 3}
   m_Name: testProjectile
   m_EditorClassIdentifier: 
-  ProjectilePrefab: {fileID: 204184767581549914, guid: 23fdc7d3df1c35441bb4260b2c61b70a, type: 3}
+  ProjectilePrefab: {fileID: 8689636903662701249, guid: b705a28b1ac6195438a5eb0858a1f600, type: 3}
   IsAOE: 1
   AOERadius: 5
   DestroyOnTouch: 1
