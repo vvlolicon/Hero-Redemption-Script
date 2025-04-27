@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: test self buff
+  m_Name: perc
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: TestBuffIncreaseATK
+    buffName: 
     buffDescription: 
     buffIcon: {fileID: 0}
     affectStats:
     - AtbrType: 5
-      Value: -200
+      Value: -100
     interval: 0
-    duration: 9999
-    priority: 2
+    duration: 10
+    priority: 10
     usePercentage: 0
     stackable: 0
     isNerf: 1

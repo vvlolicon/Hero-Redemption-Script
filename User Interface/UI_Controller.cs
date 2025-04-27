@@ -140,7 +140,11 @@ public class UI_Controller : Singleton<UI_Controller>
         }
         for (int i = 0; i < itemsShow.Count; i++)
         {
-            itemDisplayer.SetItemAtSlot(itemsShow[i], i);
+            Item item = itemsShow[i];
+            if(itemsShow[i] == null)
+                itemDisplayer.SetItemAtSlot(null, i);
+            else
+                itemDisplayer.SetItemAtSlot(itemsShow[i], i);
         }
     }
 
