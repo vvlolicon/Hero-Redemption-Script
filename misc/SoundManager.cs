@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
 {
@@ -12,13 +13,15 @@ public class SoundManager : MonoBehaviour
 	}
 
 	public SoundAudioClip[] soundAudioClips;
+    [SerializeField] AudioMixerGroup SoundMixer;
 
-	public void PlaySound(string sound)
+    public void PlaySound(string sound)
 	{
 		GameObject soundGameObject = new GameObject("Sound");
 		AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
 		audioSource.clip = GetAudioClip(sound);
-		audioSource.Play();
+        audioSource.outputAudioMixerGroup = SoundMixer;
+        audioSource.Play();
 		Destroy(soundGameObject, audioSource.clip.length);
 	}
 

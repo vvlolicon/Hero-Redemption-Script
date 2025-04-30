@@ -289,7 +289,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             }
         }
         BuffStats newBuff = buff.CreateBuff();
-        Debug.Log($"adding buff {newBuff.buffName} for {gameObject.name}");
+        //Debug.Log($"adding buff {newBuff.buffName} for {gameObject.name}");
         _buffs.Add(newBuff);
         if (!newBuff.stackable)
         {
@@ -309,6 +309,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
                     {
                         _identitalBuffs.Remove(identitalBuff);
                         _identitalBuffs.Add(newBuff);
+                        RemoveBuffStats(identitalBuff);
                         AddBuffStats(newBuff);
                         return;
                     }

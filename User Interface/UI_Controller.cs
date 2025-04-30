@@ -16,7 +16,7 @@ public class UI_Controller : Singleton<UI_Controller>
         UI_WindowTypes[UI_Window.InteractToolip] = typeof(InteractObject);
         UI_WindowTypes[UI_Window.BoxInventoryUI] = typeof(BoxInventoryController);
         UI_WindowTypes[UI_Window.StageMap] = typeof(StageMapController);
-        if (SceneManager.GetActiveScene().buildIndex == 0) {
+        if (SceneManager.GetActiveScene().buildIndex == 1) {
             Initialize(); // load if current scene is dungeon
         }
     }

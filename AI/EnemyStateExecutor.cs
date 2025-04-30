@@ -58,6 +58,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         CombatStats.HP = CombatStats.MaxHP;
         Agent.speed = CombatStats.Speed / 10;
         WaitTimer = 0;
+        OriginStats.InitializeStats();
+        CombatStats.SetStats(OriginStats.GetCombatStats());
     }
 
     void Start()

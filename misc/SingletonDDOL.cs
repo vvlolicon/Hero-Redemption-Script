@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+public class SingletonDDOL<T> : MonoBehaviour where T : MonoBehaviour
 {
     protected static T _instance;
     protected static bool _autoUnparentObjOnAwake = true;
@@ -46,12 +46,15 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
         set
         {
-            if (_instance != null)
+            if (_instance == null)
             {
-                Debug.Log($"Destroying {_instance.name}");
-                Destroy(_instance);
+                _instance = value;
             }
-            _instance = value;
+            else
+            {
+                Debug.Log($"Destroying {value.name}");
+                Destroy(value);
+            }
         }
     }
 
@@ -76,11 +79,11 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         //{
         //    transform.SetParent(null);
         //}
-        //if(Instance.gameObject == this.gameObject && Instance.gameObject.scene.buildIndex != -1)
-        //{
-        //    Debug.Log($"moving {Instance.gameObject} to DontDestroyOnLoad");
-        //    DontDestroyOnLoad(_instance.gameObject);
-        //}
+        if(Instance.gameObject == this.gameObject && Instance.gameObject.scene.buildIndex != -1)
+        {
+            Debug.Log($"moving {Instance.gameObject} to DontDestroyOnLoad");
+            DontDestroyOnLoad(_instance.gameObject);
+        }
         if (Instance == null)
         {
             //Debug.Log($"setting {this.gameObject} as instance");

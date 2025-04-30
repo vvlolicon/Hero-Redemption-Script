@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.SceneManagement;
 using static BuffSender;
 
 public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
@@ -20,12 +21,16 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
         _healthMan._playerExecutor = this;
+        DistToGround = _charCont.bounds.extents.y;
+        AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
         PlayerOriginStats.InitializeStats();
         PlayerCombatStats.SetStats(PlayerOriginStats.GetCombatStats());
-        DistToGround = _charCont.bounds.extents.y;
-        setValue();
-        AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
-        
+
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            ResetPlayerValue(); // load if current scene is dungeon
+        }
+
         //_playerInput = new PlayerInputMethods();
         //_playerInput.PlayerControl.Move.started += OnMove;
         //_playerInput.PlayerControl.Move.performed += OnMove;
@@ -40,7 +45,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         HasInitialized = true;
     }
 
-    void setValue()
+    public void InitializePlayer()
+    {
+        TransportPlayerTo(_spawnPoint.position);
+        ResetPlayerValue();
+        _playerInput.Initialize();
+    }
+
+    void ResetPlayerValue()
     {
         IsHit = false;
         JumpPressed = false;
@@ -125,7 +137,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             _mpRegenTimer += Time.deltaTime;
         }
     }
-
+    #region player input events
     public void OnJumpPressed()
     {
         if (CanJump && !Attacking)
@@ -167,7 +179,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             }
         }
     }
-
+#endregion
     public void ApplyDamage(DmgInfo data)
     {
         if (data!= null && data is PlayerDmgInfo)
@@ -224,11 +236,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         PlayerCombatStats.ChangePlayerStats(pickedItem.itemAttributes);
     }
 
-    public void NewRoroutine(IEnumerator coroutine)
-    {
-        StartCoroutine(coroutine);
-    }
-
     public void OnLanding()
     {
         _playerInput.InputEnable = false;
@@ -268,6 +275,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     [SerializeField] GameObject _movIndicator; //Where is the character moving to
     public PlayerStaticData PlayerStaticData;
     public Transform _rangeAtkAim;
+    [SerializeField] Transform _spawnPoint;
 
     float _currentDashTime;
     Vector3 _dashDir;
@@ -275,7 +283,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     float _mpRegenTimer;
     float _atkTimeCD;
     bool TransportPlayer = false;
-    [SerializeField] public bool HasInitialized = false;
+    [HideInInspector]
+    public bool HasInitialized = false;
 
     CharacterController _charCont;
     Animator _animator;

@@ -24,15 +24,16 @@ public class PlayerInputData : Singleton<PlayerInputData>
 
     private void Start()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
+        _executor = GetComponent<PlayerStateExecutor>();
+        _playerBackpack = GetComponent<PlayerBackpack>();
+        EnableAllInput(true);
+        if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             Initialize(); // load if current scene is dungeon
         }
     }
-    private void Initialize()
+    public void Initialize()
     {
-        _executor = GetComponent<PlayerStateExecutor>();
-        _playerBackpack = GetComponent<PlayerBackpack>();
         EnableAllInput(true);
 
         // deactive ui windows after setting up vars

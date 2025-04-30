@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -9,5 +10,10 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         UI_Controller.OnClosableWindowExit(gameObject);
+    }
+
+    public void OnExitGame()
+    {
+        MainMenuController.Instance.OnReturnMainMenu();
     }
 }

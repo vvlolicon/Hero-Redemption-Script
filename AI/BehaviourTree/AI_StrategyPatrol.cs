@@ -124,14 +124,15 @@ namespace Assets.AI.BehaviourTree
             {
                 return _patrolPoints[0].position;
             }
-            _curPatrolIndex = (_curPatrolIndex + 1) % _patrolPoints.Count;
-            Vector3 nextpoint = _patrolPoints[_curPatrolIndex].position;
+            int nextPatrolIndex = (_curPatrolIndex + 1) % _patrolPoints.Count;
+            Vector3 nextpoint = _patrolPoints[nextPatrolIndex].position;
             //Debug.Log($"next patrol point index: {_curPatrolIndex}");
             return nextpoint;
         }
         void MoveToNextPoint()
         {
             MoveToDestination(GetNextPatrolPoint());
+            _curPatrolIndex = (_curPatrolIndex + 1) % _patrolPoints.Count;
             //_executor.Animator.SetBool("IsMoving", true);
 
         }

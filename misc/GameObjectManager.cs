@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameObjectManager : Singleton<GameObjectManager>
 {
     private static Dictionary<Type, UnityEngine.Object> _playerComponents = new();
+    private static GameObject player;
 
     public static T TryGetPlayerComp<T>() where T : UnityEngine.Object
     {
@@ -31,7 +32,10 @@ public class GameObjectManager : Singleton<GameObjectManager>
             return storedComp as T;
         }
 
-        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
         if (player == null)
         {
             Debug.LogError("Player not found!");
