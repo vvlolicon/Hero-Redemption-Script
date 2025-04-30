@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
+  m_Name: M4Weakness
+  m_EditorClassIdentifier: 
+  buffContext:
+    buffName: Weakness
+    buffDescription: Will Inflicts weakness to player when hitting player (weakness
+      time duration 15sec cause DEF and ATK * 0.8) can be cured by weakness potion
+    buffIcon: {fileID: 0}
+    affectStats:
+    - AtbrType: 5
+      Value: -20
+    - AtbrType: 7
+      Value: -20
+    interval: 0
+    duration: 15
+    priority: 1
+    usePercentage: 1
+    stackable: 0
+    isNerf: 1

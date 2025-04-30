@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
+  m_Name: M14Deflect
+  m_EditorClassIdentifier: 
+  buffContext:
+    buffName: Deflect
+    buffDescription: Will deflect any damage for 5 sec back to player if itself have
+      received more then 5 hits(won't deal any damage during deflect expect player
+      hitting)
+    buffIcon: {fileID: 0}
+    affectStats:
+    - AtbrType: 13
+      Value: 100
+    interval: 0
+    duration: 5
+    priority: 99
+    usePercentage: 1
+    stackable: 0
+    isNerf: 0

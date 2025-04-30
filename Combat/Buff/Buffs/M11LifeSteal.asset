@@ -10,21 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26ea42214eb8bd44a4c118ff9a6f93a, type: 3}
-  m_Name: Weakness
+  m_Name: M11LifeSteal
   m_EditorClassIdentifier: 
   buffContext:
-    buffName: Weakness
-    buffDescription: Will Inflicts weakness to player when hitting player (weakness
-      time duration 15sec cause DEF and ATK * 0.8) can be cured by weakness potion
+    buffName: LifeSteal
+    buffDescription: Steals health from player as it damages player (30% of damage
+      dealt)
     buffIcon: {fileID: 0}
     affectStats:
-    - AtbrType: 5
-      Value: -20
-    - AtbrType: 7
-      Value: -20
+    - AtbrType: 1
+      Value: 30
     interval: 0
-    duration: 15
+    duration: 1
     priority: 1
     usePercentage: 1
     stackable: 0
-    isNerf: 1
+    isNerf: 0
