@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 646a26b1c92de4347be73f0a5e25b032, type: 3}
+  m_Name: DLDemo
+  m_EditorClassIdentifier: 
+  ItemDropList:
+  - dropWeight: 10
+    dropItem: {fileID: 11400000, guid: 0ac4f56dbb9cfc144a2a0ee78924f546, type: 2}
+    dropChance: 0
+  - dropWeight: 20
+    dropItem: {fileID: 11400000, guid: 8ef1228ebab952849a37c42655cb631b, type: 2}
+    dropChance: 0
+  - dropWeight: 10
+    dropItem: {fileID: 11400000, guid: 9f5af9e455876f94d8b3a53e178a0232, type: 2}
+    dropChance: 0
+  - dropWeight: 15
+    dropItem: {fileID: 11400000, guid: 92c5bb5e543837e4b80101aeaea1e59f, type: 2}
+    dropChance: 0
+  - dropWeight: 55
+    dropItem: {fileID: 0}
+    dropChance: 0

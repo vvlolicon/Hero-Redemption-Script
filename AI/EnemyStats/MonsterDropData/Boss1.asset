@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2ea7830880975444a490db0f1781772, type: 3}
-  m_Name: test Enemy Drop Data
+  m_Name: Boss1
   m_EditorClassIdentifier: 
-  Money_drop: 20
+  Money_drop: 700
   EnsureDropItem: []
-  RandomDropTable:
-  - {fileID: 11400000, guid: 38843ad8ee914a849ba7979720fc1b33, type: 2}
+  RandomDropTable: []
