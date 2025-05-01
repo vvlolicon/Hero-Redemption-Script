@@ -15,4 +15,4 @@ MonoBehaviour:
   Money_drop: 11
   EnsureDropItem: []
   RandomDropTable:
-  - {fileID: 11400000, guid: 948f1b19ccd822441964aa16acfd1663, type: 2}
+  - {fileID: 11400000, guid: 1edfd945305476048b71259e74cf00ed, type: 2}
