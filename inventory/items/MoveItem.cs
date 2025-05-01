@@ -1,12 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 public class MoveItem : MonoBehaviour, IDropHandler
 {

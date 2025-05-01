@@ -1,11 +1,5 @@
-using OpenCover.Framework.Model;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
+
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.HID;
 
 public class PlayerHitState : PlayerBaseState
 {

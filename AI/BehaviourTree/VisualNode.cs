@@ -1,19 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using static Unity.VisualScripting.Metadata;
-using UnityEngine.UIElements;
-using UnityEngine.InputSystem.HID;
+using Assets.AI.BehaviourTree;
 
 
 namespace Assets.AI.BehaviourTree
 {
-#if UNITY_EDITOR
     public class VisualNode : MonoBehaviour
     {
         [SerializeField] public MeshRenderer _indicator;
@@ -369,5 +362,4 @@ namespace Assets.AI.BehaviourTree
             return Color.white;
         }
     }
-#endif
 }

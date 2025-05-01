@@ -9,8 +9,14 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
 {
     private void Start()
     {
-        VolumeMaster volumeMaster = FindObjectOfType<VolumeMaster>();
-        volumeMaster.InitializeSliders();
+        Scene thisScene = SceneManager.GetActiveScene();
+        SceneManager.MoveGameObjectToScene(gameObject, thisScene);
+        StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
+        {
+            VolumeMaster volumeMaster = FindObjectOfType<VolumeMaster>();
+            volumeMaster.InitializeSliders();
+            DontDestroyOnLoad(gameObject);
+        }));
     }
     public void OnClickPlaygame()
     {

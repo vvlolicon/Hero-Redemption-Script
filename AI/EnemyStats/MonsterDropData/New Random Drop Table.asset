@@ -19,6 +19,3 @@ MonoBehaviour:
   - dropWeight: 2
     dropItem: {fileID: 11400000, guid: 6e522563224db584192c304705f8046c, type: 2}
     dropChance: 0
-  - dropWeight: 2
-    dropItem: {fileID: 0}
-    dropChance: 0

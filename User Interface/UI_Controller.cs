@@ -1,11 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System;
-using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager.UI;
 
 public class UI_Controller : Singleton<UI_Controller>
 {

@@ -1,10 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using OpenCover.Framework.Model;
-using UnityEngine.UIElements;
-using System;
-using Unity.VisualScripting;
 
 namespace Assets.AI.BehaviourTree
 {

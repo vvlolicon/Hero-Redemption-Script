@@ -1,11 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using static UnityEngine.InputManagerEntry;
 #endif
 
 public class PlayerInputData : Singleton<PlayerInputData>

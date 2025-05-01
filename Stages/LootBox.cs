@@ -22,9 +22,10 @@ public class LootBox : MonoBehaviour, IInteractableObject
         if (!opened)
         {
             PlayerBackpack.PlayerOwnedMoney += _money;
-            UI_Controller.GetUIScript<BoxInventoryController>().OpenBox(this);
-            UI_Controller.SetUIActive(UI_Window.InventoryUI, true);
+            opened = true;
         }
+        UI_Controller.GetUIScript<BoxInventoryController>().OpenBox(this);
+        UI_Controller.SetUIActive(UI_Window.InventoryUI, true);
     }
 
     public List<Item> GetItems() => _containItems;
