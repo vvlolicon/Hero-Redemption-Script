@@ -24,7 +24,7 @@ public class ItemDropChance
 {
     public float dropWeight;
     public Item dropItem;
-    public float dropChance { get; set; }
+    [HideInInspector]public float dropChance;
     public ItemDropChance(float dropWeight, Item dropItem)
     {
         this.dropWeight = dropWeight;

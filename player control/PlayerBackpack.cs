@@ -11,8 +11,9 @@ public class PlayerBackpack : MonoBehaviour
     public int PlayerBackpackSize = 20;
     [SerializeField] Item[] _playerEquippedItems = new Item[8];
     [SerializeField] Item[] _playerHotbarItems = new Item[6];
-    public int PlayerOwnedMoney;
-    public int PlayerExp;
+    [HideInInspector] public int PlayerLevel = 1;
+    [HideInInspector] public int PlayerOwnedMoney = 0;
+    //public int PlayerExp;
 
     public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
 
@@ -27,6 +28,36 @@ public class PlayerBackpack : MonoBehaviour
                 newList.Add(null);
         }
         _playerOwnedItems = newList;
+    }
+
+    public void AddEnemyDrops(EnemyDropData dropData)
+    {
+        //PlayerExp += dropData.EXP_drop;
+        PlayerOwnedMoney += dropData.Money_drop;
+        List<Item> dropItems = dropData.GetDropItems();
+        if (dropItems.Count > 0)
+        {
+            foreach (Item item in dropItems)
+            {
+                if (!AddItemToPlayerBackpack(item))
+                {
+                    Debug.Log("Backpack is full, dropping " + item.itemName + " on the ground");
+                }
+            }
+        }
+    }
+
+    public bool AddItemToPlayerBackpack(Item item)
+    {
+        for (int i = 0; i < _playerOwnedItems.Count; i++)
+        {
+            if (_playerOwnedItems[i] == null)
+            {
+                _playerOwnedItems[i] = item;
+                return true;
+            }
+        }
+        return false;
     }
 
     public Dictionary<CombatStatsType, float> GetEquippedItemStats()

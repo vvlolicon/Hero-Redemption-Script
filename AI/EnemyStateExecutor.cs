@@ -19,7 +19,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _enemyStaticStatScript = GetComponent<EnemyStaticStatsMono>();
         _healthManager = GetComponent<HealthManager>();
         _defaultStrategy = GetComponent<AI_DefaultStrategy>();
-        _healthManager._enemyExecutor = this;
         OriginStats.InitializeStats();
         CombatStats.SetStats(OriginStats.GetCombatStats());
         for (int i = 0; i < transform.childCount; i++) {
@@ -172,6 +171,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     public void OnDying()
     {
+        Debug.Log($"{gameObject.name} dies");
         _methods.ResetAllAnimationTriggers();
         Agent.isStopped = true;
         IsDying = true;
@@ -181,6 +181,11 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                 AfterDying();
                 OnMonsterDeath = null;
         }));
+        if (dropData != null)
+        {
+            PlayerBackpack backpack = GameObjectManager.TryGetPlayerComp<PlayerBackpack>();
+            backpack.AddEnemyDrops(dropData);
+        }
     }
 
     void AfterDying()
@@ -205,6 +210,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public TMP_Text test_showData;
     public GeneralStatsObj OriginStats;
     public GeneralCombatStats CombatStats = new();
+    [SerializeField] EnemyDropData dropData;
 
     HealthManager _healthManager;
     AI_DefaultStrategy _defaultStrategy;

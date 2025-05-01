@@ -12,14 +12,23 @@ public class HealthManager : MonoBehaviour
     public float textPopupOffset = 50f;
 
     Camera _camera;
-    public PlayerStateExecutor _playerExecutor { get; set; }
-    public EnemyStateExecutor _enemyExecutor { get; set; }
-    //PlayerStatDisplay _statDisplay;
+    [HideInInspector] PlayerStateExecutor _playerExecutor;
+    [HideInInspector] EnemyStateExecutor _enemyExecutor;
+    bool _isPlayer;
+    
+    void Start()
+    {
+        _isPlayer = TryGetComponent(out _playerExecutor);
+        if (!_isPlayer)
+        {
+            _enemyExecutor = GetComponent<EnemyStateExecutor>();
+        }
+    }
 
     float health 
     { 
         get {
-            if (_playerExecutor != null)
+            if (_isPlayer)
                 return _playerExecutor.PlayerCombatStats.HP;
             else if (_enemyExecutor != null)
                 return _enemyExecutor.CombatStats.HP;
@@ -28,7 +37,7 @@ public class HealthManager : MonoBehaviour
         }
         set
         {
-            if (_playerExecutor != null)
+            if (_isPlayer)
             {
                 _playerExecutor.PlayerCombatStats.HP = value;
             }
@@ -61,11 +70,6 @@ public class HealthManager : MonoBehaviour
             else
                 Debug.Log("cannnot find object to set HP");
         }
-    }
-
-    private void Start()
-    {
-       
     }
 
     public void Damage(float dmg)

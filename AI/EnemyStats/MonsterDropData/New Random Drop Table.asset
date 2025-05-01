@@ -10,6 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 646a26b1c92de4347be73f0a5e25b032, type: 3}
-  m_Name: New Enemy Drop Table
+  m_Name: New Random Drop Table
   m_EditorClassIdentifier: 
-  ItemDropList: []
+  ItemDropList:
+  - dropWeight: 1
+    dropItem: {fileID: 11400000, guid: a474e708008c5004ea0a07f3d4564321, type: 2}
+    dropChance: 0
+  - dropWeight: 2
+    dropItem: {fileID: 11400000, guid: 6e522563224db584192c304705f8046c, type: 2}
+    dropChance: 0
+  - dropWeight: 2
+    dropItem: {fileID: 0}
+    dropChance: 0

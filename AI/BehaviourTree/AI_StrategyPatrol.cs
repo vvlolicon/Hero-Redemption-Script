@@ -83,7 +83,7 @@ namespace Assets.AI.BehaviourTree
 
         public void OnStatusRunning()
         {
-            Debug.Log("Strategy Patrol running");
+            //Debug.Log("Strategy Patrol running");
             _methods.ResetAllAnimationTriggers();
             _executor.Agent.speed = _executor.CombatStats.Speed / 10;
             _executor.Agent.isStopped = false;

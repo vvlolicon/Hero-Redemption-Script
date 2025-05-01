@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Enemy/Enemy Drop Table")]
+[CreateAssetMenu(menuName = "Enemy/Enemy Random Drop Table")]
 public class RandomDropTable : ScriptableObject
 {
     [SerializeField]
@@ -22,6 +22,22 @@ public class RandomDropTable : ScriptableObject
                 chance.dropChance = chance.dropWeight / sumWeight;
             }
         }
+    }
+
+    public Item GetRandomDrop()
+    {
+        if (ItemDropList.Count == 0) return null;
+        float random = Random.value;
+        float sum = 0;
+        foreach (ItemDropChance chance in ItemDropList)
+        {
+            sum += chance.dropChance;
+            if (random <= sum)
+            {
+                return chance.dropItem;
+            }
+        }
+        return ItemDropList[ItemDropList.Count - 1].dropItem;
     }
 }
 

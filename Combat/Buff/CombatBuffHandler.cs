@@ -131,6 +131,11 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         _statsAfterChanges.SetStats(_originStats);
         if (_isPlayer)
         {
+            // atk and def times to 1.3 to the power of level
+            _statsAfterChanges.ATK = _originStats.ATK * Mathf.Pow(1.3f, PlayerBackpack.PlayerLevel - 1);
+            _statsAfterChanges.DEF = _originStats.DEF * Mathf.Pow(1.3f, PlayerBackpack.PlayerLevel - 1);
+            _statsAfterChanges.AddStatsRange(_playerExecutor.ExtraStats);
+
             bool HPfull = _curCombatStats.HP >= _curCombatStats.MaxHP;
             bool MPfull = _curCombatStats.MP >= _curCombatStats.MaxMP;
             _statsAfterChanges.AddStatsRange(PlayerBackpack.GetEquippedItemStats());

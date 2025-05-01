@@ -144,7 +144,7 @@ namespace Assets.AI.BehaviourTree
 
         public Node.Status Evaluate()
         {
-            Debug.Log($"isHit: {_executor.IsHit}, hitTimer: {_hitTimer}");
+            //Debug.Log($"isHit: {_executor.IsHit}, hitTimer: {_hitTimer}");
             if (!_executor.IsHit || !_executor.Interruptable)
             {
                 return Node.Status.FAILURE;

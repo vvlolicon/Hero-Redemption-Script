@@ -131,6 +131,12 @@ public static partial class ExtendMethods
             stats.ChangeStats(kvp.Key, kvp.Value);
         }
     }
+    public static void AddStatsRange(this GeneralCombatStats stats, GeneralCombatStats addedStats)
+    {
+        var addedDict = addedStats.GetAllStats();
+        AddStatsRange(stats, addedDict);
+    }
+
 
     public static int GetEnumCount(this Type Enum)
     {

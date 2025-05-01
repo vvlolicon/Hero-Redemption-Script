@@ -20,9 +20,9 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _animator = GetComponentInChildren<Animator>();
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
-        _healthMan._playerExecutor = this;
         DistToGround = _charCont.bounds.extents.y;
         AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
+        _backpack = GetComponent<PlayerBackpack>();
         PlayerOriginStats.InitializeStats();
         PlayerCombatStats.SetStats(PlayerOriginStats.GetCombatStats());
 
@@ -80,6 +80,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         DashSpeed = PlayerStaticData._dashSpeed;
 
         _currentDashTime = MaxDashTime;
+        _backpack.PlayerLevel = 1;
+        _backpack.PlayerOwnedMoney = 0;
     }
     void Start()
     {
@@ -290,6 +292,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     Animator _animator;
     SoundManager _soundMan;
     PlayerInputData _playerInput { get{ return PlayerInputData.Instance; } }
+    PlayerBackpack _backpack;
     HealthManager _healthMan;
 
     //states variables
@@ -301,6 +304,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public TMP_Text test_MovementY;
 
     public GeneralStatsObj PlayerOriginStats;
+    public GeneralCombatStats ExtraStats = new();
     public GeneralCombatStats PlayerCombatStats = new();
     public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
 
