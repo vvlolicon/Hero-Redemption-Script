@@ -10,7 +10,6 @@ public class PlayerInputData : Singleton<PlayerInputData>
     private PlayerStateExecutor _executor;
     PlayerBackpack _playerBackpack;
 
-
     public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
     public bool CursorLocked { get; private set; }
@@ -95,6 +94,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
 	{
         if (InputEnable)
         {
+            Debug.Log("UI_Controller is " + UI_Controller.name);
             UI_Controller.OpenInventoryUI(UI_Window.InventoryUI,
                 _playerBackpack.GetPlayerBackpackItems());
             UI_Controller.OpenInventoryUI(UI_Window.EquipmentUI,

@@ -7,7 +7,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
     PlayerStateExecutor Player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
     GeneralCombatStats PlayerStats { get { return Player.PlayerCombatStats; } }
-    [HideInInspector]public Item curSlotItem;
+    [HideInInspector]public ItemData curSlotItem;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -25,9 +25,9 @@ public class MoveItem : MonoBehaviour, IDropHandler
 
         int targetSlotIndex = transform.GetIndexInParent();
         int originSlotIndex = dropItemOriginSlot.transform.GetIndexInParent();
-        Item droppedItem = dropObject.GetComponent<ItemDetail>().item;
+        ItemData droppedItem = dropObject.GetComponent<ItemDetail>().item;
 
-        Item targetItem;
+        ItemData targetItem;
         DraggableItem targetDragItem;
         //Debug.Log("##########Test Variables##########");
         //Debug.Log("target slot has item inside");
@@ -136,7 +136,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
         }
     }
 
-    public void UpdateItemAttribute(Item item)
+    public void UpdateItemAttribute(ItemData item)
     {
         if (curSlotItem != null) {
             if(item != null)
@@ -155,7 +155,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
         }
     }
 
-    private void registerItemAttribute(Item item)
+    private void registerItemAttribute(ItemData item)
     {
         RemoveItemAttribute();
         curSlotItem = item;

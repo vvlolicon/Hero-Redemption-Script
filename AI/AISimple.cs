@@ -239,7 +239,7 @@ public class AISimple : MonoBehaviour, IDamageable
                 ChangeState(STATE.HIT);
                 soundMan.PlaySound("Hit");
                 int atk = (int)info.ATK;
-                healthManager.createHealthMeg(new EnemyDmgInfo(atk, false, info.TextColor, info.DmgTextPos, gameObject));
+                healthManager.CreateHealthMeg(new EnemyDmgInfo(atk, false, info.TextColor, info.DmgTextPos, gameObject));
             }
         }
     }

@@ -7,7 +7,7 @@ namespace Assets.AI.BehaviourTree
     {
 
         private Node _behaviorTree;
-
+        private PatrolMoveStrategy _currentStrategy;
         EnemyStateExecutor _executor;
         AIMethods _methods;
 
@@ -16,15 +16,18 @@ namespace Assets.AI.BehaviourTree
 
         public Node BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
         {
+            if (_currentStrategy != null)
+            { // deregister restart event for previous strategy
+                _executor.OnRestartPatrolRequested -= _currentStrategy.HandleRestartRequest;
+            }
             _executor = executor;
             _methods = methods;
-            // 创建巡逻行为分支
+            _currentStrategy = new PatrolMoveStrategy(methods, executor);
+            // register restart event for executor to execute strategy again
+            _executor.OnRestartPatrolRequested += _currentStrategy.HandleRestartRequest;
+            // looping forever to patrol
             _behaviorTree = new SequenceLoop("PatrolLoop");
-
-            // 巡逻移动逻辑
-            var patrolAction = new Leaf("PatrolMove", new PatrolMoveStrategy(
-                methods, executor
-            ));
+            var patrolAction = new Leaf("PatrolMove", _currentStrategy);
 
             _behaviorTree.AddChild(patrolAction);
             return _behaviorTree;
@@ -41,13 +44,25 @@ namespace Assets.AI.BehaviourTree
         Vector3 _currentTarget;
         int _curPatrolIndex;
 
+        float idleTimer;
+        float idleSoundInterval = 10f;
+        float walkTimer = 1f;
+        float walkTimeInterval = 1f;
+
         public PatrolMoveStrategy (AIMethods methods, EnemyStateExecutor executor)
         {
             _methods = methods;
             _executor = executor;
             _aiTransform = executor.transform;
             _patrolPoints = _executor.PatrolPoints;
+            _executor.OnRestartPatrolRequested += HandleRestartRequest;
+            idleTimer = RandomIdleSoundInterval();
             MoveToNextPoint();
+        }
+
+        float RandomIdleSoundInterval()
+        {
+            return idleSoundInterval + Random.Range(-2f, 2f);
         }
 
         public Node.Status Evaluate()
@@ -58,7 +73,20 @@ namespace Assets.AI.BehaviourTree
                 //_executor.Animator.SetBool("IsMoving", false);
                 return Node.Status.FAILURE;
             }
-            // 检查是否到达目标点
+            // play sound if not failure
+            idleTimer -= Time.deltaTime;
+            if (idleTimer <= 0f)
+            {
+                _executor.SoundManager.PlayExtraSound("Idle");
+                idleTimer = RandomIdleSoundInterval();
+            }
+            walkTimer -= Time.deltaTime;
+            if (walkTimer <= 0f)
+            {
+                _executor.SoundManager.PlaySound("Walk");
+                walkTimer = walkTimeInterval;
+            }
+            // check if arrive next patrol point
             if (Vector3.Distance(_aiTransform.position, _currentTarget) < 1f )
             {
                 if (Vector3.Distance(_aiTransform.position, GetNextPatrolPoint()) > 1f)
@@ -69,10 +97,10 @@ namespace Assets.AI.BehaviourTree
                 {
                     _methods.ResetAllAnimationTriggers();
                     _executor.Animator.SetBool("IsIdle", true);
+                    _executor.SoundManager.StopSound();
                     return Node.Status.SUCCESS;
                 }
             }
-
             return Node.Status.RUNNING;
         }
 
@@ -103,18 +131,24 @@ namespace Assets.AI.BehaviourTree
             }
             //Debug.Log($"move to patrol point {_curPatrolIndex}");
             MoveToDestination(_patrolPoints[_curPatrolIndex].position);
+            idleTimer = idleSoundInterval;
+            walkTimer = walkTimeInterval;
         }
 
         public void OnStatusFailure()
         {
+            _executor.SoundManager.StopSound();
             _executor.Agent.ResetPath();
             _executor.Animator.SetBool("IsIdle", false);
             _executor.Animator.SetBool("IsPatrolling", false);
+            idleTimer = idleSoundInterval;
+            walkTimer = walkTimeInterval;
         }
 
         Vector3 GetNextPatrolPoint()
         {
-            // 如果只有一个巡逻点，直接返回该点
+            // return 0 point if only exist one patrol point
+            // (usually happens when no patrol point set)
             if (_patrolPoints.Count == 1)
             {
                 return _patrolPoints[0].position;
@@ -130,6 +164,12 @@ namespace Assets.AI.BehaviourTree
             _curPatrolIndex = (_curPatrolIndex + 1) % _patrolPoints.Count;
             //_executor.Animator.SetBool("IsMoving", true);
 
+        }
+        public void HandleRestartRequest()
+        {
+            OnStatusRunning(); 
+            //_curPatrolIndex = -1;
+            //MoveToNextPoint();
         }
 
         void MoveToDestination(Vector3 goal)

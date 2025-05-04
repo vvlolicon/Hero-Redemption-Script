@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ItemDetail : MonoBehaviour
 {
-    public Item item;
+    public ItemData item;
 
     ConsumableItem _consumeScript;
     private void OnEnable()
@@ -14,7 +14,7 @@ public class ItemDetail : MonoBehaviour
         UpdateItem();
     }
 
-    public void SetItem(Item item)
+    public void SetItem(ItemData item)
     {
         this.item = item;
         UpdateItem();

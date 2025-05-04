@@ -27,7 +27,7 @@ public class TooltipWindow : MonoBehaviour
         transform.parent.gameObject.SetActive(false);
     }
 
-    public void ShowTooltip(Item item)
+    public void ShowTooltip(ItemData item)
     {
         if (item == null) return;
         if (_itemName == null || _itemDesc == null) TryAllocTextComp();

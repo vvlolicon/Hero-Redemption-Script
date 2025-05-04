@@ -34,7 +34,7 @@ public class Dummy : MonoBehaviour, IDamageable
                     info.ATK, testStats.DEF, info.CritChance, testStats.CritChanRdc, 
                     testStats.DmgReduce, info.CritMult, testStats.CritDmgResis);
                 int dmgShow = (int)result.Dmg;
-                healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, result.IsCritHit, info.TextColor, damageTextPos, gameObject));
+                healthManager.CreateHealthMeg(new EnemyDmgInfo(dmgShow, result.IsCritHit, info.TextColor, damageTextPos, gameObject));
                 StartCoroutine("MakeInvincible");
             }
         }

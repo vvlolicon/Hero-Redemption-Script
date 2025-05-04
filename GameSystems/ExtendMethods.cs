@@ -79,7 +79,7 @@ public static partial class ExtendMethods
         return x >= min && x <= max;
     }
 
-    public static void RoundToXDecimal(this ref float value, int numDecimal)
+    public static void RoundToDecimals(this ref float value, int numDecimal)
     {
         if (value % 1 != 0)
         {

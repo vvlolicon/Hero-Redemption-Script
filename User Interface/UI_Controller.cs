@@ -12,13 +12,17 @@ public class UI_Controller : Singleton<UI_Controller>
         UI_WindowTypes[UI_Window.InteractToolip] = typeof(InteractObject);
         UI_WindowTypes[UI_Window.BoxInventoryUI] = typeof(BoxInventoryController);
         UI_WindowTypes[UI_Window.StageMap] = typeof(StageMapController);
-        if (SceneManager.GetActiveScene().buildIndex == 1) {
+        UI_WindowTypes[UI_Window.OpenBook] = typeof(BookContentControl);
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
             Initialize(); // load if current scene is dungeon
         }
+        //Initialize(); // load if current scene is dungeon
     }
     public void Initialize()
     {
-        _UI_Manager = GameObject.FindGameObjectWithTag("UI_Manager").GetComponent<UI_Manager>();
+        _UI_Manager = GameObject.FindFirstObjectByType<UI_Manager>();
+        //Debug.Log("UI_Manager found: " + _UI_Manager.name);
         CloseAllClosableWindows();
     }
 
@@ -68,11 +72,10 @@ public class UI_Controller : Singleton<UI_Controller>
 
     public bool IsClosableWindow(UI_Window window)
     {
-        return window == UI_Window.InventoryUI ||
-               window == UI_Window.EquipmentUI ||
+        return IsEquipmentWindow(window) ||
                window == UI_Window.PauseMenu ||
                window == UI_Window.StageMap ||
-               window == UI_Window.BoxInventoryUI;
+               window == UI_Window.OpenBook;
     }
 
     public bool IsEquipmentWindow(UI_Window window)
@@ -122,7 +125,7 @@ public class UI_Controller : Singleton<UI_Controller>
         else return null;
     }
 
-    public void OpenInventoryUI(UI_Window window, List<Item> itemsShow)
+    public void OpenInventoryUI(UI_Window window, List<ItemData> itemsShow)
     {
         SetUIActive(window, true);
         IDisplayItem itemDisplayer = 
@@ -132,11 +135,12 @@ public class UI_Controller : Singleton<UI_Controller>
         {
             InventorySlotManager manager = 
                 GetInventoryItemContainer(window).GetComponent<InventorySlotManager>();
+            Debug.Log("Setting slots num to " + itemsShow.Count);
             manager.ForceSetSlotNum(itemsShow.Count);
         }
         for (int i = 0; i < itemsShow.Count; i++)
         {
-            Item item = itemsShow[i];
+            ItemData item = itemsShow[i];
             if(itemsShow[i] == null)
                 itemDisplayer.SetItemAtSlot(null, i);
             else

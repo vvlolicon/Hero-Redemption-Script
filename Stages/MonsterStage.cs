@@ -8,9 +8,8 @@ public class MonsterStage : StageSettings
 {
     [SerializeField] List<GameObject> PlacedMonsters;
 
-    List<EnemyStateExecutor> Monsters = new List<EnemyStateExecutor>();
+    List<EnemyStateExecutor> MonstersExecutor = new List<EnemyStateExecutor>();
 
-    
     void OnEnable()
     {
         _isRootStage = false;
@@ -26,9 +25,9 @@ public class MonsterStage : StageSettings
         base.OnEnterStage();
         if (_stageCleared)
         {
-            foreach (var monster in PlacedMonsters)
+            foreach (var monster in MonstersExecutor)
             {
-                monster.SetActive(false);
+                monster.gameObject.SetActive(false);
             }
             return;
         }
@@ -45,20 +44,21 @@ public class MonsterStage : StageSettings
         foreach (var monster in PlacedMonsters)
         {
             var monsterExecutor = monster.GetComponent<EnemyStateExecutor>();
-            if (Monsters.Contains(monsterExecutor))
+            if (MonstersExecutor.Contains(monsterExecutor))
             {
                 monsterExecutor.ResetMonster();
                 continue;
             }
-            Monsters.Add(monsterExecutor);
+            MonstersExecutor.Add(monsterExecutor);
             monsterExecutor.SetupMonster(CheckClearStage, true);
+            monsterExecutor.SoundManager.Mute(false);
         }
     }
 
     void CheckClearStage()
     {
         bool hasMonsterAlive = false;
-        foreach (var monster in Monsters)
+        foreach (var monster in MonstersExecutor)
         {
             if (!monster.IsDying)
             {
@@ -79,5 +79,17 @@ public class MonsterStage : StageSettings
         //{
         //    Destroy(monster.gameObject);
         //}
+    }
+
+    public override void SetStage(bool isLocked, bool isDiscovered, bool isCleared)
+    {
+        if (isCleared)
+        {
+            foreach (var monster in PlacedMonsters)
+            {
+                monster.SetActive(false);
+            }
+        }
+        base.SetStage(isLocked, isDiscovered, isCleared);
     }
 }

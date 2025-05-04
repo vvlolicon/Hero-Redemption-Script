@@ -6,7 +6,7 @@ using UnityEngine;
 public class ItemSlotManager : MonoBehaviour, IDisplayItem
 {
     [SerializeField] GameObject itemObject;
-    public void SetItemAtSlot(Item item, int slotIndex)
+    public void SetItemAtSlot(ItemData item, int slotIndex)
     {
         Transform slot = transform.GetChild(slotIndex);
         if (slot.childCount > 0)

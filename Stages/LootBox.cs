@@ -8,8 +8,17 @@ public class LootBox : MonoBehaviour, IInteractableObject
     [SerializeField] List<Item> _containItems = new List<Item>();
     [SerializeField] int _money;
     bool opened = false;
+    List<ItemData> _containItemDatas = new();
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
     PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+
+    private void Start()
+    {
+        foreach (Item item in _containItems)
+        {
+            _containItemDatas.Add(item.GetItemDataClone());
+        }
+    }
 
     public string GetInterableTitle()
     {
@@ -25,17 +34,30 @@ public class LootBox : MonoBehaviour, IInteractableObject
             opened = true;
         }
         UI_Controller.GetUIScript<BoxInventoryController>().OpenBox(this);
-        UI_Controller.SetUIActive(UI_Window.InventoryUI, true);
+        UI_Controller.OpenInventoryUI(UI_Window.InventoryUI, PlayerBackpack.GetPlayerBackpackItems());
     }
 
-    public List<Item> GetItems() => _containItems;
-    public void SetItemAtIndex(int index, Item item, bool deleteItem)
+    public List<ItemData> GetItems() => _containItemDatas;
+    public bool IsBoxOpened() => opened;
+
+    public void SetItemAtIndex(int index, ItemData item, bool deleteItem = false)
     {
         if (deleteItem)
         {
-            _containItems.Remove(item);
+            _containItemDatas.Remove(item);
             return;
         }
-        _containItems[index] = item;
+        _containItemDatas[index] = item;
+    }
+
+    public void RemoveItemAtIndex(int index)
+    {
+        _containItemDatas.RemoveAt(index);
+    }
+
+    public void SetBox(List<ItemData> items, bool opened)
+    {
+        _containItemDatas = items;
+        this.opened = opened;
     }
 }

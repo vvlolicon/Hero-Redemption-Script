@@ -76,7 +76,7 @@ public class HealthManager : MonoBehaviour
     {
         if (!infiniteHP)
         {
-            onHealthChange(-1 * dmg);
+            OnHealthChange(-1 * dmg);
         }
             //health -= 
     }
@@ -89,7 +89,7 @@ public class HealthManager : MonoBehaviour
             _enemyExecutor.OnDying();
     }
 
-    public void createHealthMeg(DmgInfo TDmgInfo)
+    public void CreateHealthMeg(DmgInfo TDmgInfo)
     {
         //throws a damage text
         if (TDmgInfo is EnemyDmgInfo)
@@ -120,12 +120,12 @@ public class HealthManager : MonoBehaviour
         dmgText.GetComponent<DamagePopup>().SetUp(text, color, offset);
         return dmgText;
     }
-    public void onHealthChange(float value)
+    public void OnHealthChange(float value)
     {
         health += value;
+        //Debug.Log(gameObject.name + " health left: " + health);
         if (health <= 0)
         {
-            Debug.Log( gameObject.name + " dies");
             ownerDies();
         }
     }

@@ -8,19 +8,19 @@ public class VolumeMaster : MonoBehaviour
 {
     [SerializeField] AudioMixer _mainMixer;
     [SerializeField] float _startVolume = 1f;
-    [SerializeField] Slider[] _volumeSliders = new Slider[3];
+    [SerializeField] Slider[] _volumeSliders = new Slider[4];
 
     public void InitializeSliders()
     {
-        _volumeSliders[0].value = _startVolume;
-        _volumeSliders[1].value = _startVolume;
-        _volumeSliders[2].value = _startVolume;
+        foreach(Slider slider in _volumeSliders)
+        {
+            slider.value = _startVolume;
+        }
         SetMasterVolume(_startVolume);
         SetButtonVolume(_startVolume);
         SetCharacterVolume(_startVolume);
-        _volumeSliders[0].onValueChanged.AddListener(SetMasterVolume);
-        _volumeSliders[1].onValueChanged.AddListener(SetButtonVolume);
-        _volumeSliders[2].onValueChanged.AddListener(SetCharacterVolume);
+        SetMusicVolume(_startVolume);
+        AddLisenersForSliders();
     }
 
     public void SetMasterVolume(float sliderValue)
@@ -35,24 +35,36 @@ public class VolumeMaster : MonoBehaviour
     {
         _mainMixer.SetFloat("CharacterVolume", SliderValueToVolume(sliderValue));
     }
-
-    public void RemoveLiseners()
+    public void SetMusicVolume(float sliderValue)
     {
-        _volumeSliders[0].onValueChanged.RemoveAllListeners();
-        _volumeSliders[1].onValueChanged.RemoveAllListeners();
-        _volumeSliders[2].onValueChanged.RemoveAllListeners();
+        _mainMixer.SetFloat("MusicVolume", SliderValueToVolume(sliderValue));
     }
 
-    public void ResetSliders()
+    public void RemoveLisenersForSliders()
+    {
+        foreach(Slider slider in _volumeSliders)
+        {
+            slider.onValueChanged.RemoveAllListeners();
+        }
+    }
+
+    void AddLisenersForSliders()
     {
         _volumeSliders[0].onValueChanged.AddListener(SetMasterVolume);
         _volumeSliders[1].onValueChanged.AddListener(SetButtonVolume);
         _volumeSliders[2].onValueChanged.AddListener(SetCharacterVolume);
-        float[] volume = new float[3];
+        _volumeSliders[3].onValueChanged.AddListener(SetMusicVolume);
+    }
+
+    public void ResetSliders()
+    {
+        AddLisenersForSliders();
+        float[] volume = new float[4];
         _mainMixer.GetFloat("MasterVolume", out volume[0]);
         _mainMixer.GetFloat("ButtonVolume", out volume[1]);
         _mainMixer.GetFloat("CharacterVolume", out volume[2]);
-        for(int i = 0; i < 3; i++)
+        _mainMixer.GetFloat("MusicVolume", out volume[3]);
+        for (int i = 0; i < 4; i++)
         {
             _volumeSliders[i].value = VolumeToSliderValue(volume[i]);
         }

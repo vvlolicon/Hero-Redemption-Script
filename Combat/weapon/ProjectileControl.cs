@@ -128,9 +128,9 @@ public class ProjectileControl : MonoBehaviour
         Physics.OverlapSphereNonAlloc(transform.position, _projectileStats.AOERadius, hitColliders);
         // 获取所有在爆炸范围内的 Collider
         //Collider[] hitColliders = Physics.OverlapSphere(transform.position, _projectileStats.AOERadius);
-
         foreach (var hitCollider in hitColliders)
         {
+            if (hitCollider == null) continue;
             // 确保不是投射物的发射者
             if (hitCollider.gameObject == Sender.gameObject) continue;
 

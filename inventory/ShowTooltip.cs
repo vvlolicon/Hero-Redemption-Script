@@ -15,7 +15,7 @@ public class ShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Item curPointItem = GetComponent<ItemDetail>().item;
+        ItemData curPointItem = GetComponent<ItemDetail>().item;
         tooltipWindow?.ShowTooltip(curPointItem);
         if (transform.parent.parent != null && transform.parent.parent.CompareTag("Player_HotbarItem"))
         {

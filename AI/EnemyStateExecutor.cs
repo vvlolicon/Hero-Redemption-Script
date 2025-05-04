@@ -91,6 +91,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         IsDying = false;
         gameObject.SetActive(true);
         transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
+        OnRestartPatrolRequested?.Invoke();
     }
 
     //void Update()
@@ -117,9 +118,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                     CombatStats.ATK, CombatStats.DEF, info.CritChance, CombatStats.CritChanRdc,
                     CombatStats.DmgReduce, info.CritMult, CombatStats.CritDmgResis);
                 int dmgShow = (int)Mathf.Floor(dmgResult.Dmg);
-                _healthManager.createHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));
+                _healthManager.CreateHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));
                 _healthManager.Damage(dmgResult.Dmg);
-                CombatStats.HP -= dmgResult.Dmg;
                 OnStatsChanged?.Invoke();
                 SendBuffToSelf();
             }
@@ -172,14 +172,17 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public void OnDying()
     {
         Debug.Log($"{gameObject.name} dies");
+        SoundManager.PlaySound("Dying");
         _methods.ResetAllAnimationTriggers();
         Agent.isStopped = true;
         IsDying = true;
         OnMonsterDeath?.Invoke();
+        OnMonsterDeath = null;
+        _billboard.SetActive(false);
+        _anim.Play("Dying");
         StartCoroutine(ExtendIEnumerator.DelayAction(
             _enemyStaticStatScript._stats._dieTime, () => { 
                 AfterDying();
-                OnMonsterDeath = null;
         }));
         if (dropData != null)
         {
@@ -190,10 +193,8 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
 
     void AfterDying()
     {
+        SoundManager.Mute(true);
         gameObject.SetActive(false);
-        _billboard.SetActive(false);
-        // TODO: give exp and money to player and shows message in game
-        // TODO: drop item in drop table
     }
 
     NavMeshAgent _agent;
@@ -204,10 +205,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     EnemyStaticStatsMono _enemyStaticStatScript;
     GameObject _billboard;
     AIMethods _methods;
-    [HideInInspector]
-    public TMP_Text test_showState;
-    [HideInInspector]
-    public TMP_Text test_showData;
     public GeneralStatsObj OriginStats;
     public GeneralCombatStats CombatStats = new();
     [SerializeField] EnemyDropData dropData;
@@ -224,6 +221,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     [HideInInspector]
     public float MoveSpeed;
     public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
+    public event Action OnRestartPatrolRequested;
 
     // getters and setters
     public AIMethods AIMethods { get { return _methods; } }

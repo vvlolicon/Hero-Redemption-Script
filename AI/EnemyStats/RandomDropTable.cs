@@ -32,7 +32,7 @@ public class RandomDropTable : ScriptableObject
         foreach (ItemDropChance chance in ItemDropList)
         {
             sum += chance.dropChance;
-            if (random <= sum)
+            if (random < sum)
             {
                 return chance.dropItem;
             }

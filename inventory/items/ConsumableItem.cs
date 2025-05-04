@@ -6,16 +6,16 @@ using UnityEngine;
 public class ConsumableItem : MonoBehaviour
 {
     PlayerStateExecutor _executor;
-    Item item;
+    ItemData item { get { return itemDetail.item; } }
     ItemDetail itemDetail;
     public void Awake()
     {
         _executor = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateExecutor>();
         itemDetail = GetComponent<ItemDetail>();
-        item = itemDetail.item;
     }
     public void ConsumeItem()
     {
+        //Debug.Log($"Consuming item type: {item.consumableItemType}");
         switch (item.consumableItemType)
         {
             case ConsumableItemType.InstantPotion:
@@ -26,9 +26,11 @@ public class ConsumableItem : MonoBehaviour
 
     public void UsePotion(List<ItemAttribute> attributes)
     {
+        //Debug.Log($"Using item {item.itemName}");
         if (_executor.PlayerCombatStats.CanConsumeItem(attributes))
         {
-            _executor.PlayerCombatStats.ChangePlayerStats(attributes);
+            _executor.SoundMan.PlaySound("UsePotion");
+            _executor.ChangePlayerCombatStat(attributes);
             item.curStack--;
             itemDetail.UpdateStack();
             if (item.curStack == 0)
@@ -38,7 +40,7 @@ public class ConsumableItem : MonoBehaviour
         }
         else
         {
-            //Debug.Log("cannot use this item");
+            Debug.Log("cannot use this item");
         }
     }
 }

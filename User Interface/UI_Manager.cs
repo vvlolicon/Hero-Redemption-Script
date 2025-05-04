@@ -39,5 +39,5 @@ public class UI_Manager : MonoBehaviour
 public enum UI_Window {
     None, InventoryUI, EquipmentUI, HUD, 
     HotBar, PauseMenu, EquimentTooltip, InteractToolip, 
-    StageMap, BoxInventoryUI, TestStatics
+    StageMap, BoxInventoryUI, TestStatics, OpenBook
 }

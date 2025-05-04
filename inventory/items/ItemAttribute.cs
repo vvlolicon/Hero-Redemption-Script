@@ -17,7 +17,7 @@ public enum ItemAttributeName {
     MaxHP, HP, MaxMP, MP, ATK, AtkTime, DEF, SPEED, 
     CritChance, CritChanRdc, CritDmgMult, CritDmgResis, DmgReduce, MP_Regen,
     // these attributes should only use on pickup item
-    Money, EXP
+    Money, EXP, LEVEL
 }
 [System.Serializable]
 public class ItemDropChance

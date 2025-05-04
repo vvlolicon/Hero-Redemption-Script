@@ -16,6 +16,8 @@ public abstract class StageSettings : MonoBehaviour
     public Transform EnteredPoint;
     public Transform ReturnPoint;
     public Collider ExitPointCollider;
+    [Header("Stage Identity")]
+    public string stageID;
     PlayerStateExecutor _player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
 
     protected void ClearStage() 
@@ -58,6 +60,8 @@ public abstract class StageSettings : MonoBehaviour
     }
 
     public bool IsStageLocked() => _isLocked;
+    public bool IsStageDiscovered() => _isDiscovered;
+    public bool IsStageCleared() => _stageCleared;
     public bool IsParentStageOf(StageSettings stage)
     {
         foreach(StageSettings childStage in _childStages)
@@ -67,6 +71,29 @@ public abstract class StageSettings : MonoBehaviour
         }
         return false;
     }
+
+    public virtual void SetStage(bool isLocked, bool isDiscovered, bool isCleared)
+    {
+         _isLocked = isLocked;
+         _isDiscovered = isDiscovered;
+        if (isCleared)
+        {
+            ClearStage();
+        }
+    }
+    public List<string> GetChildStageIDs()
+    {
+        return _childStages.ConvertAll(s => s.stageID);
+    }
 }
 
+[System.Serializable]
+public class GeneralStageData
+{
+    public string stageID;
+    public List<string> childStageIDs;
 
+    public bool isLocked;
+    public bool isDiscovered;
+    public bool isCleared;
+}

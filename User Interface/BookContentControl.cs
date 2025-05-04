@@ -1,37 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+
+// BookContentControl.cs
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
 
-public class BookContentControl: MonoBehaviour
+public class BookContentControl : MonoBehaviour
 {
-    List<string> _bookContent;
     [SerializeField] TMP_Text _bookText;
-    [SerializeField] TMP_Text _bookTitle;
+    [SerializeField] TMP_Text _bookHeading;
+    [SerializeField] Image _bookImage;
 
+    List<string> _titles;
+    List<string> _contents;
+    List<Sprite> _images;
     int _currentPage = 0;
 
-    public void SetBook(string title, List<string> bookContent)
+    public void SetBook(List<string> titles, List<string> contents, List<Sprite> images)
     {
-        _bookTitle.text = title;
-        _bookContent = bookContent;
-        SetContent(0);
+        _titles = titles;
+        _contents = contents;
+        _images = images;
+        _currentPage = 0;
+        UpdatePage();
     }
 
     public void NextPage()
     {
-        _currentPage = (_currentPage + 1) % _bookContent.Count;
-        SetContent(_currentPage);
+        if (_contents != null && _contents.Count > 0)
+        {
+            _currentPage = (_currentPage + 1) % _contents.Count;
+            UpdatePage();
+        }
     }
 
     public void PreviousPage()
     {
-        _currentPage = (_currentPage - 1 + _bookContent.Count) % _bookContent.Count;
-        SetContent(_currentPage);
+        if (_contents != null && _contents.Count > 0)
+        {
+            _currentPage = (_currentPage - 1 + _contents.Count) % _contents.Count;
+            UpdatePage();
+        }
     }
 
-    public void SetContent(int page)
+    void UpdatePage()
     {
-        _bookText.text = _bookContent[page];
+        _bookText.text = _contents[_currentPage];
+        _bookHeading.text = _titles[_currentPage];
+        
+        if (_images != null && _currentPage < _images.Count && _images[_currentPage] != null)
+        {
+            _bookImage.sprite = _images[_currentPage];
+            _bookImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            _bookImage.gameObject.SetActive(false);
+        }
     }
 }

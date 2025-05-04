@@ -70,6 +70,7 @@ public class PlayerAttackState : PlayerBaseState
         Executor.AnimEvent.EnableWeaponColl();
         //Executor.SoundMan.PlaySound("Attack");
         Executor.AttackTimer = 0;
+        Executor.SoundMan.PlaySound("Attack");
     }
 
 

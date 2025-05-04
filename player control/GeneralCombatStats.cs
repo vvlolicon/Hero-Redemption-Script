@@ -48,6 +48,24 @@ public class GeneralCombatStats
         }
     }
 
+    public void SetStats(Dictionary<CombatStatsType, float> stats)
+    {
+        if (stats == null)
+        {
+            Debug.Log("Cannot set stats to null");
+            return;
+        }
+
+        for (int i = 0; i < typeof(CombatStatsType).GetEnumCount(); i++)
+        {
+            CombatStatsType type = (CombatStatsType)i;
+            if (CombatStats.ContainsKey(type) && stats.ContainsKey(type))
+            {
+                CombatStats[type] = stats[type];
+            }
+        }
+    }
+
     public void SetStats(GeneralStatsObj stats)
     {
         CombatStats[CombatStatsType.MaxHP] = stats.MaxHP;

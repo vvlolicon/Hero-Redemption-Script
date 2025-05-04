@@ -110,7 +110,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         SetStatsForObject();
     }
 
-    void HandleExternalStatsChange()
+    public void HandleExternalStatsChange()
     {
         _statsAfterChanges.SetStats(_curCombatStats);
         _lastChangedStats.SetStats(_curCombatStats);
@@ -119,8 +119,8 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
 
     void HandleEquipmentChange()
     {
-        Debug.Log($"_curCombatStats.HP = {_curCombatStats.HP}, _curCombatStats.MaxHP = {_curCombatStats.MaxHP}");
-        Debug.Log($"_lastChangedStats.HP = {_lastChangedStats.HP}, _lastChangedStats.MaxHP = {_lastChangedStats.MaxHP}");
+        //Debug.Log($"_curCombatStats.HP = {_curCombatStats.HP}, _curCombatStats.MaxHP = {_curCombatStats.MaxHP}");
+        //Debug.Log($"_lastChangedStats.HP = {_lastChangedStats.HP}, _lastChangedStats.MaxHP = {_lastChangedStats.MaxHP}");
         ResetStats();
         SetStatsForObject();
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDisplayItem
 {
-    public void SetItemAtSlot(Item item, int slotIndex);
+    public void SetItemAtSlot(ItemData item, int slotIndex);
 }
 
 public class InventorySlotManager : MonoBehaviour, IDisplayItem
@@ -12,7 +12,7 @@ public class InventorySlotManager : MonoBehaviour, IDisplayItem
     public int slot_num = 0;
     [SerializeField] GameObject slotObject;
     [SerializeField] GameObject itemObject;
-    public event Action<int, Item, bool> SlotChangeAction;
+    public event Action<int, ItemData, bool> SlotChangeAction;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class InventorySlotManager : MonoBehaviour, IDisplayItem
         }
     }
 
-    public void InvokeEvent(int slotIndex, Item item, bool deleteItem = false)
+    public void InvokeEvent(int slotIndex, ItemData item, bool deleteItem = false)
     {
         if(gameObject.CompareTag("Box_Inventory"))
             SlotChangeAction?.Invoke(slotIndex, item, deleteItem);
@@ -119,7 +119,7 @@ public class InventorySlotManager : MonoBehaviour, IDisplayItem
         return false;
     }
 
-    public void SetItemAtSlot(Item item, int slotIndex)
+    public void SetItemAtSlot(ItemData item, int slotIndex)
     {
         int curSlotNum = transform.childCount;
         if (slotIndex > curSlotNum - 1)
@@ -130,7 +130,7 @@ public class InventorySlotManager : MonoBehaviour, IDisplayItem
         SetSlotItem(item, slotIndex);
     }
 
-    void SetSlotItem(Item item, int slotIndex)
+    void SetSlotItem(ItemData item, int slotIndex)
     {
         Transform slot = transform.GetChild(slotIndex);
         if (slot.childCount > 0)

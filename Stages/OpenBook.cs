@@ -1,17 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+// OpenBook.cs
 using UnityEngine;
+using System.Collections.Generic;
 
 public class OpenBook : MonoBehaviour, IInteractableObject
 {
     [SerializeField] string _interactTitle;
-    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
-    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    [SerializeField] List<Sprite> _bookImage;
+    [TextArea, SerializeField] List<string> _title;
+    [TextArea, SerializeField] List<string> _bookContent;
 
-    [SerializeField] string _title;
-    [TextArea, SerializeField]
-    List<string> _bookContent;
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
 
     public string GetInterableTitle()
     {
@@ -20,10 +18,8 @@ public class OpenBook : MonoBehaviour, IInteractableObject
 
     public void Interact()
     {
-        Debug.Log("Loot Box Interact");
-        //UI_Controller.SetUIActive(UI_Window.OpenBook, true);
+        UI_Controller.SetUIActive(UI_Window.OpenBook, true);
         BookContentControl control = UI_Controller.GetUIScript<BookContentControl>();
-        control.SetBook(_title, _bookContent);
+        control.SetBook(_title, _bookContent, _bookImage);
     }
-
 }

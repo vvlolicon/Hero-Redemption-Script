@@ -18,11 +18,11 @@ public class BoxInventoryController : MonoBehaviour
     public void OpenBox(LootBox box)
     {
         curBox = box;
-        List<Item> itemsShow = box.GetItems();
+        List<ItemData> itemsShow = box.GetItems();
         UI_Controller.OpenInventoryUI(UI_Window.BoxInventoryUI, itemsShow);
     }
 
-    public void OnItemChange(int slotIndex, Item item, bool deteleItem)
+    public void OnItemChange(int slotIndex, ItemData item, bool deteleItem)
     {
         curBox.SetItemAtIndex(slotIndex, item, deteleItem);
     }

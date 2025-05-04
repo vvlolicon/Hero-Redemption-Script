@@ -23,7 +23,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (transform.parent.parent != null)
         {
             DraggableItem clickDragItem = gameObject.GetComponent<DraggableItem>();
-            Item clickItem = gameObject.GetComponent<ItemDetail>().item;
+            ItemData clickItem = gameObject.GetComponent<ItemDetail>().item;
             
             //Debug.Log("click Item: " + clickItem.itemName);
             GameObject item_at_interface = transform.parent.parent.gameObject;
@@ -98,7 +98,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         StoredItemPlaceType originWindowPlaceType = originSlot.parent.gameObject.GetStoredPlaceType();
         StoredItemPlaceType targetWindowPlaceType = targetInventory.gameObject.GetStoredPlaceType();
-        Item itemMoved = clickDragItem.GetComponent<ItemDetail>().item;
+        ItemData itemMoved = clickDragItem.GetComponent<ItemDetail>().item;
         int originSlotIndex = originSlot.GetIndexInParent();
         for (int i = 0; i < targetInventory.childCount; i++)
         {

@@ -20,9 +20,11 @@ public class EnemyDropData : ScriptableObject
             foreach (RandomDropTable table in RandomDropTable)
             {
                 Item dropItem = table.GetRandomDrop();
-                Debug.Log($"Dropped item: {dropItem.itemName}");
-                if (dropItem!= null)
+                if (dropItem != null)
+                {
+                    Debug.Log($"Dropped item: {dropItem.itemName}");
                     dropItems.Add(dropItem);
+                }
             }
         }
         return dropItems;

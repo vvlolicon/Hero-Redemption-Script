@@ -79,6 +79,7 @@ public class PlayerHitState : PlayerBaseState
     {
         Executor.CurMovement = Vector3.zero;
         Executor.Animator.Play("Hit");
+        Executor.SoundMan.PlaySound("Hurt");
 
         dir.Normalize();
         if (dir.y < 0) dir.y = -dir.y; //Reflect down force on the ground

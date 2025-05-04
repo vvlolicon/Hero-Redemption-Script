@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Unity.VisualScripting;
+using UnityEditor.U2D;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "Items/Item")]
 [System.Serializable]
@@ -44,6 +46,11 @@ public class Item : ScriptableObject
         curStack = setStack;
     }
 
+    public ItemData GetItemDataClone()
+    {
+        return new ItemData(this);
+    }
+
     private void OnEnable()
     {
         curStack = setStack;
@@ -75,5 +82,53 @@ public enum ItemType
 public enum ConsumableItemType
 {
     None, InstantPotion, TimedPotion, Scroll
+}
+[System.Serializable]
+public class ItemData
+{
+    public string itemName;                                     
+    public ItemType itemType { get { return prototype.itemType; } }
+    public ConsumableItemType consumableItemType { get { return prototype.consumableItemType; } }
+    public int itemID;                                          
+    public string itemDesc;
+    public int itemValue = 1; 
+    public float itemWeight;
+    public int maxStack = 1;
+    public int curStack = 1;
+    public int rarity; 
+    public List<ItemAttribute> itemAttributes = new();
+
+    // resouces that cannot be serialized
+    [System.NonSerialized] public Sprite itemIcon;
+    [System.NonSerialized] public GameObject itemModel;
+    [System.NonSerialized] public Item prototype;
+
+    public ItemData(Item prototype)
+    {
+        this.prototype = prototype;
+        itemID = prototype.itemID;
+        itemName = prototype.itemName;
+        itemDesc = prototype.itemDesc;
+        itemIcon = prototype.itemIcon;
+        itemValue = prototype.itemValue;
+        maxStack = prototype.maxStack;
+        curStack = prototype.curStack;
+        itemAttributes = prototype.itemAttributes;
+    }
+
+    #region ICloneable Members
+
+    public ItemData Clone()
+    {
+        return (ItemData) this.MemberwiseClone();
+    }
+
+    #endregion
+
+    public ItemData()
+    {
+        itemID = -1;
+    }
+
 }
 

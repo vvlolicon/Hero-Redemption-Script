@@ -2,13 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TreeEditor;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 public class PlayerBackpack : MonoBehaviour
 {
-    [SerializeField] List<Item> _playerOwnedItems;
     public int PlayerBackpackSize = 20;
+    List<ItemData> _playerInventory;
+    ItemData[] _playerEquipments = new ItemData[8];
+    ItemData[] _playerHotbar = new ItemData[6];
+
+    [SerializeField] List<Item> _playerOwnedItems;
     [SerializeField] Item[] _playerEquippedItems = new Item[8];
     [SerializeField] Item[] _playerHotbarItems = new Item[6];
     [HideInInspector] public int PlayerLevel = 1;
@@ -19,15 +25,29 @@ public class PlayerBackpack : MonoBehaviour
 
     private void Awake()
     {
-        List<Item> newList = new List<Item>(PlayerBackpackSize);
+        List<ItemData> newList = new List<ItemData>(PlayerBackpackSize);
         for (int i = 0; i < PlayerBackpackSize; i++)
         {
             if (i < _playerOwnedItems.Count)
-                newList.Add(_playerOwnedItems[i]);
+                newList.Add(_playerOwnedItems[i].GetItemDataClone());
             else
                 newList.Add(null);
         }
-        _playerOwnedItems = newList;
+        _playerInventory = newList;
+        for(int i = 0; i < _playerEquippedItems.Length; i++)
+        {
+            if (_playerEquippedItems[i] != null)
+                _playerEquipments[i] = _playerEquippedItems[i].GetItemDataClone();
+            else
+                _playerEquipments[i] = null;
+        }
+        for (int i = 0; i < _playerHotbarItems.Length; i++)
+        { 
+            if (_playerHotbarItems[i] != null)
+                _playerHotbar[i] = _playerHotbarItems[i].GetItemDataClone();
+            else
+                _playerHotbar[i] = null;
+        }
     }
 
     public void AddEnemyDrops(EnemyDropData dropData)
@@ -39,7 +59,7 @@ public class PlayerBackpack : MonoBehaviour
         {
             foreach (Item item in dropItems)
             {
-                if (!AddItemToPlayerBackpack(item))
+                if (!AddItemToPlayerBackpack(item.GetItemDataClone()))
                 {
                     Debug.Log("Backpack is full, dropping " + item.itemName + " on the ground");
                 }
@@ -47,14 +67,39 @@ public class PlayerBackpack : MonoBehaviour
         }
     }
 
-    public bool AddItemToPlayerBackpack(Item item)
+    public bool AddItemToPlayerBackpack(ItemData item)
     {
-        for (int i = 0; i < _playerOwnedItems.Count; i++)
+        bool AddItem = true;
+        if (item.itemType == ItemType.Consumable && _playerInventory.Count > 0)
         {
-            if (_playerOwnedItems[i] == null)
+            int stackLeft = item.curStack;
+            foreach (ItemData backpackItem in _playerInventory)
             {
-                _playerOwnedItems[i] = item;
-                return true;
+                if (backpackItem == null) continue;
+                if (backpackItem.itemID == item.itemID && backpackItem.curStack < backpackItem.maxStack)
+                {
+                    backpackItem.curStack += stackLeft;
+                    if (backpackItem.curStack > backpackItem.maxStack)
+                    {
+                        stackLeft = backpackItem.curStack - backpackItem.maxStack;
+                        item.curStack = stackLeft;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (AddItem)
+        {
+            for (int i = 0; i < _playerInventory.Count; i++)
+            {
+                if (_playerInventory[i] == null)
+                {
+                    _playerInventory[i] = item;
+                    return true;
+                }
             }
         }
         return false;
@@ -69,7 +114,7 @@ public class PlayerBackpack : MonoBehaviour
             CombatStatsType statType = (CombatStatsType)i;
             stats[statType] = 0;
         }
-        foreach(Item item in _playerEquippedItems)
+        foreach(ItemData item in _playerEquipments)
         {
             if (item!= null)
             {
@@ -82,39 +127,81 @@ public class PlayerBackpack : MonoBehaviour
         return stats;
     }
 
-    public void SetItemInPlayerBackpack(Item item, int index, StoredItemPlaceType placeType)
+    public void SetItemInPlayerBackpack(ItemData item, int index, StoredItemPlaceType placeType)
     {
         switch (placeType)
         {
             case StoredItemPlaceType.PlayerBackpack:
-                _playerOwnedItems[index] = item;
+                _playerInventory[index] = item;
                 break;
             case StoredItemPlaceType.PlayerEquipment:
-                _playerEquippedItems[index] = item;
+                _playerEquipments[index] = item;
                 break;
             case StoredItemPlaceType.PlayerHotbar:
-                _playerHotbarItems[index] = item;
+                _playerHotbar[index] = item;
                 break;
         }
     }
 
-    public void SetPlayerBackpackItem(Item item, int index)
+    public void SetPlayerBackpackItem(ItemData item, int index)
     {
-        _playerOwnedItems[index] = item;
+        _playerInventory[index] = item;
     }
-    public void SetPlayerEquippedItem(Item item, int index)
+    public void SetPlayerEquippedItem(ItemData item, int index)
     {
-        _playerEquippedItems[index] = item;
+        _playerEquipments[index] = item;
         OnStatsChanged?.Invoke();
     }
-    public void SetPlayerHotbarItem(Item item, int index)
+    public void SetPlayerHotbarItem(ItemData item, int index)
     {
-        _playerEquippedItems[index] = item;
+        _playerHotbar[index] = item;
     }
 
-    public List<Item> GetPlayerBackpackItems() => _playerOwnedItems;
-    public List<Item> GetPlayerEquippedItems() => _playerEquippedItems.ToList();
-    public List<Item> GetPlayerHotbarItems() => _playerHotbarItems.ToList();
+    public void SetPlayerBackPackRange(List<ItemData> items)
+    {
+        _playerInventory = items;
+    }
+
+    public void SetPlayerEquippedItemsRange(List<ItemData> items)
+    {
+        if (items.Count > 8) return;
+        for(int i = 0; i < items.Count; i++)
+        {
+            _playerEquipments[i] = items[i];
+        }
+        OnStatsChanged?.Invoke();
+    }
+
+    public void SetPlayerHotbarItemsRange(List<ItemData> items)
+    {
+        if (items.Count > 6) return;
+        for (int i = 0; i < items.Count; i++)
+        {
+            _playerHotbar[i] = items[i];
+        }
+    }
+
+    public List<ItemData> GetPlayerBackpackItems() => _playerInventory;
+    public List<ItemData> GetPlayerEquippedItems() => _playerEquipments.ToList();
+    public List<ItemData> GetPlayerHotbarItems() => _playerHotbar.ToList();
+
+    //public List<ItemData> GetClonePlayerInventory() => CloneItemList(_playerInventory);
+    //public List<ItemData> GetClonePlayerEquipment() => CloneItemList(GetPlayerEquippedItems());
+    //public List<ItemData> GetClonePlayerHotbar() => CloneItemList(GetPlayerHotbarItems());
+
+    List<ItemData> CloneItemList(List<ItemData> sourceList)
+    {
+        List<ItemData> cloneList = new List<ItemData>(sourceList);
+        for (int i = 0; i < _playerInventory.Count; i++)
+        {
+            ItemData item = _playerInventory[i];
+            if (item != null)
+                cloneList.Add(item.Clone());
+            else
+                cloneList.Add(null);
+        }
+        return cloneList;
+    }
 }
 
 public enum StoredItemPlaceType

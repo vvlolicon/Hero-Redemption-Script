@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageMapController : MonoBehaviour
 {
@@ -12,11 +13,17 @@ public class StageMapController : MonoBehaviour
 
     private void Awake()
     {
-        curStage = StartStage;
+        //if(SceneManager.GetActiveScene().buildIndex == 1)
+        //{
+        //    Init();
+        //}
     }
 
     private void OnEnable()
     {
+        if (curStage == null)
+            curStage = StartStage;
+        Debug.Log("curStage: " + curStage.gameObject.ToString());
         foreach (Transform child in transform.GetChild(0))
         {
             if (child.TryGetComponent<StageMapButtons>(out var stageButton))
@@ -47,8 +54,30 @@ public class StageMapController : MonoBehaviour
         OnExitWindow();
     }
 
-    public void SetPivot(Transform newPos)
+    public void SetPivot(Transform newPosTransform)
     {
-        pivot.localPosition = new Vector3(newPos.localPosition.x, newPos.localPosition.y + pivotOffset, 0);
+        pivot.position = newPosTransform.position;
     }
+
+    public void SetCurStage(StageSettings newStage)
+    {
+        curStage = newStage;
+        StageMapButtons[] buttons = GetComponentsInChildren<StageMapButtons>();
+        foreach (StageMapButtons button in buttons)
+        {
+            if(button._stage == newStage)
+            {
+                pivot.position = button.GetPivotTransform().position;
+                break;
+            }
+        }
+        newStage.OnEnterStage();
+    }
+
+    public void Init()
+    {
+        curStage = StartStage;
+    }
+
+    
 }

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class StageMapButtons : MonoBehaviour
 {
-    public StageSettings _stage;
+    public StageSettings _stage;    
+    [SerializeField] Transform _pivotPos;
     Button _stageButton;
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
     StageMapController _mapController { get{ return UI_Controller.GetUIScript<StageMapController>(); } }
@@ -31,6 +32,11 @@ public class StageMapButtons : MonoBehaviour
     public void OnEnterStage()
     {
         _mapController.EnterStage(_stage);
-        _mapController.SetPivot(transform);
+        if(_pivotPos!= null)
+            _mapController.SetPivot(_pivotPos);
+        else
+            _mapController.SetPivot(transform);
     }
+
+    public Transform GetPivotTransform() => (_pivotPos == null)? transform : _pivotPos;
 }

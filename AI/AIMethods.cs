@@ -36,7 +36,7 @@ public class AIMethods
 
     public bool CanAttackPlayer()
     {
-        return IsPlayerInRange(_attackDist);
+        return IsPlayerInRange(_attackDist/1.5f);
     }
 
     public bool CanDamagePlayer()

@@ -125,7 +125,7 @@ namespace Assets.AI.BehaviourTree
             _executor.IsInvincible = true;
             _executor.Agent.ResetPath();
             _methods.ResetAllAnimationTriggers();
-            
+            _executor.SoundManager.PlaySound("Hurt");
             StartCoroutine(ExtendIEnumerator.DelayAction(0.5f, 
                 () => { _executor.IsInvincible = false; }));
         }
@@ -154,7 +154,6 @@ namespace Assets.AI.BehaviourTree
             if (_hitTimer <= 0)
             {
                 _executor.Agent.isStopped = true;
-                _executor.Animator.SetTrigger("Hit");
                 _hitTimer = _executor.HitAnimTime;
             }
 

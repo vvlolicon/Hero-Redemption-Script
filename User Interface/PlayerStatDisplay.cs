@@ -54,7 +54,8 @@ public class PlayerStatDisplay  : MonoBehaviour
         float MP = playerCombatStats.MP;
         float HPperc = HP / MaxHP;
         float MPperc = MP / MaxMP;
-
+        HP.RoundToDecimals(2);
+        MP.RoundToDecimals(2);
         HPBar.value = HPperc;
         MPBar.value = MPperc;
         HUD_HP_text.text = Mathf.Floor(HP) + " / " + Mathf.Floor(MaxHP);
@@ -66,11 +67,11 @@ public class PlayerStatDisplay  : MonoBehaviour
             float CritChanRdc = playerCombatStats.CritChanRdc;
             float CritDmgMult = playerCombatStats.CritDmgMult;
             // if the stats contains digits, show only 2 digits
-            MaxHP.RoundToXDecimal(2);
-            MaxMP.RoundToXDecimal(2);
-            CritChance.RoundToXDecimal(2);
-            CritChanRdc.RoundToXDecimal(2);
-            CritDmgMult.RoundToXDecimal(2);
+            MaxHP.RoundToDecimals(2);
+            MaxMP.RoundToDecimals(2);
+            CritChance.RoundToDecimals(2);
+            CritChanRdc.RoundToDecimals(2);
+            CritDmgMult.RoundToDecimals(2);
 
             // restrict the maximum value to 100%
             float critResisPerc = Mathf.Min(playerCombatStats.CritDmgResis, 100);
@@ -78,9 +79,9 @@ public class PlayerStatDisplay  : MonoBehaviour
 
             Stats_MaxHP_text.text = "" + MaxHP;
             Stats_MaxMP_text.text = "" + MaxMP;
-            Stats_ATK_text.text = "" + playerCombatStats.ATK;
+            Stats_ATK_text.text = "" + (int) playerCombatStats.ATK;
             Stats_AtkTime_text.text = "" + playerCombatStats.AttackTime * 100 + "%";
-            Stats_DEF_text.text = "" + playerCombatStats.DEF;
+            Stats_DEF_text.text = "" + (int)playerCombatStats.DEF;
             Stats_SPEED_text.text = "" + playerCombatStats.Speed;
             Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerCombatStats.CritChance,0) + "%";
             //Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";

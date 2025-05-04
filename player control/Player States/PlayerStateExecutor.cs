@@ -1,3 +1,4 @@
+using Assets.SaveSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,6 +51,25 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         TransportPlayerTo(_spawnPoint.position);
         ResetPlayerValue();
         _playerInput.Initialize();
+        _backpack.PlayerLevel = 1;
+        _backpack.PlayerOwnedMoney = 0;
+    }
+
+    public void LoadPlayerData(PlayerData newPlayerData)
+    {
+        PlayerCombatStats.SetStats(newPlayerData.combatStats);
+        ExtraStats.SetStats(newPlayerData.extraStats);
+        TransportPlayerTo(newPlayerData.playerPos);
+        HasInitialized = true;
+        ResetPlayerValue();
+        _playerInput.Initialize();
+
+        OnStatsChanged?.Invoke();
+        _backpack.PlayerLevel = newPlayerData.playerLevel;
+        _backpack.PlayerOwnedMoney = newPlayerData.playerMoney;
+        _backpack.SetPlayerBackPackRange(newPlayerData.playerInventory);
+        _backpack.SetPlayerEquippedItemsRange(newPlayerData.playerEquipment);
+        _backpack.SetPlayerHotbarItemsRange(newPlayerData.playerHotbar);
     }
 
     void ResetPlayerValue()
@@ -80,8 +100,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         DashSpeed = PlayerStaticData._dashSpeed;
 
         _currentDashTime = MaxDashTime;
-        _backpack.PlayerLevel = 1;
-        _backpack.PlayerOwnedMoney = 0;
     }
     void Start()
     {
@@ -198,10 +216,15 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
                 info.ATK, PlayerCombatStats.DEF, info.CritChance, PlayerCombatStats.CritChanRdc,
                 PlayerCombatStats.DmgReduce, info.CritMult, PlayerCombatStats.CritDmgResis);
             _healthMan.Damage(dmgResult.Dmg);
-            PlayerCombatStats.HP -= dmgResult.Dmg;
             OnStatsChanged?.Invoke();
             //Debug.Log("You get damage: " + dmgResult.Dmg + " Is critial hit: " + dmgResult.IsCritHit);
         }
+    }
+
+    public void ChangePlayerCombatStat(List<ItemAttribute> attributes)
+    {
+        PlayerCombatStats.ChangePlayerStats(attributes);
+        OnStatsChanged?.Invoke();
     }
 
     public void DamageEnemy(GameObject victim, Color dmgColor)
