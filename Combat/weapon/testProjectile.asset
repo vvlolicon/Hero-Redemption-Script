@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProjectilePrefab: {fileID: 8689636903662701249, guid: b705a28b1ac6195438a5eb0858a1f600, type: 3}
   IsAOE: 1
-  AOERadius: 5
+  AOERadius: 0.7
   DestroyOnTouch: 1
   flyingRange: 100
   useGravity: 0
