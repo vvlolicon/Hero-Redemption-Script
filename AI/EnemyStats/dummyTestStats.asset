@@ -19,7 +19,7 @@ MonoBehaviour:
   MP_Regen: 0
   ATK: 9999999
   SPEED: 0
-  DEF: 0
+  DEF: 60
   AttackTime: 0
   CritChance: 0
   CritChanRdc: 0

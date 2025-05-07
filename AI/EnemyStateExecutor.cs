@@ -116,7 +116,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                 
                 //CurState.SwitchState(_stateMan.Hit());
                 DmgResult dmgResult = HealthManager.calculateDamage(
-                    CombatStats.ATK, CombatStats.DEF, info.CritChance, CombatStats.CritChanRdc,
+                    info.ATK, CombatStats.DEF, info.CritChance, CombatStats.CritChanRdc,
                     CombatStats.DmgReduce, info.CritMult, CombatStats.CritDmgResis);
                 int dmgShow = (int)Mathf.Floor(dmgResult.Dmg);
                 _healthManager.CreateHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));

@@ -22,9 +22,9 @@ public class Dummy : MonoBehaviour, IDamageable
 
     public void ApplyDamage(DmgInfo data)
     {
-        if (!isInvincible && data is EnemyDmgInfo)
+        Debug.Log("Dummy received damage");
+        if (!isInvincible && data is EnemyDmgInfo info)
         {
-            EnemyDmgInfo info = (EnemyDmgInfo)data;
             if (info.Target == gameObject)
             {
                 Debug.Log("triggered ApplyDmg to dummy");
@@ -43,7 +43,7 @@ public class Dummy : MonoBehaviour, IDamageable
     IEnumerator MakeInvincible()
     {
         isInvincible = true;
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(0.5f);
         isInvincible = false;
     }
 
