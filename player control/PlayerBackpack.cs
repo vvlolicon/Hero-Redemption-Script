@@ -185,22 +185,30 @@ public class PlayerBackpack : MonoBehaviour
 
     public bool RemoveItem(ItemData item)
     {
-        if (_playerInventory.Contains(item))
+        if (RemoveItemForList(_playerInventory))
         {
-            _playerInventory.Remove(item);
             return true;
         }
-        if (_playerEquipments.Contains(item))
+        if (RemoveItemForList(_playerEquipments))
         {
-            _playerEquipments.Remove(item);
             return true;
         }
-        if (_playerHotbar.Contains(item))
+        if (RemoveItemForList(_playerHotbar))
         {
-            _playerHotbar.Remove(item);
             return true;
         }
         return false;
+
+        bool RemoveItemForList(List<ItemData> list)
+        {
+            if (list.Contains(item))
+            {
+                int index = list.IndexOf(item);
+                list[index] = null;
+                return true;
+            }
+            return false;
+        }
     }
 
     public List<ItemData> GetPlayerBackpackItems() => _playerInventory;

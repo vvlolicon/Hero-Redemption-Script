@@ -56,6 +56,10 @@ public class ConsumableItem : MonoBehaviour
         {
             Destroy(gameObject);
             PlayerCompManager.TryGetPlayerComp<PlayerBackpack>().RemoveItem(item);
+            UI_Controller UIcontroller = UI_Controller.Instance;
+            if (UIcontroller.IsUIActive(UI_Window.EquimentTooltip)){
+                UIcontroller.SetUIActive(UI_Window.EquimentTooltip, false);
+            }
         }
     }
 }
