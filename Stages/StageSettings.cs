@@ -1,24 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class StageSettings : MonoBehaviour
 {
     public List<StageSettings> _childStages = new List<StageSettings>();
+    public List<PickupSpawner> _pickups = new List<PickupSpawner>();
     protected bool _isLocked = true;
-    protected bool _isRootStage;
-    protected bool _isFinalStage;
+    protected bool _isRootStage = false;
+    protected bool _isFinalStage = false;
     protected bool _stageCleared = false;
-    protected bool _isDiscovered;
+    protected bool _isDiscovered = false;
 
     public Transform EnteredPoint;
     public Transform ReturnPoint;
     public Collider ExitPointCollider;
     [Header("Stage Identity")]
     public string stageID;
-    PlayerStateExecutor _player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    PlayerStateExecutor _player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+
+    protected virtual void SpawnPickups()
+    {
+        if (_pickups.Count == 0) return;
+        for (int i = 0; i < _pickups.Count; i++)
+        {
+            _pickups[i].SpawnPickup();
+        }
+    }
 
     protected void ClearStage() 
     {
@@ -26,6 +37,12 @@ public abstract class StageSettings : MonoBehaviour
         UnlockChildStages();
         OnStageClear();
     }
+
+    public virtual void InitStage()
+    {
+        SpawnPickups();
+    }
+
 
     public virtual void OnStageClear() {
         if (ExitPointCollider != null)
@@ -72,10 +89,19 @@ public abstract class StageSettings : MonoBehaviour
         return false;
     }
 
-    public virtual void SetStage(bool isLocked, bool isDiscovered, bool isCleared)
+    public virtual void SetStage(bool isLocked, bool isDiscovered, bool isCleared, List<bool> isPickupsPicked)
     {
          _isLocked = isLocked;
          _isDiscovered = isDiscovered;
+        Task[] spawnPickups = new Task[_pickups.Count];
+        for (int i = 0; i < _pickups.Count; i++)
+        {
+            if (!isPickupsPicked[i])
+            {
+                _pickups[i].SpawnPickup();
+            }
+            _pickups[i].PickedItem = isPickupsPicked[i];
+        }
         if (isCleared)
         {
             ClearStage();
@@ -85,6 +111,7 @@ public abstract class StageSettings : MonoBehaviour
     {
         return _childStages.ConvertAll(s => s.stageID);
     }
+    public List<bool> GetIsPickupsPicked() => _pickups.ConvertAll(p => p.PickedItem);
 }
 
 [System.Serializable]
@@ -92,6 +119,7 @@ public class GeneralStageData
 {
     public string stageID;
     public List<string> childStageIDs;
+    public List<bool> pickedPickups;
 
     public bool isLocked;
     public bool isDiscovered;

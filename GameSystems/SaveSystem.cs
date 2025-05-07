@@ -1,10 +1,9 @@
-using SimpleJSON;
+using Assets.SaveSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public static class SaveSystem
@@ -20,6 +19,36 @@ public static class SaveSystem
         }
     }
 
+    public static void SaveGame(string fileName)
+    {
+        PlayerBackpack PlayerBackpack = PlayerCompManager.TryGetPlayerComp<PlayerBackpack>();
+        PlayerStateExecutor PlayerExecutor = PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>();
+        List<object> saveData = new List<object>();
+        PlayerData playerData = new PlayerData();
+        playerData.playerLevel = PlayerBackpack.PlayerLevel;
+        playerData.playerMoney = PlayerBackpack.PlayerOwnedMoney;
+        playerData.playerInventory = PlayerBackpack.GetPlayerBackpackItems();
+        playerData.playerEquipment = PlayerBackpack.GetPlayerEquippedItems();
+        playerData.playerHotbar = PlayerBackpack.GetPlayerHotbarItems();
+        playerData.playerPos = PlayerBackpack.gameObject.transform.position;
+        var stageMapContr = UI_Controller.GetUIScript<StageMapController>();
+        var curStage = stageMapContr.curStage;
+        if (curStage == null)
+        {
+            curStage = stageMapContr.StartStage;
+        }
+        playerData.curStageID = curStage.stageID;
+        playerData.combatStats = PlayerExecutor.PlayerCombatStats.GetAllStats();
+        playerData.extraStats = PlayerExecutor.ExtraStats.GetAllStats();
+        playerData.SerializeData();
+        saveData.Add(playerData);
+        saveData.AddRange(StageManager.Instance.GetSavedStages());
+
+        Initialize();
+        SaveGame(fileName, saveData.ToArray());
+        playerData.DeserializeData();// deserialize item data to prevent wired things happen
+    }
+
     public static void SaveGame(string fileName, object[] datas)
     {
         string filePath = SAVE_FOLDER + fileName + SAVE_EXTENSION;
@@ -27,21 +56,34 @@ public static class SaveSystem
         while (File.Exists(filePath))
         {
             filePath = SAVE_FOLDER + fileName + " (" + saveNum + ")" + SAVE_EXTENSION;
-            saveNum++; 
+            saveNum++;
         }
 
-        using (StreamWriter sw = new StreamWriter(filePath, false))
+        // convert data to json synchronously
+        Task[] getStringTasks = new Task[datas.Length];
+        List<string> jsonStrings = new List<string>();
+        for (int i = 0; i < getStringTasks.Length; i++)
         {
-            foreach (object obj in datas)
+            var obj = datas[i];
+            getStringTasks[i] = new Task(() =>
             {
-                string json = JsonUtility.ToJson(obj);
-                sw.WriteLine(obj.GetType().AssemblyQualifiedName);
-                sw.WriteLine(json);
-                sw.WriteLine(SEPERATOR);
-                Debug.Log($"Seriliazed obj json£º{json}");
+                StringBuilder sb = new();
+                sb.AppendLine(obj.GetType().AssemblyQualifiedName);
+                sb.AppendLine(JsonUtility.ToJson(obj));
+                sb.AppendLine(SEPERATOR);
+                jsonStrings.Add(sb.ToString());
+            });
+            getStringTasks[i].Start();
+        }
+        Task.WaitAll(getStringTasks);
+        // write data into file
+        using (StreamWriter streamWriter = new StreamWriter(filePath, false))
+        {
+            foreach (string jsonString in jsonStrings)
+            {
+                streamWriter.WriteLine(jsonString);
             }
         }
-        Debug.Log($"Successfully saved game to {filePath}");
     }
 
     public static object[] LoadGame(string filePath)
@@ -51,8 +93,12 @@ public static class SaveSystem
             Debug.Log("Load game from file at " + filePath);
             List<object> objects = new List<object>();
             string[] allLines = File.ReadAllLines(filePath);
-            Type currentType = null;
+            List<string> jsonStrings = new List<string>();
+            List<Type> types = new List<Type>();
+
+            // First pass: Collect JSON strings and types
             StringBuilder currentJson = new StringBuilder();
+            Type currentType = null;
 
             foreach (string line in allLines)
             {
@@ -60,34 +106,44 @@ public static class SaveSystem
                 {
                     if (currentType != null && currentJson.Length > 0)
                     {
-                        objects.Add(JsonUtility.FromJson(currentJson.ToString(), currentType));
+                        types.Add(currentType);
+                        jsonStrings.Add(currentJson.ToString());
                         currentType = null;
                         currentJson.Clear();
                     }
                 }
                 else if (currentType == null)
                 {
-                    //Debug.Log($"reading save object type£º{line}");
                     currentType = Type.GetType(line);
-                    //if (currentType != null)
-                    //{
-                    //    Debug.Log($"Type found: {currentType.FullName}");
-                    //}
-                    //else
-                    //{
-                    //    Debug.Log("Type not found.");
-                    //}
                 }
                 else
                 {
-                    //Debug.Log($"reading save file json£º{line}");
                     currentJson.AppendLine(line);
                 }
             }
+
+            // Second pass: Convert JSON strings to objects in parallel
+            Task<object>[] getObjectTasks = new Task<object>[jsonStrings.Count];
+            for (int i = 0; i < getObjectTasks.Length; i++)
+            {
+                var jsonString = jsonStrings[i];
+                var type = types[i];
+                getObjectTasks[i] = new Task<object>(() => JsonUtility.FromJson(jsonString, type));
+                getObjectTasks[i].Start();
+            }
+
+            // Wait for all tasks to complete and collect results
+            Task.WaitAll(getObjectTasks);
+            foreach (var task in getObjectTasks)
+            {
+                objects.Add(task.Result);
+            }
+
             return objects.ToArray();
         }
         else return null;
     }
+
 
     public static string[] GetAllSavePaths(out List<string> fileNames)
     {

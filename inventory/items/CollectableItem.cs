@@ -1,25 +1,40 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CollectableItem : MonoBehaviour
 {
-    public InstantEffectPickupItem itemAttribute;
-    public GameObject spawner;
+     List<ItemAttribute> itemAttributes = new();
+     GameObject spawner;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<IPickItem>()?.OnPickItem(itemAttribute);
-            if(spawner!= null)
-                spawner.GetComponent<IPickItem>()?.OnPickItem(itemAttribute);
-            Destroy(gameObject);
+            other.GetComponent<IPickItem>()?.OnPickItem(itemAttributes, () =>
+            {
+                if(spawner!= null)
+                {
+                    spawner.GetComponent<IPickItem>()?.OnPickItem(null, null);
+                }
+                Destroy(gameObject);
+            });
         }
+    }
+
+    public void SetCollectable(List<ItemAttribute> itemAttributes, GameObject spawner)
+    {
+        foreach(ItemAttribute attribute in itemAttributes)
+        {
+            Debug.Log($"Adding attribute: {attribute.AtrbName}, {attribute.AtrbValue}");
+            this.itemAttributes.Add(attribute);
+        }
+        this.spawner = spawner;
     }
 }
 
 public interface IPickItem
 {
-    void OnPickItem(InstantEffectPickupItem pickedItem);
+    void OnPickItem(List<ItemAttribute> itemAttributes, Action callback);
 }

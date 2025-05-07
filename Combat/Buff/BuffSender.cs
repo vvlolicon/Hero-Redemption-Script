@@ -24,7 +24,7 @@ public class BuffSender : MonoBehaviour
 
     EnemyStateExecutor _enemyExecutor;
     PlayerStateExecutor _playerExecutor;
-    CombatBuffHandler playerBuffHandler { get { return GameObjectManager.TryGetPlayerComp<CombatBuffHandler>(); } }
+    CombatBuffHandler playerBuffHandler { get { return PlayerCompManager.TryGetPlayerComp<CombatBuffHandler>(); } }
 
     bool _isPlayer;
 

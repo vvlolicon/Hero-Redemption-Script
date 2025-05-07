@@ -128,8 +128,10 @@ public static partial class ExtendMethods
     }
     public static void ChangePlayerStats(this GeneralCombatStats playerStats, List<ItemAttribute> attributes)
     {
+        if (attributes == null) return;
         foreach (ItemAttribute attr in attributes)
         {
+            Debug.Log($"Item Attribute: {attr.AtrbName}, {attr.AtrbValue}");
             playerStats.ChangePlayerStats(attr);
         }
     }

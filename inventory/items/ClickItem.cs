@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
-    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    PlayerBackpack PlayerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
     GameObject equipmentItemContainer { get { return UI_Controller.GetInventoryItemContainer(UI_Window.EquipmentUI); } }
     GameObject inventory_ui { get { return UI_Controller.GetInventoryItemContainer(UI_Window.InventoryUI); } }
     GameObject BoxInventoryContainer { get { return UI_Controller.GetInventoryItemContainer(UI_Window.BoxInventoryUI); } }

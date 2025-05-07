@@ -2,7 +2,7 @@
 using System.Collections;
 
 [System.Serializable]
-public class ItemAttribute
+public struct ItemAttribute
 {
     public ItemAttributeName AtrbName;
     public float AtrbValue;

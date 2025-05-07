@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 public class MoveItem : MonoBehaviour, IDropHandler
 {
     public ItemType ThisSlotType;
-    PlayerStateExecutor Player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
-    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    PlayerStateExecutor Player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    PlayerBackpack PlayerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
     GeneralCombatStats PlayerStats { get { return Player.PlayerCombatStats; } }
     [HideInInspector]public ItemData curSlotItem;
 

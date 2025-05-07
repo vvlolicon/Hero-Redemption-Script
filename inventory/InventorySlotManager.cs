@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IDisplayItem
 {
     public void SetItemAtSlot(ItemData item, int slotIndex);
+    public void UpdateItemAtSlot(int slotIndex);
 }
 
 public class InventorySlotManager : MonoBehaviour, IDisplayItem
@@ -128,6 +129,12 @@ public class InventorySlotManager : MonoBehaviour, IDisplayItem
             ChangeSlotNum(diffSlotNum);
         }
         SetSlotItem(item, slotIndex);
+    }
+    public void UpdateItemAtSlot(int slotIndex)
+    {
+        var slot = transform.GetChild(slotIndex);
+        if (slot.transform.childCount == 0) return;
+        slot.GetComponentInChildren<ItemDetail>().UpdateItem();
     }
 
     void SetSlotItem(ItemData item, int slotIndex)

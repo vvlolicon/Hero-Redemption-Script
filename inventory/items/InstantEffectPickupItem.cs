@@ -8,9 +8,8 @@ using UnityEngine;
 public class InstantEffectPickupItem : ScriptableObject
 {
     public int itemID;
-    [SerializeField] public GameObject itemModel;
+    public GameObject itemModel;
 
-    [SerializeField]
     public List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
 
 }

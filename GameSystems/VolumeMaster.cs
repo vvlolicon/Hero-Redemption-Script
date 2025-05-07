@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-public class VolumeMaster : MonoBehaviour
+public class VolumeMaster : Singleton_LastIn<VolumeMaster>
 {
     [SerializeField] AudioMixer _mainMixer;
     [SerializeField] float _startVolume = 1f;
     [SerializeField] Slider[] _volumeSliders = new Slider[4];
 
+    private void OnDestroy()
+    {
+        RemoveLisenersForSliders();
+    }
     public void InitializeSliders()
     {
         foreach(Slider slider in _volumeSliders)

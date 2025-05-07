@@ -37,7 +37,7 @@ public class SoundManager : MonoBehaviour
 		//_lastPlayedSound = sound;
     }
 
-	public void PlayExtraSound(string sound)
+	public void PlayExtraSound(string sound, bool backgroundSound = false)
 	{
 		GameObject soundObj = new GameObject("Sound");
         soundObj.transform.position = gameObject.transform.position;
@@ -45,11 +45,18 @@ public class SoundManager : MonoBehaviour
         audioSource.clip = GetAudioClip(sound);
         audioSource.outputAudioMixerGroup = SoundMixer;
 		audioSource.maxDistance = 20f;
-        audioSource.spatialBlend = 1f; // make the sound 3d
-		audioSource.rolloffMode = AudioRolloffMode.Linear;
+		if (backgroundSound)
+			audioSource.spatialBlend = 0f;// make the sound 2d
+		else
+		{
+			audioSource.spatialBlend = 1f; // make the sound 3d
+			audioSource.rolloffMode = AudioRolloffMode.Linear;
+		}
         audioSource.Play();
 		Destroy(soundObj, audioSource.clip.length);
     }
+
+
 
 	public void StopSound()
 	{

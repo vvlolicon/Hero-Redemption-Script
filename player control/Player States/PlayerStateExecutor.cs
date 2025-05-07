@@ -21,7 +21,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         _animator = GetComponentInChildren<Animator>();
         _statDisplay = FindFirstObjectByType<PlayerStatDisplay>();
         _healthMan = GetComponent<HealthManager>();
-        DistToGround = _charCont.bounds.extents.y;
+        DistToGround = CharController.bounds.extents.y;
         AnimEvent = ChildPlayer.GetComponent<AnimatorEvents>();
         _backpack = GetComponent<PlayerBackpack>();
         PlayerOriginStats.InitializeStats();
@@ -52,7 +52,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         ResetPlayerValue();
         _playerInput.Initialize();
         _backpack.PlayerLevel = 1;
-        _backpack.PlayerOwnedMoney = 0;
+        //_backpack.PlayerOwnedMoney = 0;
     }
 
     public void LoadPlayerData(PlayerData newPlayerData)
@@ -113,9 +113,19 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     // Update is called once per frame
     void Update()
     {
+        if (_playerDying) return;
         PlayerSpeed = PlayerCombatStats.Speed / 10;
         CurState.UpdateStates();
-        //test
+        //testove the controller
+        if(!TransportPlayer)
+            CharController.Move(CurMovement * Time.deltaTime);
+        _atkTimeCD = PlayerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
+        if (AttackTimer > 0)
+        {
+            AttackTimer -= Time.deltaTime;
+            //Debug.Log("AttackTimer: " + AttackTimer + " / atkTimeCD: " + _atkTimeCD);
+        }
+        if (test_showState == null || test_MovementY == null) return;
         if (test_showState.gameObject.activeInHierarchy)
         {
             test_showState.text = "Current State:" + CurState.CurStateType();
@@ -127,15 +137,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             test_MovementY.text = "CanJump: " + CanJump + " , StartJump: " + StartJump + " , CanRun: " + CanRun + " , IsDashing: " + IsDashing()
            + "\n" + " , curDashTime: " + _currentDashTime + " , isGrounded: " + CharCont.isGrounded + ", MovePressed: " + MovePressed + ", PlayerSpeed: " + PlayerSpeed;
         }
-        // Move the controller
-        if(!TransportPlayer)
-            _charCont.Move(CurMovement * Time.deltaTime);
-        _atkTimeCD = PlayerStaticData._iniAtkSpeed * (1 / GetAtkSpeedMult());
-        if (AttackTimer > 0)
-        {
-            AttackTimer -= Time.deltaTime;
-            //Debug.Log("AttackTimer: " + AttackTimer + " / atkTimeCD: " + _atkTimeCD);
-        }
+        // M
     }
 
     public float GetAtkSpeedMult()
@@ -145,6 +147,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     void FixedUpdate()
     {
+        if (_playerDying) return;
         // for every MP regen frequency(default 1s), recover player MP for value of MP_Regen
         // to ensure actual time frequency, use fixed update for this
         if (_mpRegenTimer > PlayerStaticData._mpRegenFreq)
@@ -162,11 +165,6 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     {
         if (CanJump && !Attacking)
         {
-            //Animator.ResetTrigger("Exit");
-            //Animator.SetTrigger("Jump");
-            //Animator.SetFloat("SpeedY", 8f);
-            //Animator.Play("StartJump");
-            //NewRoroutine(DelayAction(0.4f));
             JumpPressed = true;
         }
     }
@@ -192,7 +190,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     {
         if (CanMove && !Attacking && AttackTimer <= 0)
         {
-            if (_charCont.isGrounded && !IsDashing())
+            if (CharController.isGrounded && !IsDashing())
             {
                 AttackTimer = _atkTimeCD;
                 AttackPressed = value;
@@ -227,6 +225,12 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         OnStatsChanged?.Invoke();
     }
 
+    public void ChangePlayerExtraStat(List<ItemAttribute> attributes)
+    {
+        ExtraStats.ChangePlayerStats(attributes);
+        OnStatsChanged?.Invoke();
+    }
+
     public void DamageEnemy(GameObject victim, Color dmgColor)
     {
         EnemyDmgInfo dmgInfo = new EnemyDmgInfo(
@@ -256,9 +260,11 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             CanMove = camMoveT;
     }
 
-    public void OnPickItem(InstantEffectPickupItem pickedItem)
+    public void OnPickItem(List<ItemAttribute> itemAttributes, Action callback)
     {
-        PlayerCombatStats.ChangePlayerStats(pickedItem.itemAttributes);
+        ExtraStats.ChangePlayerStats(itemAttributes);
+        OnStatsChanged?.Invoke();
+        callback();
     }
 
     public void OnLanding()
@@ -272,21 +278,29 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     public void OnDying()
     {
-        // TODO: player dead state;
-        // TODO: player dead animation and UI window
+        Animator.SetTrigger("Exit");
+        Animator.Play("Dying");
+        _playerDying = true;
+        UI_Controller uiContr = UI_Controller.Instance;
+        uiContr.CloseAllClosableWindows();
+        StartCoroutine(ExtendIEnumerator.DelayAction(2.1f, () => {
+            _childPlayer.SetActive(false);
+            _playerInput.EnableAllInput(false);
+            _playerInput.LockAllInput = true;
+            uiContr.SetUIActive(UI_Window.LoseUI, true);
+        }));
 
-        // TODO: SL system;
     }
 
     public void TransportPlayerTo(Vector3 newPos)
     {
         TransportPlayer = true;
-        _charCont.enabled = false;
+        CharController.enabled = false;
         transform.position = newPos;
         StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
         {
             TransportPlayer = false;
-            _charCont.enabled = true;
+            CharController.enabled = true;
         }));
     }
 
@@ -308,6 +322,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     float _mpRegenTimer;
     float _atkTimeCD;
     bool TransportPlayer = false;
+    bool _playerDying = false;
     [HideInInspector]
     public bool HasInitialized = false;
 
@@ -371,6 +386,22 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     public CharacterController CharCont { get { return _charCont; } }
     public Camera Camera { get { return _camera; } }
     public SoundManager SoundMan { get { return _soundMan; } }
+
+    public CharacterController CharController
+    {
+        get
+        {
+            if(_charCont == null || _charCont.IsDestroyed())
+            {
+                _charCont = GetComponent<CharacterController>();
+            }
+            return _charCont;
+        }
+        set
+        {
+            _charCont = value;
+        }
+    }
 
 
     public AnimatorEvents AnimEvent { get; private set; }

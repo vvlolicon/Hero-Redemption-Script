@@ -20,7 +20,7 @@ public class ItemDetail : MonoBehaviour
         UpdateItem();
     }
 
-    void UpdateItem()
+    public void UpdateItem()
     {
         if (item != null)
         {

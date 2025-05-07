@@ -10,7 +10,7 @@ public class LootBox : MonoBehaviour, IInteractableObject
     bool opened = false;
     List<ItemData> _containItemDatas = new();
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
-    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    PlayerBackpack PlayerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
 
     private void Start()
     {

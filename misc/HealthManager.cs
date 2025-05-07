@@ -83,9 +83,11 @@ public class HealthManager : MonoBehaviour
 
     void ownerDies()
     {
-        if (_playerExecutor != null)
+        if (_isPlayer && _playerExecutor != null)
+        {
             _playerExecutor.OnDying();
-        else if (_enemyExecutor != null)
+        }
+        if (_enemyExecutor != null)
             _enemyExecutor.OnDying();
     }
 
@@ -132,16 +134,16 @@ public class HealthManager : MonoBehaviour
 
     public static DmgResult calculateDamage(float atk, float def, float critChance, float critChanRdc, float dmgReduc, float critMult, float critResis)
     {
-        //atk x (100/(100+def)) x [1.3 x (crit dmg multiplier / crit dmg reduction) + 0.3] x dmg reduction(%) x (0.95~1.05) 
+        //atk x (100/(100+def)) x [1.5 x (crit dmg multiplier / crit dmg reduction)] x dmg reduction(%) x (0.95~1.05) 
         bool isCritical = IsCriticalHit(critChance, 0);//critChanRdc);
         float dmg = atk * (100f / (100f + def));
         if (isCritical)
         {
-            // at lease *1.3 critical dmg
+            // at lease *1.5 critical dmg
             dmg *= 1.5f;
             //dmg *= Mathf.Max((1f + critMult) / (1f + critResis), 1f);
         }
-        dmg *= 1/(1 + dmgReduc/100) * Random.Range(0.95f, 1.05f);
+        dmg *= (1 - (Mathf.Min(dmgReduc, 99)/100)) * Random.Range(0.95f, 1.05f);
         return new DmgResult(dmg, isCritical);
     }
 

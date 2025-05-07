@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class ExtendVector3 
@@ -82,15 +83,8 @@ public static partial class ExtendMethods
     public static void RoundToDecimals(this ref float value, int numDecimal)
     {
         if (value % 1 != 0)
-        {
             value = (float)Math.Round(value, numDecimal);
-        }
-    }
-
-    public static float GetRoundToXDecimal(this float value, int numDecimal)
-    {
-        if (value % 1 == 0) return value;
-        return (float)Math.Round(value, numDecimal);
+        
     }
 
     public static StoredItemPlaceType GetStoredPlaceType(this GameObject window)
@@ -137,9 +131,13 @@ public static partial class ExtendMethods
         AddStatsRange(stats, addedDict);
     }
 
-
     public static int GetEnumCount(this Type Enum)
     {
         return System.Enum.GetNames(Enum).Length;
+    }
+
+    public static bool IsCompNullOrDestroyed(this Component comp)
+    {
+        return comp == null || comp.gameObject == null || comp.IsDestroyed();
     }
 }

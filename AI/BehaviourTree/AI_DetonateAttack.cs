@@ -70,13 +70,13 @@ namespace Assets.AI.BehaviourTree
             {
                 _executor.DamagePlayer();
             }
-            _executor.OnDying();
-            StartCoroutine(ExtendIEnumerator.DelayAction(1.9f, () =>
+            _executor.OnDetonateDying();
+            StartCoroutine(ExtendIEnumerator.DelayAction(3f, () =>
             {
                 _executor.Animator.gameObject.SetActive(true);
                 _behaviorTree.Reset();
                 _isExploding = false;
-                gameObject.transform.localScale = Vector3.one * 1.5f;
+                gameObject.transform.localScale = _originScale;
             }));
         }
         bool _isExploding = false;

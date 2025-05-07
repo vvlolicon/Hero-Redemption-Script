@@ -8,11 +8,22 @@ public class MonsterStage : StageSettings
 {
     [SerializeField] List<GameObject> PlacedMonsters;
 
-    List<EnemyStateExecutor> MonstersExecutor = new List<EnemyStateExecutor>();
+    List<EnemyStateExecutor> MonsterExecutors = new List<EnemyStateExecutor>();
 
-    void OnEnable()
+    void Start()
     {
         _isRootStage = false;
+        StartCoroutine(ExtendIEnumerator.DelayAction(0.1f, () =>
+        {
+            foreach (var monster in PlacedMonsters)
+            {
+                var monsterExecutor = monster.GetComponent<EnemyStateExecutor>();
+                MonsterExecutors.Add(monsterExecutor);
+                monsterExecutor.ResetMonster();
+                monsterExecutor.SetupMonster(CheckClearStage, true);
+                monster.SetActive(false);
+            }
+        }));
     }
 
     public override void OnStageClear()
@@ -25,11 +36,16 @@ public class MonsterStage : StageSettings
         base.OnEnterStage();
         if (_stageCleared)
         {
-            foreach (var monster in MonstersExecutor)
+            foreach (var monster in MonsterExecutors)
             {
                 monster.gameObject.SetActive(false);
             }
             return;
+        }
+        foreach(var monster in MonsterExecutors)
+        {
+            monster.gameObject.SetActive(true);
+            monster.ResetMonster();
         }
         //if (MonsterSpawnPoints.Count > 0 && MonstersPrefab.Count > 0)
         //{
@@ -41,24 +57,12 @@ public class MonsterStage : StageSettings
         //        monsterExecutor.SetupMonster(CheckClearStage, false);
         //    }
         //}
-        foreach (var monster in PlacedMonsters)
-        {
-            var monsterExecutor = monster.GetComponent<EnemyStateExecutor>();
-            if (MonstersExecutor.Contains(monsterExecutor))
-            {
-                monsterExecutor.ResetMonster();
-                continue;
-            }
-            MonstersExecutor.Add(monsterExecutor);
-            monsterExecutor.SetupMonster(CheckClearStage, true);
-            monsterExecutor.SoundManager.Mute(false);
-        }
     }
 
     void CheckClearStage()
     {
         bool hasMonsterAlive = false;
-        foreach (var monster in MonstersExecutor)
+        foreach (var monster in MonsterExecutors)
         {
             if (!monster.IsDying)
             {
@@ -81,7 +85,7 @@ public class MonsterStage : StageSettings
         //}
     }
 
-    public override void SetStage(bool isLocked, bool isDiscovered, bool isCleared)
+    public override void SetStage(bool b1, bool b2, bool isCleared, List<bool> lb)
     {
         if (isCleared)
         {
@@ -90,6 +94,6 @@ public class MonsterStage : StageSettings
                 monster.SetActive(false);
             }
         }
-        base.SetStage(isLocked, isDiscovered, isCleared);
+        base.SetStage(b1, b2, isCleared, lb);
     }
 }

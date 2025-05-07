@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class PlayerStatDisplay  : MonoBehaviour
 {
-    GeneralCombatStats _playerCombatStats { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>().PlayerCombatStats; } }
-    PlayerBackpack _playerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    GeneralCombatStats _playerCombatStats { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>().PlayerCombatStats; } }
+    PlayerBackpack _playerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
     public TMP_Text HUD_HP_text;
     public TMP_Text HUD_MP_text;
     [SerializeField] Transform StatsPanel;

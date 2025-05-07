@@ -26,4 +26,10 @@ public class ItemSlotManager : MonoBehaviour, IDisplayItem
             newItem.GetComponent<ItemDetail>().SetItem(item);
         }
     }
+    public void UpdateItemAtSlot(int slotIndex)
+    {
+        var slot = transform.GetChild(slotIndex);
+        if (slot.transform.childCount == 0) return;
+        slot.GetComponentInChildren<ItemDetail>().UpdateItem();
+    }
 }

@@ -21,14 +21,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _defaultStrategy = GetComponent<AI_DefaultStrategy>();
         OriginStats.InitializeStats();
         CombatStats.SetStats(OriginStats.GetCombatStats());
-        for (int i = 0; i < transform.childCount; i++) {
-            Transform child = transform.GetChild(i);
-            if (child.CompareTag("MonsterCanvas"))
-            {
-                _billboard = transform.GetChild(i).gameObject;
-                break;
-            }
-        }
         foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
         {
             if (player.activeSelf)
@@ -37,16 +29,24 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                 break;
             }
         }
-
         WaitTimer = 0;
-        
+        if (_isBoss) return;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            if (child.CompareTag("MonsterCanvas"))
+            {
+                _billboard = transform.GetChild(i).gameObject;
+                break;
+            }
+        }
     }
 
-    void OnEnable()
-    {
-        // reset stats everytime it enable(for placed Monster)
-        initailizeStats();
-    }
+    //void OnEnable()
+    //{
+    //    // reset stats everytime it enable(for placed Monster)
+    //    initailizeStats();
+    //}
 
     void initailizeStats()
     {
@@ -92,6 +92,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         gameObject.SetActive(true);
         transform.position = _enemyStaticStatScript.PatrolPoints[0].position;
         OnRestartPatrolRequested?.Invoke();
+        Animator.Play("Idle");
     }
 
     //void Update()
@@ -105,13 +106,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
             EnemyDmgInfo info = (EnemyDmgInfo)data;
             if (!IsInvincible && info.Target == this.gameObject)
             {
-                _defaultStrategy.OnHit();
                 StartCoroutine(ExtendIEnumerator.DelayAction(0.2f, () =>
                 {
                     IsInvincible = false;
                 }));
-                if (!_billboard.activeSelf)
-                    _billboard.SetActive(true);
+                if(!_isBoss && _billboard != null)
+                    if (!_billboard.activeSelf)
+                        _billboard.SetActive(true);
                 
                 //CurState.SwitchState(_stateMan.Hit());
                 DmgResult dmgResult = HealthManager.calculateDamage(
@@ -121,6 +122,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                 _healthManager.CreateHealthMeg(new EnemyDmgInfo(dmgShow, dmgResult.IsCritHit, info.TextColor, DmgTextPos, gameObject));
                 _healthManager.Damage(dmgResult.Dmg);
                 OnStatsChanged?.Invoke();
+                _defaultStrategy.OnHit();
                 SendBuffToSelf();
             }
         }
@@ -169,6 +171,23 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         }
     }
 
+    public void OnDetonateDying()
+    {
+        Debug.Log($"{gameObject.name} dies");
+        _methods.ResetAllAnimationTriggers();
+        Agent.isStopped = true;
+        IsDying = true;
+        OnMonsterDeath?.Invoke();
+        OnMonsterDeath = null;
+        if (!_isBoss)
+            _billboard.SetActive(false);
+        StartCoroutine(ExtendIEnumerator.DelayAction(
+            _enemyStaticStatScript._stats._dieTime, () => {
+                AfterDying();
+            }));
+        // do not drop if detonate
+    }
+
     public void OnDying()
     {
         Debug.Log($"{gameObject.name} dies");
@@ -178,15 +197,16 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         IsDying = true;
         OnMonsterDeath?.Invoke();
         OnMonsterDeath = null;
-        _billboard.SetActive(false);
         _anim.Play("Dying");
+        if(!_isBoss)
+            _billboard.SetActive(false);
         StartCoroutine(ExtendIEnumerator.DelayAction(
             _enemyStaticStatScript._stats._dieTime, () => { 
                 AfterDying();
         }));
         if (dropData != null)
         {
-            PlayerBackpack backpack = GameObjectManager.TryGetPlayerComp<PlayerBackpack>();
+            PlayerBackpack backpack = PlayerCompManager.TryGetPlayerComp<PlayerBackpack>();
             backpack.AddEnemyDrops(dropData);
         }
     }
@@ -194,6 +214,15 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     void AfterDying()
     {
         SoundManager.Mute(true);
+        if (IsBoss)
+        {
+            UI_Controller uiContr = UI_Controller.Instance;
+            PlayerInputData input = PlayerInputData.Instance;
+            uiContr.CloseAllClosableWindows();
+            input.EnableAllInput(false);
+            input.LockAllInput = true;
+            uiContr.SetUIActive(UI_Window.WinUI, true);
+        }
         gameObject.SetActive(false);
     }
 
@@ -205,6 +234,13 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     EnemyStaticStatsMono _enemyStaticStatScript;
     GameObject _billboard;
     AIMethods _methods;
+
+    [SerializeField, Header("Boss Settings")]
+    bool _isBoss = false;
+    [HideInInspector] 
+    public bool bossActivated = false;
+
+    [Header("Monster Settings")]
     public GeneralStatsObj OriginStats;
     public GeneralCombatStats CombatStats = new();
     [SerializeField] EnemyDropData dropData;
@@ -236,6 +272,7 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     public bool IsInvincible { get; set; }
     public bool IsHit { get; set; }
     public bool IsDying { get; private set; }
+    public bool IsBoss => _isBoss;
 
     public float ChaseTime { get { return _enemyStaticStatScript._stats._chaseTime; } }
     public float VisDist { get { return _enemyStaticStatScript._stats._visDist; } }

@@ -8,12 +8,12 @@ namespace Assets.AI.BehaviourTree
 {
     public class AI_DefaultStrategy : MonoBehaviour
     {
-        [SerializeField] GameObject _visualRootPrefab;
-        [SerializeField] Transform _visualParent;
-        private Node _behaviorTree;
+        [SerializeField] protected GameObject _visualRootPrefab;
+        [SerializeField] protected Transform _visualParent;
+        protected Node _behaviorTree;
 
-        EnemyStateExecutor _executor;
-        AIMethods _methods;
+        protected EnemyStateExecutor _executor;
+        protected AIMethods _methods;
 
         void Start()
         {
@@ -25,7 +25,7 @@ namespace Assets.AI.BehaviourTree
                 _behaviorTree?.Evaluate();
         }
 
-        public void BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
+        public virtual void BuildBehaviorTree(EnemyStateExecutor executor, AIMethods methods)
         {
             _executor = executor;
             _methods = methods;
@@ -119,14 +119,14 @@ namespace Assets.AI.BehaviourTree
             }
         }
 
-        public void OnHit()
+        public virtual void OnHit()
         {
             _executor.IsHit = true;
             _executor.IsInvincible = true;
             _executor.Agent.ResetPath();
             _methods.ResetAllAnimationTriggers();
             _executor.SoundManager.PlaySound("Hurt");
-            StartCoroutine(ExtendIEnumerator.DelayAction(0.5f, 
+            StartCoroutine(ExtendIEnumerator.DelayAction(0.3f, 
                 () => { _executor.IsInvincible = false; }));
         }
     }
@@ -150,14 +150,12 @@ namespace Assets.AI.BehaviourTree
             {
                 return Node.Status.FAILURE;
             }
-            // 初始化受击状态
             if (_hitTimer <= 0)
             {
                 _executor.Agent.isStopped = true;
                 _hitTimer = _executor.HitAnimTime;
             }
 
-            // 更新计时器
             _hitTimer -= Time.deltaTime;
 
             if (_hitTimer > 0)
@@ -170,7 +168,6 @@ namespace Assets.AI.BehaviourTree
                 _methods.LookPlayer(5.0f);
             }
 
-            // 受击结束后触发强制追逐
             _executor.Agent.isStopped = false;
             _executor.IsHit = false;
             _executor.chasePlayerForever = true;

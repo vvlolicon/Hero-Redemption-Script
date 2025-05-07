@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UI_Controller : Singleton<UI_Controller>
+public class UI_Controller : Singleton_LastIn<UI_Controller>
 {
     private void Start()
     {
@@ -13,6 +13,8 @@ public class UI_Controller : Singleton<UI_Controller>
         UI_WindowTypes[UI_Window.BoxInventoryUI] = typeof(BoxInventoryController);
         UI_WindowTypes[UI_Window.StageMap] = typeof(StageMapController);
         UI_WindowTypes[UI_Window.OpenBook] = typeof(BookContentControl);
+        UI_WindowTypes[UI_Window.BossHUD] = typeof(BossHudControl);
+        UI_WindowTypes[UI_Window.BuyItemUI] = typeof(BuyItemUIController);
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             Initialize(); // load if current scene is dungeon
@@ -31,13 +33,20 @@ public class UI_Controller : Singleton<UI_Controller>
         if (UI_Windows.ContainsKey(window))
         {
             UI_Windows[window].SetActive(active);
-            if(IsClosableWindow(window) && active)
+            if (IsClosableWindow(window) && active)
             {// close tooltip if other window opened
                 SetUIActive(UI_Window.InteractToolip, false);
             }
-            OnUIClosed(window);
+            else
+            {
+                OnUIClosed(window);
+            }
         }
     }
+
+    public bool IsUIActive(UI_Window window) => 
+        UI_Windows.ContainsKey(window) && 
+        UI_Windows[window].activeSelf;
 
     public bool HasClosableWindowActive()
     {
@@ -75,7 +84,9 @@ public class UI_Controller : Singleton<UI_Controller>
         return IsEquipmentWindow(window) ||
                window == UI_Window.PauseMenu ||
                window == UI_Window.StageMap ||
-               window == UI_Window.OpenBook;
+               window == UI_Window.OpenBook ||
+               window == UI_Window.TutorialUI ||
+               window == UI_Window.BuyItemUI;
     }
 
     public bool IsEquipmentWindow(UI_Window window)
@@ -125,6 +136,28 @@ public class UI_Controller : Singleton<UI_Controller>
         else return null;
     }
 
+    public void UpdateInventoryItem(UI_Window window, int index)
+    {
+        if (IsUIActive(UI_Window.InventoryUI))
+        {
+            IDisplayItem itemDisplayer =
+                GetInventoryItemContainer(UI_Window.InventoryUI)
+                .GetComponent<IDisplayItem>();
+            itemDisplayer.UpdateItemAtSlot(index);
+        }
+    }
+
+    public void SetInventoryItemAtSlot(UI_Window window, ItemData item, int index)
+    {
+        if (IsUIActive(UI_Window.InventoryUI))
+        {
+            IDisplayItem itemDisplayer =
+                GetInventoryItemContainer(UI_Window.InventoryUI)
+                .GetComponent<IDisplayItem>();
+            itemDisplayer.SetItemAtSlot(item, index);
+        }
+    }
+
     public void OpenInventoryUI(UI_Window window, List<ItemData> itemsShow)
     {
         SetUIActive(window, true);
@@ -154,17 +187,15 @@ public class UI_Controller : Singleton<UI_Controller>
         Type type = typeof(T);
         if (_UIComponents.ContainsKey(type) && _UIComponents[type] is T uiComponent)
         {
-            return uiComponent;
+            if(!uiComponent.IsCompNullOrDestroyed())
+                return uiComponent;
         }
-        else
+        T component = GetUIComponent<T>();
+        if (component != null)
         {
-            T component = GetUIComponent<T>();
-            if (component != null)
-            {
-                _UIComponents[type] = component;
-            }
-            return component;
+            _UIComponents[type] = component;
         }
+        return component;
     }
     static T GetUIComponent<T>() where T : Component
     {

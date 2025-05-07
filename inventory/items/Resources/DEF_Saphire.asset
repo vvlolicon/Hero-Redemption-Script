@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: DEF_Saphire
   itemType: 8
-  consumableItemType: 1
+  consumableItemType: 3
   itemID: 14
-  itemDesc: 
+  itemDesc: Add Defence for 3 if used
   itemIcon: {fileID: 21300000, guid: 3720cad3c50103642bd904d9295ac193, type: 3}
   itemModel: {fileID: 0}
   itemValue: 20

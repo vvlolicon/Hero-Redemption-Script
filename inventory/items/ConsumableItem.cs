@@ -21,6 +21,9 @@ public class ConsumableItem : MonoBehaviour
             case ConsumableItemType.InstantPotion:
                 UsePotion(item.itemAttributes);
                 break;
+            default:
+                UseItemGeneric(item.itemAttributes);
+                break;
         }
     }
 
@@ -31,16 +34,28 @@ public class ConsumableItem : MonoBehaviour
         {
             _executor.SoundMan.PlaySound("UsePotion");
             _executor.ChangePlayerCombatStat(attributes);
-            item.curStack--;
-            itemDetail.UpdateStack();
-            if (item.curStack == 0)
-            {
-                Destroy(gameObject);
-            }
+            DecreaseItemStack();
         }
         else
         {
             Debug.Log("cannot use this item");
+        }
+    }
+
+    public void UseItemGeneric(List<ItemAttribute> attributes)
+    {
+        _executor.ChangePlayerExtraStat(attributes);
+        DecreaseItemStack();
+    }
+
+    void DecreaseItemStack()
+    {
+        item.curStack--;
+        itemDetail.UpdateStack();
+        if (item.curStack <= 0)
+        {
+            Destroy(gameObject);
+            PlayerCompManager.TryGetPlayerComp<PlayerBackpack>().RemoveItem(item);
         }
     }
 }

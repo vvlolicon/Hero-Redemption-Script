@@ -35,7 +35,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
     public delegate void OnStatsChangedDelegate();
     public event OnStatsChangedDelegate OnStatsChanged;
 
-    PlayerBackpack PlayerBackpack { get { return GameObjectManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    PlayerBackpack PlayerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
 
     bool _isPlayer;
 
@@ -52,7 +52,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             PlayerBackpack.OnStatsChanged += HandleEquipmentChange;
             _statsAfterChanges.SetStats(_playerExecutor.PlayerCombatStats);
         }
-        else 
+        else
         {
             _enemyExecutor.OnStatsChanged += HandleExternalStatsChange;
             _statsAfterChanges.SetStats(_enemyExecutor.CombatStats);
@@ -67,7 +67,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             _playerExecutor.OnStatsChanged -= HandleExternalStatsChange;
             PlayerBackpack.OnStatsChanged -= HandleEquipmentChange;
         }
-        else
+        else if(_enemyExecutor != null)
         {
             _enemyExecutor.OnStatsChanged -= HandleExternalStatsChange;
         }
@@ -132,8 +132,12 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         if (_isPlayer)
         {
             // atk and def times to 1.3 to the power of level
-            _statsAfterChanges.ATK = _originStats.ATK * Mathf.Pow(1.3f, PlayerBackpack.PlayerLevel - 1);
-            _statsAfterChanges.DEF = _originStats.DEF * Mathf.Pow(1.3f, PlayerBackpack.PlayerLevel - 1);
+            int playerLevel = PlayerBackpack.PlayerLevel;
+            if (playerLevel > 1)
+            {
+                _statsAfterChanges.ATK = _originStats.ATK * Mathf.Pow(1.3f, playerLevel - 1);
+                _statsAfterChanges.DEF = _originStats.DEF * Mathf.Pow(1.3f, playerLevel - 1);
+            }
             _statsAfterChanges.AddStatsRange(_playerExecutor.ExtraStats);
 
             bool HPfull = _curCombatStats.HP >= _curCombatStats.MaxHP;

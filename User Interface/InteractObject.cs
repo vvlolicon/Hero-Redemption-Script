@@ -23,7 +23,7 @@ public class InteractObject : MonoBehaviour
     List<IInteractableObject> _interactableObjects = new List<IInteractableObject>();
     List<GameObject> _tooltips = new List<GameObject>();
     int _curSelectedIndex = -1;
-    PlayerStateExecutor _player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    PlayerStateExecutor _player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
 
     private void Start()

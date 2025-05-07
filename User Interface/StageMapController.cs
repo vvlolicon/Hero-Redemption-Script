@@ -3,26 +3,25 @@ using UnityEngine.SceneManagement;
 
 public class StageMapController : MonoBehaviour
 {
-    [SerializeField] StageSettings StartStage;
+    [SerializeField] StageSettings _startStage;
     [SerializeField] Transform pivot;
     [SerializeField] float pivotOffset;
 
-    public StageSettings curStage {get; private set;}
-    PlayerStateExecutor _player { get { return GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    [HideInInspector] public StageSettings curStage;
+    PlayerStateExecutor _player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
+    public StageSettings StartStage => _startStage;
 
     private void Awake()
     {
-        //if(SceneManager.GetActiveScene().buildIndex == 1)
-        //{
-        //    Init();
-        //}
+        if (curStage == null)
+            curStage = _startStage;
     }
 
     private void OnEnable()
     {
         if (curStage == null)
-            curStage = StartStage;
+            curStage = _startStage;
         Debug.Log("curStage: " + curStage.gameObject.ToString());
         foreach (Transform child in transform.GetChild(0))
         {
@@ -76,7 +75,8 @@ public class StageMapController : MonoBehaviour
 
     public void Init()
     {
-        curStage = StartStage;
+        Debug.Log("Initialize current stage to start stage");
+        curStage = _startStage;
     }
 
     

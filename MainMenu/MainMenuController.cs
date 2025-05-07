@@ -2,6 +2,7 @@ using Assets.SaveSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
@@ -9,7 +10,6 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : SingletonDDOL<MainMenuController>
 {
-
     private void Start()
     {
         Scene thisScene = SceneManager.GetActiveScene();
@@ -29,7 +29,9 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
     public void OnLoadGame(string savePath)
     {
         StartGamePreActions();
-        StartCoroutine(LoadGameScene(() => { LoadGameFromSave(savePath); }));
+        StartCoroutine(LoadGameScene(() => {
+            LoadGameFromSave(savePath);
+        }));
     }
     public void OnReturnMainMenu()
     {
@@ -39,7 +41,6 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
     {
         Application.Quit();
     }
-
 
     void LoadGameFromSave(string saveGamePath)
     {
@@ -55,7 +56,17 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
                     Debug.Log($"Find Game Data: " + saveGameData.ToString());
                     playerData.DeserializeData();
                     curStageID = playerData.curStageID;
-                    PlayerStateExecutor executor = GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>();
+                    var executor = PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>();
+                    //var player = PlayerCompManager.Player;
+                    //Debug.Log($"player is {player}, player executor is {executor}");
+                    //if (player == null || player.IsDestroyed())
+                    //{
+                    //    Debug.LogWarning("Player is null or destroyed");
+                    //}
+                    //if (executor == null || executor.IsDestroyed())
+                    //{
+                    //    Debug.LogWarning("Player executor is null or destroyed");
+                    //}
                     executor.LoadPlayerData(playerData);
                 }
                 if (saveGameData is GeneralStageData)
@@ -72,6 +83,7 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
         {
             Debug.LogWarning("Cannot find any data");
         }
+        UI_Controller.Instance.Initialize();
         AfterGameInit();
     }
     
@@ -86,17 +98,20 @@ public class MainMenuController : SingletonDDOL<MainMenuController>
 
     void StartNewGame()
     {
-        PlayerStateExecutor executor = GameObjectManager.TryGetPlayerComp<PlayerStateExecutor>();
+        PlayerStateExecutor executor = PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>();
         executor.InitializePlayer();
         StageMapController stageController = UI_Controller.GetUIScript<StageMapController>();
         stageController.Init();
+        StageManager.Instance.InitStages();
+        UI_Controller.Instance.Initialize();
+        UI_Controller.Instance.SetUIActive(UI_Window.TutorialUI, true);
+        PlayerInputData.Instance.EnableAllInput(false);
         AfterGameInit();
     }
 
     void AfterGameInit()
     {
-        UI_Controller.Instance.Initialize();
-        VolumeMaster volumeMaster = FindObjectOfType<VolumeMaster>();
+        VolumeMaster volumeMaster = VolumeMaster.Instance;
         volumeMaster.ResetSliders();
     }
 

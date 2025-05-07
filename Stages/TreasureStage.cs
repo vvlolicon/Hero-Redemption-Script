@@ -19,10 +19,10 @@ public class TreasureStage : StageSettings
         ClearStage();
     }
 
-    public void SetStage(bool isLocked, bool isDiscovered, bool isCleared,
+    public void SetStage(bool b1, bool b2, bool b3, List<bool> lb,
         List<LootBoxData> newLootBoxesData)
     {
-        SetStage(isLocked, isDiscovered, isCleared);
+        SetStage(b1, b2, b3, lb);
         for(int i = 0; i < newLootBoxesData.Count; i++)
         {
             var newLootBoxData = newLootBoxesData[i];
@@ -50,6 +50,7 @@ public class TreasureStageData
 {
     public string stageID;
     public List<string> childStageIDs;
+    public List<bool> pickedPickups;
 
     public bool isLocked;
     public bool isDiscovered;

@@ -1,11 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using Unity.VisualScripting;
-using UnityEditor.U2D;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "Items/Item")]
 [System.Serializable]

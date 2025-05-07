@@ -2,12 +2,14 @@ using Assets.SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class StageManager : Singleton<StageManager>
+public class StageManager : Singleton_LastIn<StageManager>
 {
     private Dictionary<string, StageSettings> stageRegistry = new();
+    [SerializeField] string LevelPrefix;
 
-    private void Awake()
+    private void Start()
     {
         RegisterAllStages();
     }
@@ -16,17 +18,26 @@ public class StageManager : Singleton<StageManager>
     {
         foreach (StageSettings stage in FindObjectsOfType<StageSettings>())
         {
-            string stageName;
+            string stageName = LevelPrefix +"_";
             if (!string.IsNullOrEmpty(stage.stageID))
             {
-                stageName = stage.stageID;
+                stageName += stage.stageID;
             }
             else
             {
-                stageName = stage.gameObject.name;
-                stage.stageID = stageName;
+                stageName += stage.gameObject.name;
             }
+            stage.stageID = stageName;
+            //Debug.Log($"Registing ID {stageName} to {stage.gameObject.name}");
             stageRegistry[stageName] = stage;
+        }
+    }
+
+    public void InitStages()
+    {
+        foreach (var stage in stageRegistry.Values)
+        {
+            stage.InitStage();
         }
     }
 
@@ -43,6 +54,7 @@ public class StageManager : Singleton<StageManager>
                 stageData.isDiscovered = stage.IsStageDiscovered();
                 stageData.isCleared = stage.IsStageCleared();
                 stageData.lootBoxesData = treasureStage.GetLootBoxesData();
+                stageData.pickedPickups = stage.GetIsPickupsPicked();
                 savedStages.Add(stageData);
             }
             else
@@ -52,6 +64,7 @@ public class StageManager : Singleton<StageManager>
                 stageData.isLocked = stage.IsStageLocked();
                 stageData.isDiscovered = stage.IsStageDiscovered();
                 stageData.isCleared = stage.IsStageCleared();
+                stageData.pickedPickups = stage.GetIsPickupsPicked();
                 savedStages.Add(stageData);
             }
         }
@@ -68,7 +81,8 @@ public class StageManager : Singleton<StageManager>
                 {
                     stage.SetStage(savedStage.isLocked,
                                  savedStage.isDiscovered,
-                                 savedStage.isCleared);
+                                 savedStage.isCleared,
+                                 savedStage.pickedPickups);
                 }
             }
             else if(savedData is TreasureStageData savedTreasureStage)
@@ -81,6 +95,7 @@ public class StageManager : Singleton<StageManager>
                         treasureStage.SetStage(savedTreasureStage.isLocked,
                                  savedTreasureStage.isDiscovered,
                                  savedTreasureStage.isCleared,
+                                 savedTreasureStage.pickedPickups,
                                  savedTreasureStage.lootBoxesData);
                     }
                 }

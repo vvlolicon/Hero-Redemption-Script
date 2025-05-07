@@ -22,12 +22,12 @@ public class SingletonDDOL<T> : MonoBehaviour where T : MonoBehaviour
             // does not have instant in scene
             if (_instance == null)
             {
-                Debug.Log($"Cannot find the singleton instant of type{typeof(T).Name}, trying to finding one with tag");
+                Debug.Log($"Cannot find the singleton instant of type {typeof(T).Name}, trying to finding one with tag");
                 GameObject target = GameObject.FindGameObjectWithTag("GameController");
                 // if still cannot find the object, create one, normally shouldn't do this
                 if (target == null)
                 {
-                    Debug.Log($"Cannot find the singleton instant of type{typeof(T).Name} in scene, trying to create one");
+                    Debug.Log($"Cannot find the singleton instant of type {typeof(T).Name} in scene, trying to create one");
                     target = new GameObject();
                     target.name = $"Singleton {typeof(T).Name}";
                     _instance = target.AddComponent<T>();

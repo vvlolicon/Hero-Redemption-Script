@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: ATK_Ruby
   itemType: 8
-  consumableItemType: 1
+  consumableItemType: 3
   itemID: 13
-  itemDesc: 
+  itemDesc: Add Attack for 3 if used
   itemIcon: {fileID: 21300000, guid: a2dc374c2642bc844afc22a445e521e6, type: 3}
   itemModel: {fileID: 0}
   itemValue: 20

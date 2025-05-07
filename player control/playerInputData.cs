@@ -5,10 +5,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 #endif
 
-public class PlayerInputData : Singleton<PlayerInputData>
+public class PlayerInputData : Singleton_LastIn<PlayerInputData>
 {
     private PlayerStateExecutor _executor;
     PlayerBackpack _playerBackpack;
+    public bool LockAllInput = false;
 
     public bool InputJump { get; set; }
     public bool InputRun { get; private set; }
@@ -38,6 +39,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
 	{
+        if (LockAllInput) return;
         if (InputEnable)
         {
             _executor.OnMovePressed(value.Get<Vector2>());
@@ -50,24 +52,27 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
 
 	public void OnLook(InputValue value)
-	{
-		if(CursorLocked)
+    {
+        if (LockAllInput) return;
+        if (CursorLocked)
 		{
 			LookInput(value.Get<Vector2>());
 		}
 	}
 
 	public void OnJump(InputValue value)
-	{
-		if (InputEnable)
+    {
+        if (LockAllInput) return;
+        if (InputEnable)
 		{
 			_executor.OnJumpPressed();
 		}
     }
 
 	public void OnSprint(InputValue value)
-	{
-		if (InputEnable)
+    {
+        if (LockAllInput) return;
+        if (InputEnable)
 		{
 			SprintInput(value.isPressed);
 		}
@@ -75,7 +80,8 @@ public class PlayerInputData : Singleton<PlayerInputData>
 
     public void OnRun(InputValue value)
     {
-		if (InputEnable)
+        if (LockAllInput) return;
+        if (InputEnable)
         {
             _executor.OnRunPressed();
         }
@@ -83,7 +89,8 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
 
 	public void OnAttack(InputValue value)
-	{
+    {
+        if (LockAllInput) return;
         if (InputEnable && CursorLocked)
         {
             _executor.OnAttackPressed(value.isPressed);
@@ -91,7 +98,8 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
 
     public void OnOpenInventory()
-	{
+    {
+        if (LockAllInput) return;
         if (InputEnable)
         {
             Debug.Log("UI_Controller is " + UI_Controller.name);
@@ -105,7 +113,8 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
 
 	public void OnEscHit(InputValue value)
-	{
+    {
+        if (LockAllInput) return;
         if (UI_Controller.HasClosableWindowActive())
         {
             UI_Controller.CloseAllClosableWindows();
@@ -118,6 +127,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_1(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(0);
@@ -125,6 +135,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_2(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(1);
@@ -132,6 +143,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_3(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(2);
@@ -139,6 +151,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_4(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(3);
@@ -146,6 +159,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_5(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(4);
@@ -153,6 +167,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
     }
     public void OnUseHotbar_6(InputValue value)
     {
+        if (LockAllInput) return;
         if (value.isPressed)
         {
             UseHotbarItemAtSlot(5);
@@ -161,6 +176,7 @@ public class PlayerInputData : Singleton<PlayerInputData>
 
     public void OnInteract()
     {
+        if (LockAllInput) return;
         if (UI_Controller.HasClosableWindowActive()) return;
         UI_Controller.GetUIScript<InteractObject>().InteractWithObject();
         EnableAllInput(false);

@@ -1,24 +1,20 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TreeEditor;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class PlayerBackpack : MonoBehaviour
 {
     public int PlayerBackpackSize = 20;
     List<ItemData> _playerInventory;
-    ItemData[] _playerEquipments = new ItemData[8];
-    ItemData[] _playerHotbar = new ItemData[6];
+    List<ItemData> _playerEquipments;
+    List<ItemData> _playerHotbar;
 
     [SerializeField] List<Item> _playerOwnedItems;
     [SerializeField] Item[] _playerEquippedItems = new Item[8];
     [SerializeField] Item[] _playerHotbarItems = new Item[6];
     [HideInInspector] public int PlayerLevel = 1;
-    [HideInInspector] public int PlayerOwnedMoney = 0;
+    public int PlayerOwnedMoney = 0;
+    UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
     //public int PlayerExp;
 
     public event CombatBuffHandler.OnStatsChangedDelegate OnStatsChanged;
@@ -34,19 +30,21 @@ public class PlayerBackpack : MonoBehaviour
                 newList.Add(null);
         }
         _playerInventory = newList;
-        for(int i = 0; i < _playerEquippedItems.Length; i++)
+        _playerEquipments = new List<ItemData>();
+        for (int i = 0; i < _playerEquippedItems.Length; i++)
         {
             if (_playerEquippedItems[i] != null)
-                _playerEquipments[i] = _playerEquippedItems[i].GetItemDataClone();
+                _playerEquipments.Add(_playerEquippedItems[i].GetItemDataClone());
             else
-                _playerEquipments[i] = null;
+                _playerEquipments.Add(null);
         }
+        _playerHotbar = new List<ItemData>();
         for (int i = 0; i < _playerHotbarItems.Length; i++)
-        { 
+        {
             if (_playerHotbarItems[i] != null)
-                _playerHotbar[i] = _playerHotbarItems[i].GetItemDataClone();
+                _playerHotbar.Add(_playerHotbarItems[i].GetItemDataClone());
             else
-                _playerHotbar[i] = null;
+                _playerHotbar.Add(null);
         }
     }
 
@@ -73,8 +71,9 @@ public class PlayerBackpack : MonoBehaviour
         if (item.itemType == ItemType.Consumable && _playerInventory.Count > 0)
         {
             int stackLeft = item.curStack;
-            foreach (ItemData backpackItem in _playerInventory)
+            for (int i = 0; i < _playerInventory.Count; i++)
             {
+                var backpackItem = _playerInventory[i];
                 if (backpackItem == null) continue;
                 if (backpackItem.itemID == item.itemID && backpackItem.curStack < backpackItem.maxStack)
                 {
@@ -83,6 +82,7 @@ public class PlayerBackpack : MonoBehaviour
                     {
                         stackLeft = backpackItem.curStack - backpackItem.maxStack;
                         item.curStack = stackLeft;
+                        UI_Controller.UpdateInventoryItem(UI_Window.InventoryUI, i);
                     }
                     else
                     {
@@ -98,6 +98,7 @@ public class PlayerBackpack : MonoBehaviour
                 if (_playerInventory[i] == null)
                 {
                     _playerInventory[i] = item;
+                    UI_Controller.SetInventoryItemAtSlot(UI_Window.InventoryUI, item, i);
                     return true;
                 }
             }
@@ -143,6 +144,7 @@ public class PlayerBackpack : MonoBehaviour
         }
     }
 
+
     public void SetPlayerBackpackItem(ItemData item, int index)
     {
         _playerInventory[index] = item;
@@ -181,9 +183,31 @@ public class PlayerBackpack : MonoBehaviour
         }
     }
 
+    public bool RemoveItem(ItemData item)
+    {
+        if (_playerInventory.Contains(item))
+        {
+            _playerInventory.Remove(item);
+            return true;
+        }
+        if (_playerEquipments.Contains(item))
+        {
+            _playerEquipments.Remove(item);
+            return true;
+        }
+        if (_playerHotbar.Contains(item))
+        {
+            _playerHotbar.Remove(item);
+            return true;
+        }
+        return false;
+    }
+
     public List<ItemData> GetPlayerBackpackItems() => _playerInventory;
     public List<ItemData> GetPlayerEquippedItems() => _playerEquipments.ToList();
     public List<ItemData> GetPlayerHotbarItems() => _playerHotbar.ToList();
+
+    public bool HasEmptySlot() => _playerInventory.Count(x => x == null) > 0;
 
     //public List<ItemData> GetClonePlayerInventory() => CloneItemList(_playerInventory);
     //public List<ItemData> GetClonePlayerEquipment() => CloneItemList(GetPlayerEquippedItems());
