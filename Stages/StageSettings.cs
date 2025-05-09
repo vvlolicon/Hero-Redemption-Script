@@ -79,6 +79,7 @@ public abstract class StageSettings : MonoBehaviour
     public bool IsStageLocked() => _isLocked;
     public bool IsStageDiscovered() => _isDiscovered;
     public bool IsStageCleared() => _stageCleared;
+    public bool IsFinalStage() => _isFinalStage;
     public bool IsParentStageOf(StageSettings stage)
     {
         foreach(StageSettings childStage in _childStages)

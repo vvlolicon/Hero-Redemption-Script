@@ -9,7 +9,7 @@ public class StageManager : Singleton_LastIn<StageManager>
     private Dictionary<string, StageSettings> stageRegistry = new();
     [SerializeField] string LevelPrefix;
 
-    private void Start()
+    private void Awake()
     {
         RegisterAllStages();
     }
@@ -18,7 +18,7 @@ public class StageManager : Singleton_LastIn<StageManager>
     {
         foreach (StageSettings stage in FindObjectsOfType<StageSettings>())
         {
-            string stageName = LevelPrefix +"_";
+            string stageName = LevelPrefix + LEVEL_SPLITTER;
             if (!string.IsNullOrEmpty(stage.stageID))
             {
                 stageName += stage.stageID;
@@ -71,36 +71,37 @@ public class StageManager : Singleton_LastIn<StageManager>
         return savedStages.ToArray();
     }
 
-    public void RestoreStages(List<object> savedStages, string curStageID)
+    public static StageSettings[] GetCurLevelStages() => FindObjectsOfType<StageSettings>();
+
+    public static TreasureStageData[] GetStagesAsTreasureStageData(object[] savedStages)
     {
+        List<TreasureStageData> treasureStages = new();
         foreach (var savedData in savedStages)
         {
-            if(savedData is GeneralStageData savedStage)
+            if (savedData is TreasureStageData savedTreasureStage)
             {
-                if (stageRegistry.TryGetValue(savedStage.stageID, out StageSettings stage))
-                {
-                    stage.SetStage(savedStage.isLocked,
-                                 savedStage.isDiscovered,
-                                 savedStage.isCleared,
-                                 savedStage.pickedPickups);
-                }
-            }
-            else if(savedData is TreasureStageData savedTreasureStage)
-            {
-                savedTreasureStage.RebuildItemReferences();
-                if (stageRegistry.TryGetValue(savedTreasureStage.stageID, out StageSettings stage))
-                {
-                    if(stage is TreasureStage treasureStage)
-                    {
-                        treasureStage.SetStage(savedTreasureStage.isLocked,
-                                 savedTreasureStage.isDiscovered,
-                                 savedTreasureStage.isCleared,
-                                 savedTreasureStage.pickedPickups,
-                                 savedTreasureStage.lootBoxesData);
-                    }
-                }
+                treasureStages.Add(savedTreasureStage);
             }
         }
+        return treasureStages.ToArray();
+    }
+
+    public static GeneralStageData[] GetStagesAsGeneralStageData(object[] savedStages)
+    {
+        List<GeneralStageData> generalStages = new();
+        foreach (var savedData in savedStages)
+        {
+            if (savedData is GeneralStageData savedGeneralStage)
+            {
+                generalStages.Add(savedGeneralStage);
+            }
+        }
+        return generalStages.ToArray();
+    }
+
+    public void RestoreStages(List<object> savedStages, string curStageID)
+    {
+        SetStagesFromData(savedStages);
         if (!string.IsNullOrEmpty(curStageID))
         {
             StageMapController stageController = UI_Controller.GetUIScript<StageMapController>();
@@ -111,4 +112,42 @@ public class StageManager : Singleton_LastIn<StageManager>
             }
         }
     }
+
+    public void SetStagesFromData(List<object> savedStages)
+    {
+        foreach (var savedData in savedStages)
+        {
+            if (savedData is GeneralStageData savedStage)
+            {
+                if (stageRegistry.TryGetValue(savedStage.stageID, out StageSettings stage))
+                {
+                    stage.SetStage(savedStage.isLocked,
+                                 savedStage.isDiscovered,
+                                 savedStage.isCleared,
+                                 savedStage.pickedPickups);
+                }
+            }
+            else if (savedData is TreasureStageData savedTreasureStage)
+            {
+                savedTreasureStage.RebuildItemReferences();
+                if (stageRegistry.TryGetValue(savedTreasureStage.stageID, out StageSettings stage))
+                {
+                    if (stage is TreasureStage treasureStage)
+                    {
+                        treasureStage.SetStage(savedTreasureStage.isLocked,
+                                 savedTreasureStage.isDiscovered,
+                                 savedTreasureStage.isCleared,
+                                 savedTreasureStage.pickedPickups,
+                                 savedTreasureStage.lootBoxesData);
+                    }
+                }
+            }
+        }
+    }
+
+    public string GetStageFullID(string stageID) => LevelPrefix + LEVEL_SPLITTER + stageID;
+
+    public const string LEVEL_SPLITTER = "_";
+
+    public StageSettings GetStageByShortID(string stageID) => stageRegistry[GetStageFullID(stageID)];
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,8 +11,6 @@ public class PlayerStatDisplay  : MonoBehaviour
 {
     GeneralCombatStats _playerCombatStats { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>().PlayerCombatStats; } }
     PlayerBackpack _playerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
-    public TMP_Text HUD_HP_text;
-    public TMP_Text HUD_MP_text;
     [SerializeField] Transform StatsPanel;
     [SerializeField] Transform MainStats;
 
@@ -19,9 +18,6 @@ public class PlayerStatDisplay  : MonoBehaviour
         ,Stats_SPEED_text,Stats_CritChance_text,Stats_CritChanceRdc_text,Stats_CritMult_text,
         Stats_CritResis_text, Stats_DmgReduce_text,
         PlayerMoneyText, PlayerLevelText;
-
-    Slider HPBar;
-    Slider MPBar;
 
     //public ThirdPersonController playerController;
     private void Start()
@@ -38,14 +34,20 @@ public class PlayerStatDisplay  : MonoBehaviour
         //Stats_CritMult_text = StatsPanel.GetChild(8).GetChild(1).GetComponent<TMP_Text>();
         //Stats_CritResis_text = StatsPanel.GetChild(9).GetChild(1).GetComponent<TMP_Text>();
         Stats_DmgReduce_text = StatsPanel.GetChild(7).GetChild(1).GetComponent<TMP_Text>();
-        HPBar = transform.GetChild(0).GetComponent<Slider>();
-        MPBar = transform.GetChild(1).GetComponent<Slider>();
         PlayerLevelText = MainStats.GetChild(0).GetChild(1).GetComponent<TMP_Text>();
         PlayerMoneyText = MainStats.GetChild(1).GetChild(1).GetComponent<TMP_Text>();
     }
 
     // Update is called once per frame
     void Update()
+    {
+        if(gameObject.activeSelf && !gameObject.IsDestroyed() && _playerCombatStats != null)
+        {
+            UpdateStats();
+        }
+    }
+
+    void UpdateStats()
     {
         GeneralCombatStats playerCombatStats = this._playerCombatStats;
         float MaxHP = playerCombatStats.MaxHP;
@@ -56,10 +58,6 @@ public class PlayerStatDisplay  : MonoBehaviour
         float MPperc = MP / MaxMP;
         HP.RoundToDecimals(2);
         MP.RoundToDecimals(2);
-        HPBar.value = HPperc;
-        MPBar.value = MPperc;
-        HUD_HP_text.text = Mathf.Floor(HP) + " / " + Mathf.Floor(MaxHP);
-        HUD_MP_text.text = Mathf.Floor(MP) + " / " + Mathf.Floor(MaxMP);
 
         if (StatsPanel.gameObject.activeInHierarchy)
         {
@@ -79,11 +77,11 @@ public class PlayerStatDisplay  : MonoBehaviour
 
             Stats_MaxHP_text.text = "" + MaxHP;
             Stats_MaxMP_text.text = "" + MaxMP;
-            Stats_ATK_text.text = "" + (int) playerCombatStats.ATK;
+            Stats_ATK_text.text = "" + (int)playerCombatStats.ATK;
             Stats_AtkTime_text.text = "" + playerCombatStats.AttackTime * 100 + "%";
             Stats_DEF_text.text = "" + (int)playerCombatStats.DEF;
             Stats_SPEED_text.text = "" + playerCombatStats.Speed;
-            Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerCombatStats.CritChance,0) + "%";
+            Stats_CritChance_text.text = "" + HealthManager.CalCriticalChance(playerCombatStats.CritChance, 0) + "%";
             //Stats_CritChanceRdc_text.text = "" + playerStats.CritChanRdc + "%";
             //Stats_CritMult_text.text = "" + playerStats.CritDmgMult;
             //Stats_CritResis_text.text = "" + critResisPerc + "%";
@@ -94,6 +92,6 @@ public class PlayerStatDisplay  : MonoBehaviour
             PlayerLevelText.text = _playerBackpack.PlayerLevel.ToString();
             PlayerMoneyText.text = _playerBackpack.PlayerOwnedMoney + " $";
         }
-        //playerController.MoveSpeed = playerStats.SPEED/10;
     }
+
 }

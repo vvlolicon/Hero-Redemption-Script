@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class PauseMenu : MonoBehaviour
     public void OnExitGame()
     {
         Time.timeScale = 1;
-        MainMenuController.Instance.OnReturnMainMenu();
+        SceneLoader.Instance.ReturnToMainMenu();
     }
 
     public void OnSaveGame()

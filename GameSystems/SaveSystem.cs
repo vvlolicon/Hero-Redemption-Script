@@ -2,15 +2,21 @@ using Assets.SaveSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class SaveSystem
 {
     public static readonly string SAVE_FOLDER = Path.Combine(Application.dataPath, "Saves") + "/";
     public static readonly string SAVE_EXTENSION = ".save";
     const string SEPERATOR = "---";
+    const string LEVEL_INDEX_KEY = "CURRENT LEVEL INDEX";
+
+    public static PlayerData playerData = new();
+    public static List<object> savedStages = new ();
     public static void Initialize()
     { // create save folder if it doesn't exist
         if (!Directory.Exists(SAVE_FOLDER))
@@ -19,12 +25,10 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveGame(string fileName)
+    public static PlayerData GatherPlayerData()
     {
         PlayerBackpack PlayerBackpack = PlayerCompManager.TryGetPlayerComp<PlayerBackpack>();
         PlayerStateExecutor PlayerExecutor = PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>();
-        List<object> saveData = new List<object>();
-        PlayerData playerData = new PlayerData();
         playerData.playerLevel = PlayerBackpack.PlayerLevel;
         playerData.playerMoney = PlayerBackpack.PlayerOwnedMoney;
         playerData.playerInventory = PlayerBackpack.GetPlayerBackpackItems();
@@ -40,9 +44,73 @@ public static class SaveSystem
         playerData.curStageID = curStage.stageID;
         playerData.combatStats = PlayerExecutor.PlayerCombatStats.GetAllStats();
         playerData.extraStats = PlayerExecutor.ExtraStats.GetAllStats();
+        return playerData;
+    }
+
+    public static void SaveStageSettings()
+    {
+        object[] stages = StageManager.Instance.GetSavedStages();
+        TreasureStageData[] treasureStages = StageManager.GetStagesAsTreasureStageData(stages);
+        GeneralStageData[] generalStages = StageManager.GetStagesAsGeneralStageData(stages);
+        if(savedStages.Count > 0)
+        {
+            TreasureStageData[] savedTreasureStages = StageManager.GetStagesAsTreasureStageData(savedStages.ToArray());
+            GeneralStageData[] savedGeneralStages = StageManager.GetStagesAsGeneralStageData(savedStages.ToArray());
+            foreach (var stage in generalStages)
+            {
+                bool hasSameStage = false;
+                foreach (var savedStage in savedGeneralStages)
+                {
+                    if (stage.stageID.Equals(savedStage.stageID))
+                    {
+                        savedStages.Remove(savedStage);
+                        savedStages.Add(stage);
+                        break;
+                    }
+                }
+                if (!hasSameStage)
+                {
+                    savedStages.Add(stage);
+                }
+            }
+            foreach (var stage in treasureStages)
+            {
+                bool hasSameStage = false;
+                foreach (var savedStage in savedTreasureStages)
+                {
+                    if (stage.stageID.Equals(savedStage.stageID))
+                    {
+                        savedStages.Remove(savedStage);
+                        savedStages.Add(stage);
+                        break;
+                    }
+                }
+                if (!hasSameStage)
+                {
+                    savedStages.Add(stage);
+                }
+            }
+        }
+        else
+        {
+            savedStages.AddRange(generalStages);
+            savedStages.AddRange(treasureStages);
+        }
+        //savedStages.AddRange();
+    }
+    
+
+    public static void SaveGame(string fileName)
+    {
+        int curSceneIndex = LevelManager.CurLevelScene;
+        // if current scene is the main menu, set it to current active scene index
+        if (curSceneIndex == 0) curSceneIndex = SceneManager.GetActiveScene().buildIndex; 
+        List<object> saveData = new List<object> { curSceneIndex };
+        GatherPlayerData();
         playerData.SerializeData();
         saveData.Add(playerData);
-        saveData.AddRange(StageManager.Instance.GetSavedStages());
+        SaveStageSettings();
+        saveData.AddRange(savedStages);
 
         Initialize();
         SaveGame(fileName, saveData.ToArray());
@@ -68,8 +136,16 @@ public static class SaveSystem
             getStringTasks[i] = new Task(() =>
             {
                 StringBuilder sb = new();
-                sb.AppendLine(obj.GetType().AssemblyQualifiedName);
-                sb.AppendLine(JsonUtility.ToJson(obj));
+                if(obj is int i)
+                {
+                    sb.AppendLine(LEVEL_INDEX_KEY);
+                    sb.AppendLine(i.ToString());
+                }
+                else
+                {
+                    sb.AppendLine(obj.GetType().AssemblyQualifiedName);
+                    sb.AppendLine(JsonUtility.ToJson(obj));
+                }
                 sb.AppendLine(SEPERATOR);
                 jsonStrings.Add(sb.ToString());
             });
@@ -84,6 +160,25 @@ public static class SaveSystem
                 streamWriter.WriteLine(jsonString);
             }
         }
+    }
+
+    public static void LoadGameFromSave(string saveGamePath)
+    {
+        object[] saveGameDatas = LoadGame(saveGamePath);
+        int levelScene = 1;
+        foreach (object saveGameData in saveGameDatas)
+        {
+            if (saveGameData is int)
+            {
+                levelScene = (int)saveGameData;
+                LevelManager.CurLevelScene = levelScene;
+            }
+        }
+        SceneLoader.Instance.LoadScene(levelScene, () =>
+        {
+            LevelManager.LoadDataToGame(saveGameDatas);
+        });
+
     }
 
     public static object[] LoadGame(string filePath)
@@ -114,21 +209,36 @@ public static class SaveSystem
                 }
                 else if (currentType == null)
                 {
-                    currentType = Type.GetType(line);
+                    if (line.Equals(LEVEL_INDEX_KEY))
+                    {
+                        currentType = typeof(int);
+                    }
+                    else
+                    {
+                        currentType = Type.GetType(line);
+                    }
                 }
                 else
                 {
                     currentJson.AppendLine(line);
                 }
             }
-
+            int levelIndex = 1;
             // Second pass: Convert JSON strings to objects in parallel
             Task<object>[] getObjectTasks = new Task<object>[jsonStrings.Count];
             for (int i = 0; i < getObjectTasks.Length; i++)
             {
                 var jsonString = jsonStrings[i];
                 var type = types[i];
-                getObjectTasks[i] = new Task<object>(() => JsonUtility.FromJson(jsonString, type));
+                if (type == typeof(int))
+                {
+                    levelIndex = int.Parse(jsonString);
+                    getObjectTasks[i] = new Task<object>(() => levelIndex);
+                }
+                else
+                {
+                    getObjectTasks[i] = new Task<object>(() => JsonUtility.FromJson(jsonString, type));
+                }
                 getObjectTasks[i].Start();
             }
 
@@ -138,7 +248,6 @@ public static class SaveSystem
             {
                 objects.Add(task.Result);
             }
-
             return objects.ToArray();
         }
         else return null;

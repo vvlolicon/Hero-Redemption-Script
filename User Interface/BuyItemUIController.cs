@@ -54,7 +54,7 @@ public class BuyItemUIController : MonoBehaviour
         if (CanAffordItem(item) && PlayerBackpack.HasEmptySlot())
         {
             PlayerBackpack.PlayerOwnedMoney -= item.itemValue;
-            PlayerBackpack.AddItemToPlayerBackpack(item.GetItemDataClone());
+            PlayerBackpack.AddItemToPlayerInventory(item.GetItemDataClone());
             bool HasEmptySlot = PlayerBackpack.HasEmptySlot();
             int playerDeposit = PlayerBackpack.PlayerOwnedMoney;
             foreach (BuyItemOption option in _itemOptions)

@@ -5,13 +5,16 @@ using UnityEngine;
 
 public class CollectableItem : MonoBehaviour
 {
-     List<ItemAttribute> itemAttributes = new();
-     GameObject spawner;
+    List<ItemAttribute> itemAttributes = new();
+    GameObject spawner;
+    List<Collider> _triggeredColliders = new();
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            if (_triggeredColliders.Contains(other)) return;
+            _triggeredColliders.Add(other);
             other.GetComponent<IPickItem>()?.OnPickItem(itemAttributes, () =>
             {
                 if(spawner!= null)

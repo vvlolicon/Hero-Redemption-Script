@@ -30,7 +30,6 @@ public class Sword1 : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
         if (other.CompareTag("Player")) return;
-        Debug.Log("Sword1 Trigger Enter " + other.gameObject.name);
         if (other.CompareTag("Enemy") && _executor.CurState.CurStateType() == PlayerStates.ATTACK)
         {
             if (!attackedEnemy.Contains(other)) { 

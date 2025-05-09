@@ -13,6 +13,6 @@ public class WinUIControl : MonoBehaviour
     public void OnClickQuitGame()
     {
         Time.timeScale = 1;
-        MainMenuController.Instance.OnReturnMainMenu();
+        SceneLoader.Instance.ReturnToMainMenu();
     }
 }

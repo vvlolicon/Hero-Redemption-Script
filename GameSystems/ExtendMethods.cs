@@ -89,7 +89,7 @@ public static partial class ExtendMethods
 
     public static StoredItemPlaceType GetStoredPlaceType(this GameObject window)
     {
-        if (window.CompareTag("Player_Inventory")) return StoredItemPlaceType.PlayerBackpack;
+        if (window.CompareTag("Player_Inventory")) return StoredItemPlaceType.PlayerInventory;
         if (window.CompareTag("Player_Equipment")) return StoredItemPlaceType.PlayerEquipment;
         if (window.CompareTag("Player_HotbarItem")) return StoredItemPlaceType.PlayerHotbar;
         if (window.CompareTag("Box_Inventory")) return StoredItemPlaceType.Box;
@@ -139,5 +139,10 @@ public static partial class ExtendMethods
     public static bool IsCompNullOrDestroyed(this Component comp)
     {
         return comp == null || comp.gameObject == null || comp.IsDestroyed();
+    }
+
+    public static bool IsGameObjectNullOrDestroyed(this GameObject obj)
+    {
+        return obj == null || obj.IsDestroyed();
     }
 }

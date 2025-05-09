@@ -2,29 +2,94 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager.UI;
 
 public class UI_Controller : Singleton_LastIn<UI_Controller>
 {
-    private void Start()
+    private void Awake()
     {
+        UI_WindowPrefabNames[UI_Window.HUD] = "HUD";
+        UI_WindowPrefabNames[UI_Window.HotBar] = "HotBar";
+        UI_WindowPrefabNames[UI_Window.InventoryUI] = "PlayerInventory";
+        UI_WindowPrefabNames[UI_Window.EquipmentUI] = "Equipment";
+        UI_WindowPrefabNames[UI_Window.BoxInventoryUI] = "BoxInventory";
+        UI_WindowPrefabNames[UI_Window.PauseMenu] = "PausePanel";
+        UI_WindowPrefabNames[UI_Window.InteractToolip] = "InteractTooltip";
+        UI_WindowPrefabNames[UI_Window.EquipmentTooltip] = "EquipmentTooltip";
+        UI_WindowPrefabNames[UI_Window.WinUI] = "WinUI";
+        UI_WindowPrefabNames[UI_Window.LoseUI] = "LoseUI";
+        UI_WindowPrefabNames[UI_Window.NotifyTooltip] = "NotifyTooltip";
+        UI_WindowPrefabNames[UI_Window.OpenBook] = "OpenBook";
+        UI_WindowPrefabNames[UI_Window.BuyItemUI] = "BuyItemUI";
+
+        // ui window scripts setting
         UI_WindowTypes[UI_Window.PauseMenu] = typeof(PauseMenu);
-        UI_WindowTypes[UI_Window.EquimentTooltip] = typeof(TooltipWindow);
+        UI_WindowTypes[UI_Window.EquipmentTooltip] = typeof(TooltipWindow);
         UI_WindowTypes[UI_Window.InteractToolip] = typeof(InteractObject);
         UI_WindowTypes[UI_Window.BoxInventoryUI] = typeof(BoxInventoryController);
         UI_WindowTypes[UI_Window.StageMap] = typeof(StageMapController);
         UI_WindowTypes[UI_Window.OpenBook] = typeof(BookContentControl);
         UI_WindowTypes[UI_Window.BossHUD] = typeof(BossHudControl);
         UI_WindowTypes[UI_Window.BuyItemUI] = typeof(BuyItemUIController);
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        UI_WindowTypes[UI_Window.NotifyTooltip] = typeof(NotifyTooltipController);
+
+    }
+    private void Start()
+    {
+        if (SceneManager.GetActiveScene() == gameObject.scene)
         {
+            Debug.Log("Initializing ui");
             Initialize(); // load if current scene is dungeon
         }
         //Initialize(); // load if current scene is dungeon
     }
+
+    void CreateAndSetUI(UI_Window window)
+    {
+        if (UI_Windows.ContainsKey(window) && !UI_Windows[window].IsGameObjectNullOrDestroyed()) return;
+        string path = UI_PATH + UI_WindowPrefabNames[window];
+        UI_Windows[window] = Instantiate(Resources.Load<GameObject>(path), transform);
+        Debug.Log("ui window loaded: " + UI_Windows[window].name);
+    }
     public void Initialize()
     {
-        _UI_Manager = GameObject.FindFirstObjectByType<UI_Manager>();
-        //Debug.Log("UI_Manager found: " + _UI_Manager.name);
+        for (int i = 0; i < Enum.GetValues(typeof(UI_Window)).Length; i++)
+        {
+            UI_Window window = (UI_Window)i;
+            if (UI_Windows.ContainsKey(window))
+            {
+                Destroy(UI_Windows[window]);
+                UI_Windows.Remove(window);
+            }
+        }
+        CreateAndSetUI(UI_Window.InventoryUI);
+        CreateAndSetUI(UI_Window.EquipmentUI);
+        CreateAndSetUI(UI_Window.BoxInventoryUI);
+        CreateAndSetUI(UI_Window.EquipmentTooltip);
+        CreateAndSetUI(UI_Window.InteractToolip);
+        CreateAndSetUI(UI_Window.PauseMenu);
+        CreateAndSetUI(UI_Window.BuyItemUI);
+
+        CreateAndSetUI(UI_Window.NotifyTooltip);
+        CreateAndSetUI(UI_Window.HUD);
+        CreateAndSetUI(UI_Window.HotBar);
+        CreateAndSetUI(UI_Window.WinUI);
+        CreateAndSetUI(UI_Window.LoseUI);
+
+        // settings in inspector
+        foreach (var pair in uiWindowPairs)
+        {
+            if (pair.windowObject == null) continue;
+            UI_Window window = pair.windowType;
+            if (UI_Windows.ContainsKey(window) && !UI_Windows[window].IsGameObjectNullOrDestroyed()) {
+                Debug.LogWarning($"Duplicate UI_Window type found: {pair.windowType}. Only the first one will be used.");
+                return;
+            }
+            UI_Windows[window] = Instantiate(pair.windowObject, transform);
+            Debug.Log("ui window loaded: " + UI_Windows[window].name);
+        }
         CloseAllClosableWindows();
     }
 
@@ -66,6 +131,13 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
     {
         foreach (var UI in UI_Windows)
         {
+            if(UI.Value == null || UI.Value.IsDestroyed()) 
+                continue;
+            if(!UI_Windows.ContainsKey(UI.Key))
+            {
+                Debug.Log("UI_Windows does not contain key: " + UI.Key);
+                continue;
+            }
             if (IsClosableWindow(UI.Key))
             {
                 if (UI.Key == UI_Window.PauseMenu && UI.Value.activeSelf)
@@ -86,7 +158,8 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
                window == UI_Window.StageMap ||
                window == UI_Window.OpenBook ||
                window == UI_Window.TutorialUI ||
-               window == UI_Window.BuyItemUI;
+               window == UI_Window.BuyItemUI ||
+               window == UI_Window.MiniGameRules;
     }
 
     public bool IsEquipmentWindow(UI_Window window)
@@ -98,7 +171,7 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
 
     void OnUIClosed(UI_Window window) {
         if (IsEquipmentWindow(window)) {
-            SetUIActive(UI_Window.EquimentTooltip, false);
+            SetUIActive(UI_Window.EquipmentTooltip, false);
         }
     }
 
@@ -138,10 +211,10 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
 
     public void UpdateInventoryItem(UI_Window window, int index)
     {
-        if (IsUIActive(UI_Window.InventoryUI))
+        if (IsUIActive(window))
         {
             IDisplayItem itemDisplayer =
-                GetInventoryItemContainer(UI_Window.InventoryUI)
+                GetInventoryItemContainer(window)
                 .GetComponent<IDisplayItem>();
             itemDisplayer.UpdateItemAtSlot(index);
         }
@@ -149,10 +222,10 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
 
     public void SetInventoryItemAtSlot(UI_Window window, ItemData item, int index)
     {
-        if (IsUIActive(UI_Window.InventoryUI))
+        if (IsUIActive(window))
         {
             IDisplayItem itemDisplayer =
-                GetInventoryItemContainer(UI_Window.InventoryUI)
+                GetInventoryItemContainer(window)
                 .GetComponent<IDisplayItem>();
             itemDisplayer.SetItemAtSlot(item, index);
         }
@@ -181,6 +254,11 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
         }
     }
 
+    public void PopMessage(string message)
+    {
+        GetUIScript<NotifyTooltipController>().PopMessage(message);
+    }
+
     #region some nasty getComponent methods
     public static T GetUIScript<T>() where T : Component
     {
@@ -203,15 +281,8 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
 
         if (UI_WindowTypes.TryGetValue(GetUIWindowKey<T>(), out _))
         {
-            var uiManager = GameObject.FindGameObjectWithTag("UI_Manager");
-            if (uiManager == null)
-            {
-                Debug.LogWarning("UI_Manager not found!");
-                return null;
-            }
 
-            var uiWindow = uiManager.GetComponent<UI_Manager>().UI_Windows;
-            if (uiWindow.TryGetValue(GetUIWindowKey<T>(), out GameObject uiGameObject))
+            if (UI_Windows.TryGetValue(GetUIWindowKey<T>(), out GameObject uiGameObject))
             {
                 if (uiGameObject == null)
                 {
@@ -252,7 +323,12 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
     //Dictionary<>
     UI_Manager _UI_Manager;
     public GameObject TestStatics { get; private set; }
-    Dictionary<UI_Window, GameObject> UI_Windows { get { return _UI_Manager.UI_Windows; } }
+
+    static Dictionary<UI_Window, GameObject> UI_Windows = new();
+    [SerializeField] UIWindowPair[] uiWindowPairs;
+
+    Dictionary<UI_Window, string> UI_WindowPrefabNames = new();
+    public const string UI_PATH = "UserInterface/";
 
     static Dictionary<UI_Window, Type> UI_WindowTypes = new Dictionary<UI_Window, Type>();
     static Dictionary<Type, UnityEngine.Object> _UIComponents = new();
@@ -263,7 +339,7 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
     public GameObject EquipmentUI { get { return UI_Windows[UI_Window.EquipmentUI]; } }
     public GameObject Hotbar { get { return UI_Windows[UI_Window.HotBar]; } }
     public GameObject PauseMenu { get { return UI_Windows[UI_Window.PauseMenu]; } }
-    public GameObject EquimentTooltip { get { return UI_Windows[UI_Window.EquimentTooltip]; } }
+    public GameObject EquimentTooltip { get { return UI_Windows[UI_Window.EquipmentTooltip]; } }
     public GameObject InteractToolip { get { return UI_Windows[UI_Window.InteractToolip]; } }
     public GameObject BoxInventoryUI { get { return UI_Windows[UI_Window.BoxInventoryUI]; } }
     public GameObject StageMap { get { return UI_Windows[UI_Window.StageMap]; } }

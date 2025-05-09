@@ -5,7 +5,7 @@ using TMPro;
 public class BossStage : MonsterStage
 {
     public GameObject boss;
-    [SerializeField] EnemyStateExecutor bossExecutor;
+    EnemyStateExecutor bossExecutor;
     [SerializeField] string bossName;
     [SerializeField] Collider _airWall;
     [SerializeField] Collider _enterTriggerCollider;

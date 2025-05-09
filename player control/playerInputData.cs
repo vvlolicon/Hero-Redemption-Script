@@ -24,7 +24,7 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
         _executor = GetComponent<PlayerStateExecutor>();
         _playerBackpack = GetComponent<PlayerBackpack>();
         EnableAllInput(true);
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        if (gameObject.scene == SceneManager.GetActiveScene())
         {
             Initialize(); // load if current scene is dungeon
         }
