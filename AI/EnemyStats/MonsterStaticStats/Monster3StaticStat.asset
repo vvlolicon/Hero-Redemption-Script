@@ -20,5 +20,5 @@ MonoBehaviour:
   _chaseTime: 2
   _hitAnimTime: 1
   Interruptable: 1
-  _dieTime: 3
+  _dieTime: 2
   _AtkStrategy: 2
