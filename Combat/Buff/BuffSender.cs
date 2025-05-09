@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
-using static BuffSetting;
 
 public interface IBuffSender
 {
@@ -30,6 +29,11 @@ public class BuffSender : MonoBehaviour
 
     private void Start()
     {
+        _isPlayer = TryGetComponent(out _playerExecutor);
+        if (!_isPlayer)
+        {
+            _enemyExecutor = GetComponent<EnemyStateExecutor>();
+        }
     }
 
     public void SendBuffToSelf()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PickupSpawner : MonoBehaviour, IPickItem
@@ -25,7 +26,7 @@ public class PickupSpawner : MonoBehaviour, IPickItem
         Debug.Log("Spawning Pickup");
         var pickup = Instantiate(spawnPickupDetail.itemModel, transform);
         pickup.transform.localPosition = Vector3.zero;
-        var pickupScript = pickup.AddComponent<CollectableItem>();
+        var pickupScript = pickup.GetOrAddComponent<CollectableItem>();
         pickupScript.SetCollectable(spawnPickupDetail.itemAttributes, this.gameObject);
     }
 }

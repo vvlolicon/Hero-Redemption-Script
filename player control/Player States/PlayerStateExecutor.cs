@@ -27,7 +27,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         PlayerOriginStats.InitializeStats();
         PlayerCombatStats.SetStats(PlayerOriginStats.GetCombatStats());
 
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        if (SceneManager.GetActiveScene() == gameObject.scene)
         {
             ResetPlayerValue(); // load if current scene is dungeon
         }
@@ -48,7 +48,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     public void InitializePlayer()
     {
-        TransportPlayerTo(_spawnPoint.position);
+        TransportPlayerTo(_spawnPoint);
         ResetPlayerValue();
         _playerInput.Initialize();
         _backpack.PlayerLevel = 1;
@@ -57,9 +57,14 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     public void LoadPlayerData(PlayerData newPlayerData)
     {
+        LoadPlayerDataNoTransport(newPlayerData);
+        TransportPlayerTo(newPlayerData.playerPos);
+    }
+
+    public void LoadPlayerDataNoTransport(PlayerData newPlayerData)
+    {
         PlayerCombatStats.SetStats(newPlayerData.combatStats);
         ExtraStats.SetStats(newPlayerData.extraStats);
-        TransportPlayerTo(newPlayerData.playerPos);
         HasInitialized = true;
         ResetPlayerValue();
         _playerInput.Initialize();
@@ -67,9 +72,10 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         OnStatsChanged?.Invoke();
         _backpack.PlayerLevel = newPlayerData.playerLevel;
         _backpack.PlayerOwnedMoney = newPlayerData.playerMoney;
-        _backpack.SetPlayerBackPackRange(newPlayerData.playerInventory);
+        _backpack.SetPlayerInventoryRange(newPlayerData.playerInventory);
         _backpack.SetPlayerEquippedItemsRange(newPlayerData.playerEquipment);
         _backpack.SetPlayerHotbarItemsRange(newPlayerData.playerHotbar);
+
     }
 
     void ResetPlayerValue()
@@ -264,6 +270,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     {
         ExtraStats.ChangePlayerStats(itemAttributes);
         OnStatsChanged?.Invoke();
+        UI_Controller.Instance.PopMessage($"You picked a power shard, your stats have been increased!");
         callback();
     }
 
@@ -292,11 +299,18 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
 
     }
 
+    public void TransportPlayerTo(Transform newPos)
+    {
+        transform.rotation = Quaternion.Euler(0, newPos.rotation.eulerAngles.y, 0);
+        GetComponent<CameraControl>().ResetCameraTarget();
+        TransportPlayerTo(newPos.position);
+    }
+
     public void TransportPlayerTo(Vector3 newPos)
     {
+        transform.position = newPos;
         TransportPlayer = true;
         CharController.enabled = false;
-        transform.position = newPos;
         StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
         {
             TransportPlayer = false;

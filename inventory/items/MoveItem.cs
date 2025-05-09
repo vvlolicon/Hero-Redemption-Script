@@ -39,9 +39,28 @@ public class MoveItem : MonoBehaviour, IDropHandler
         {
             targetItem = transform.GetChild(0).GetComponent<ItemDetail>().item;
             targetDragItem = transform.GetChild(0).GetComponent<DraggableItem>();
+            if(droppedItem.itemID == targetItem.itemID && 
+               droppedItem.itemType == ItemType.Consumable &&
+               targetItem.maxStack - targetItem.curStack > droppedItem.curStack)
+            {// if target item is the same type and has space for more stack, add stack to target item
+                targetItem.curStack += droppedItem.curStack;
+                targetDragItem.GetComponent<ItemDetail>().UpdateItem();
+                Destroy(dropDragItem.gameObject);
+                // delete item data in origin slot script
+                if(originWindowPlaceType == StoredItemPlaceType.Box)
+                {
+                    dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
+                        dropItemOriginSlot.transform.GetIndexInParent(), droppedItem, true);
+                }
+                else
+                {
+                    PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+                }
+                return;
+            }
             if (targetWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
             {
-                if (originWindowPlaceType == StoredItemPlaceType.PlayerBackpack)
+                if (originWindowPlaceType == StoredItemPlaceType.PlayerInventory)
                 { // item is drag from player inventory slot to equipment slot
 
                     //if target exchange item type is equal to drag item type,
@@ -54,7 +73,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
                     }
                 }
             }
-            else if (targetWindowPlaceType == StoredItemPlaceType.PlayerBackpack)
+            else if (targetWindowPlaceType == StoredItemPlaceType.PlayerInventory)
             {
                 if (originWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
                 {// item is drag from equipment slot to player inventory slot

@@ -72,6 +72,12 @@ public class CameraControl : MonoBehaviour
             _cinemachineTargetYaw, 0.0f);
     }
 
+    public void ResetCameraTarget()
+    {
+        _cinemachineTargetYaw = transform.rotation.eulerAngles.y;
+        _cinemachineTargetPitch = 0.0f; // 或者你可以根据需要设置初始的Pitch值
+    }
+
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;

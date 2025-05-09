@@ -57,15 +57,21 @@ public class PlayerBackpack : MonoBehaviour
         {
             foreach (Item item in dropItems)
             {
-                if (!AddItemToPlayerBackpack(item.GetItemDataClone()))
+                if (AddItemToPlayerInventory(item.GetItemDataClone()) == -2)
                 {
                     Debug.Log("Backpack is full, dropping " + item.itemName + " on the ground");
+                }
+                else
+                {
+                    UI_Controller.PopMessage($"You gain {item.itemName}");
                 }
             }
         }
     }
 
-    public bool AddItemToPlayerBackpack(ItemData item)
+    public static bool IsAddItemFailed(int result) => result == -2;
+    public static bool IsAddItemStacked(int result) => result == -1;
+    public int AddItemToPlayerInventory(ItemData item)
     {
         bool AddItem = true;
         if (item.itemType == ItemType.Consumable && _playerInventory.Count > 0)
@@ -78,15 +84,15 @@ public class PlayerBackpack : MonoBehaviour
                 if (backpackItem.itemID == item.itemID && backpackItem.curStack < backpackItem.maxStack)
                 {
                     backpackItem.curStack += stackLeft;
+                    UI_Controller.UpdateInventoryItem(UI_Window.InventoryUI, i);
                     if (backpackItem.curStack > backpackItem.maxStack)
                     {
                         stackLeft = backpackItem.curStack - backpackItem.maxStack;
                         item.curStack = stackLeft;
-                        UI_Controller.UpdateInventoryItem(UI_Window.InventoryUI, i);
                     }
                     else
-                    {
-                        return true;
+                    { // item is stackable and stacked with other item
+                        return -1;
                     }
                 }
             }
@@ -99,11 +105,12 @@ public class PlayerBackpack : MonoBehaviour
                 {
                     _playerInventory[i] = item;
                     UI_Controller.SetInventoryItemAtSlot(UI_Window.InventoryUI, item, i);
-                    return true;
+                    return i;
                 }
             }
         }
-        return false;
+        // cannot add item
+        return -2;
     }
 
     public Dictionary<CombatStatsType, float> GetEquippedItemStats()
@@ -132,7 +139,7 @@ public class PlayerBackpack : MonoBehaviour
     {
         switch (placeType)
         {
-            case StoredItemPlaceType.PlayerBackpack:
+            case StoredItemPlaceType.PlayerInventory:
                 _playerInventory[index] = item;
                 break;
             case StoredItemPlaceType.PlayerEquipment:
@@ -145,7 +152,7 @@ public class PlayerBackpack : MonoBehaviour
     }
 
 
-    public void SetPlayerBackpackItem(ItemData item, int index)
+    public void SetPlayerInventoryItem(ItemData item, int index)
     {
         _playerInventory[index] = item;
     }
@@ -159,7 +166,7 @@ public class PlayerBackpack : MonoBehaviour
         _playerHotbar[index] = item;
     }
 
-    public void SetPlayerBackPackRange(List<ItemData> items)
+    public void SetPlayerInventoryRange(List<ItemData> items)
     {
         _playerInventory = items;
     }
@@ -234,9 +241,11 @@ public class PlayerBackpack : MonoBehaviour
         }
         return cloneList;
     }
+
+
 }
 
 public enum StoredItemPlaceType
 {
-    NONE, PlayerBackpack, PlayerEquipment, PlayerHotbar, Box
+    NONE, PlayerInventory, PlayerEquipment, PlayerHotbar, Box
 }

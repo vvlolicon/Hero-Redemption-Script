@@ -7,10 +7,10 @@ public class MainMenuButtons : MonoBehaviour
     MainMenuController controller { get { return MainMenuController.Instance; } }
     public void OnClickStart()
     {
-        controller.OnClickPlaygame();
+        SceneLoader.Instance.StartNewGame();
     }
     public void OnClickExit()
     {
-        controller.OnClickExit();
+        SceneLoader.Instance.ExitGame();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class LootBox : MonoBehaviour, IInteractableObject
 {
@@ -27,10 +28,10 @@ public class LootBox : MonoBehaviour, IInteractableObject
 
     public void Interact()
     {
-        Debug.Log("Loot Box Interact");
         if (!opened)
         {
             PlayerBackpack.PlayerOwnedMoney += _money;
+            UI_Controller.PopMessage($"You gain {_money}$");
             opened = true;
         }
         UI_Controller.GetUIScript<BoxInventoryController>().OpenBox(this);

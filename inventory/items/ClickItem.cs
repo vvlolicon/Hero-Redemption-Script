@@ -37,7 +37,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (clickItem.itemType == ItemType.Consumable && 
                 windowPlaceType != StoredItemPlaceType.Box)
             {
-                if (windowPlaceType == StoredItemPlaceType.PlayerBackpack ||
+                if (windowPlaceType == StoredItemPlaceType.PlayerInventory ||
                     windowPlaceType == StoredItemPlaceType.PlayerHotbar)
                 {
                     GetComponent<ConsumableItem>().ConsumeItem();
@@ -46,7 +46,7 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // if equipment ui is opened and item is in player inventory, try to put item into equipment slot
             else
             {
-                if (windowPlaceType == StoredItemPlaceType.PlayerBackpack)
+                if (windowPlaceType == StoredItemPlaceType.PlayerInventory)
                 {
                     if (equipmentItemContainer.activeInHierarchy)
                     {
@@ -100,6 +100,17 @@ public class ClickItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         StoredItemPlaceType targetWindowPlaceType = targetInventory.gameObject.GetStoredPlaceType();
         ItemData itemMoved = clickDragItem.GetComponent<ItemDetail>().item;
         int originSlotIndex = originSlot.GetIndexInParent();
+        if(itemMoved.itemType == ItemType.Consumable && 
+            targetWindowPlaceType == StoredItemPlaceType.PlayerInventory)
+        { // if item can stack
+            int result = PlayerBackpack.AddItemToPlayerInventory(itemMoved);
+            if (!PlayerBackpack.IsAddItemFailed(result))
+            {// if item successfully transfer
+                PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+                Destroy(clickDragItem.gameObject);
+                return;
+            }
+        }
         for (int i = 0; i < targetInventory.childCount; i++)
         {
             Transform inventory_slot = targetInventory.GetChild(i);

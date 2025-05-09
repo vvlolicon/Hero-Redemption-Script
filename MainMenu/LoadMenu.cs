@@ -75,7 +75,7 @@ public class LoadMenu : MonoBehaviour
         if(selectedOptionIndex >= 0)
         {
             string filePath = SaveOptions[selectedOptionIndex].filePath;
-            MainMenuController.Instance.OnLoadGame(filePath);
+            SaveSystem.LoadGameFromSave(filePath);
         }
     }
 
