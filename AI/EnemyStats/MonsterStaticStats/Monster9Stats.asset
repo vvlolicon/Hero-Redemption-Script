@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fbfa19b59f00074a9e991113c9f7fcd, type: 3}
   m_Name: Monster9Stats
   m_EditorClassIdentifier: 
-  _visDist: 9
+  _visDist: 14
   _visAngle: 120
-  _attackDist: 10
+  _attackDist: 12
   _preAtkTime: 2
   _atkAnimTime: 3
   _chaseTime: 3
   _hitAnimTime: 1
   Interruptable: 1
-  _dieTime: 3
+  _dieTime: 2
   _AtkStrategy: 2
