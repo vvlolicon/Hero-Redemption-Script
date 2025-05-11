@@ -41,6 +41,7 @@ public class BossStage : MonsterStage
         _airWall.enabled = false;
         bossExecutor.bossActivated = false;
         UIController.SetUIActive(UI_Window.BossHUD, false);
+        ReturnPoint.gameObject.SetActive(true);
     }
 
     void OnEnterBossArea(Collider other)
