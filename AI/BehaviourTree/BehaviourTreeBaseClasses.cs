@@ -97,7 +97,6 @@ namespace Assets.AI.BehaviourTree
             }
         }
     }
-
     public class BehaviourTree : EventNode
     {
         public BehaviourTree(string name) : base(name) { }
@@ -116,7 +115,6 @@ namespace Assets.AI.BehaviourTree
             return Status.SUCCESS;
         }
     }
-
     public class Leaf : EventNode
     {
         readonly IStrategy strategy;
@@ -187,7 +185,6 @@ namespace Assets.AI.BehaviourTree
             _strategyChangedEvent -= e;
         }
     }
-
     public class Sequence : EventNode
     {
         public Sequence(string name, int priority = 0) : base(name, priority) { }
@@ -212,7 +209,6 @@ namespace Assets.AI.BehaviourTree
             return Status.SUCCESS;
         }
     }
-
     public class SequenceLoop : EventNode
     {
         public SequenceLoop(string name, int priority = 0) : base(name, priority) { }
@@ -230,7 +226,6 @@ namespace Assets.AI.BehaviourTree
             return Status.RUNNING;
         }
     }
-
     public class Selector : EventNode
     {
         public Selector(string name, int priority = 0) : base(name, priority) { }
@@ -255,7 +250,6 @@ namespace Assets.AI.BehaviourTree
             return Status.FAILURE;
         }
     }
-
     public class PrioritySelector : Selector
     {
         List<Node> AfterSortedChildren => children ??= SortChildren();
@@ -303,7 +297,6 @@ namespace Assets.AI.BehaviourTree
             return status;
         }
     }
-
     public class Invertor : EventNode
     {
         public Invertor(string name, int priority = 0) : base(name, priority) { }
@@ -321,22 +314,21 @@ namespace Assets.AI.BehaviourTree
             }
         }
     }
-
     public class UntilFail : EventNode
     {
         public UntilFail(string name, int priority = 0) : base(name, priority) { }
 
         public override Status EvaluateImpl()
         {
-            if (children[0].Evaluate() == Status.FAILURE)
+            if (children[curChild].Evaluate() == Status.FAILURE)
             {
                 Reset();
                 return Status.FAILURE;
             }
+            curChild = (curChild +1)% children.Count;
             return Status.RUNNING;
         }
     }
-
     public class Condition : IStrategy
     {
         readonly Func<bool> predicate;
@@ -356,7 +348,6 @@ namespace Assets.AI.BehaviourTree
             // nothing happens default
         }
     }
-
     public class ActionStrategy : IStrategy
     {
         readonly Action action;

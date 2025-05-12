@@ -50,7 +50,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
         }
 
     }
-
 	public void OnLook(InputValue value)
     {
         if (LockAllInput) return;
@@ -59,7 +58,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
 			LookInput(value.Get<Vector2>());
 		}
 	}
-
 	public void OnJump(InputValue value)
     {
         if (LockAllInput) return;
@@ -68,7 +66,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
 			_executor.OnJumpPressed();
 		}
     }
-
 	public void OnSprint(InputValue value)
     {
         if (LockAllInput) return;
@@ -77,7 +74,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
 			SprintInput(value.isPressed);
 		}
 	}
-
     public void OnRun(InputValue value)
     {
         if (LockAllInput) return;
@@ -87,7 +83,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
         }
         //test_runPress.text = "run pressed: " + _runPressed;
     }
-
 	public void OnAttack(InputValue value)
     {
         if (LockAllInput) return;
@@ -96,7 +91,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
             _executor.OnAttackPressed(value.isPressed);
         }
     }
-
     public void OnOpenInventory()
     {
         if (LockAllInput) return;
@@ -111,7 +105,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
             _executor.OnOpenInventory();
         }
     }
-
 	public void OnEscHit(InputValue value)
     {
         if (LockAllInput) return;
@@ -173,7 +166,6 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
             UseHotbarItemAtSlot(5);
         }
     }
-
     public void OnInteract()
     {
         if (LockAllInput) return;

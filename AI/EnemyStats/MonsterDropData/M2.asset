@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ea7830880975444a490db0f1781772, type: 3}
   m_Name: M2
   m_EditorClassIdentifier: 
-  Money_drop: 12
+  Money_drop: 120
   EnsureDropItem: []
   RandomDropTable:
   - {fileID: 11400000, guid: 1edfd945305476048b71259e74cf00ed, type: 2}
