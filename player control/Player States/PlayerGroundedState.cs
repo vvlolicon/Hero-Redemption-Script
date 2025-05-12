@@ -13,7 +13,7 @@ public class PlayerGroundedState : PlayerBaseState
         {
             SwitchState(StateMan.Jump());
         }
-        else if (!Executor.CharCont.isGrounded && PlayerMethods.DistToGround() > 0.5f)
+        else if (!Executor.CharCont.isGrounded && PlayerMethods.DistToGround() > 0.5f && !PlayerMethods.IsGrounded())
         {
             //Debug.Log("Ground state switch to fall state, " + "isGrounded: " + Executor.CharCont.isGrounded + ", check Grounded: " + PlayerMethods.IsGrounded());
             SwitchState(StateMan.Fall());
