@@ -159,6 +159,7 @@ namespace Assets.AI.BehaviourTree
 
         public Node.Status Evaluate()
         {
+            if (curTiming >= _bossBreakTimings.Count) return Node.Status.FAILURE;
             BossBreakSetting curBreak = _bossBreakTimings[curTiming];
             float HPperc = _executor.CombatStats.HP / _executor.CombatStats.MaxHP;
             //Debug.Log($"Boss HP perc: {HPperc*100}%, cur HP determent: {_bossBreakTimings[curTiming].BossBreakAtHPperc}");
@@ -189,7 +190,7 @@ namespace Assets.AI.BehaviourTree
                 return Node.Status.RUNNING;
             }
 
-            curTiming = Mathf.Min(curTiming +1, _bossBreakTimings.Count - 1);
+            curTiming = Mathf.Min(curTiming +1, _bossBreakTimings.Count);
             _bossBreak = false;
             _executor.IsHit = false;
             _methods.ResetModel();
