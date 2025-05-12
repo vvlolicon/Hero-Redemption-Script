@@ -19,6 +19,8 @@ MonoBehaviour:
     affectStats:
     - AtbrType: 5
       Value: -20
+    - AtbrType: 7
+      Value: -20
     interval: 0
     duration: 3
     priority: 0

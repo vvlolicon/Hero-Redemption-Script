@@ -121,7 +121,18 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
     {
         if (!_isPlayer) return false;
         return _buffAffectValues[CombatStatsType.HP] < 0 ||
+            _buffAffectValuesPerc[CombatStatsType.HP] < 0 ||
+            _buffAffectValues[CombatStatsType.MaxHP] < 0||
             _buffAffectValuesPerc[CombatStatsType.MaxHP] < 0;
+    }
+
+    public bool HasWeaknessBuff()
+    {
+        if (!_isPlayer) return false;
+        return (_buffAffectValues[CombatStatsType.ATK] < 0 &&
+            _buffAffectValues[CombatStatsType.DEF] < 0) ||
+            (_buffAffectValuesPerc[CombatStatsType.ATK]< 0 &&
+            _buffAffectValuesPerc[CombatStatsType.DEF]< 0);
     }
 
     void HandleEquipmentChange()

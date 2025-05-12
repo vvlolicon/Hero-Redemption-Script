@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -270,7 +271,13 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     {
         ExtraStats.ChangePlayerStats(itemAttributes);
         OnStatsChanged?.Invoke();
-        UI_Controller.Instance.PopMessage($"You picked a power shard, your stats have been increased!");
+        StringBuilder sb = new StringBuilder("You picked a power shard, your stats have been increased!"+"\n");
+        foreach (var attr in itemAttributes)
+        {
+            sb.Append($"{attr.AtrbName}: +{attr.AtrbValue}, ");
+        }
+        UI_Controller.Instance.PopMessage(sb.ToString().Substring(0, sb.Length - 1));
+
         callback();
     }
 

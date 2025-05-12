@@ -11,6 +11,7 @@ public class HUD_Display : MonoBehaviour
     [SerializeField] Slider HPBar;
     [SerializeField] Image HPBarFill;
     [SerializeField] Slider MPBar;
+    [SerializeField] Image MPBarFill;
 
     GeneralCombatStats _playerCombatStats { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>().PlayerCombatStats; } }
     CombatBuffHandler _playerBuffHandler { get { return PlayerCompManager.TryGetPlayerComp<CombatBuffHandler>(); } }
@@ -43,6 +44,14 @@ public class HUD_Display : MonoBehaviour
         else
         {
             HPBarFill.color = Color.red;
+        }
+        if (_playerBuffHandler.HasWeaknessBuff())
+        {
+            MPBarFill.color = Color.magenta;
+        }
+        else
+        {
+            MPBarFill.color = Color.blue;
         }
     }
 }
