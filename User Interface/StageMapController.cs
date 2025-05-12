@@ -92,16 +92,14 @@ public class StageMapController : MonoBehaviour
     {
         curStage = newStage;
         isCurStageInitialized = true;
-        Debug.Log($"cur stage is {curStage.stageID}, is initialized: {isCurStageInitialized}");
+        //Debug.Log($"cur stage is {curStage.stageID}, is initialized: {isCurStageInitialized}");
         gameObject.SetActive(true);
         StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
         {
-            Debug.Log($"buttons count:{transform.GetChild(0).childCount}");
             StageMapButtons[] buttons = GetComponentsInChildren<StageMapButtons>(true);
             foreach (StageMapButtons button in buttons)
             {
                 var stage = button.GetStage();
-                Debug.Log($"checking stage: " + stage.stageID);
                 if (stage == newStage)
                 {
                     SetPivot(button.GetPivotTransform());

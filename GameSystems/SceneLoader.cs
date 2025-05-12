@@ -7,6 +7,7 @@ public class SceneLoader : SingletonDDOL<SceneLoader>
 {
     public void LoadScene(int loadedSceneIndex, System.Action actionAfterLoad)
     {
+        Debug.LogWarning("Start loading scene");
         StartCoroutine(LoadGameScene(loadedSceneIndex, actionAfterLoad));
     }
     public void StartNewGame()

@@ -20,7 +20,7 @@ public class InteractObject : MonoBehaviour
     [SerializeField] float _tooltipHeight = 60f;
     [SerializeField] float _tooltipSpacing = 10f;
 
-    List<IInteractableObject> _interactableObjects = new List<IInteractableObject>();
+    List<GameObject> _interactableObjects = new ();
     List<GameObject> _tooltips = new List<GameObject>();
     int _curSelectedIndex = -1;
     PlayerStateExecutor _player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
@@ -81,15 +81,16 @@ public class InteractObject : MonoBehaviour
         }
     }
 
-    public void AddInteractObject(IInteractableObject interactObj)
+    public void AddInteractObject(GameObject interactObj)
     {
+        var interactable = interactObj.GetComponent<IInteractableObject>();
         if (!_interactableObjects.Contains(interactObj))
         {
             _interactableObjects.Add(interactObj);
             var tooltip = Instantiate(_showObjectNamePrefab, _tooltipContainer.transform);
             _tooltips.Add(tooltip);
             var tooltipScript = tooltip.GetComponent<InteractTooltipControl>();
-            tooltipScript.SetTooltipTitle(interactObj.GetInterableTitle());
+            tooltipScript.SetTooltipTitle(interactable.GetInterableTitle());
             _tooltipContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(300, _tooltips.Count * _tooltipHeight - _tooltipSpacing);
             if(_tooltips.Count == 1)
             {
@@ -103,8 +104,9 @@ public class InteractObject : MonoBehaviour
         }
     }
 
-    public void RemoveInteractObject(IInteractableObject interactObj)
+    public void RemoveInteractObject(GameObject interactObj)
     {
+        var interactable = interactObj.GetComponent<IInteractableObject>();
         int index = _interactableObjects.IndexOf(interactObj);
         if (_interactableObjects.Contains(interactObj))
         {
@@ -130,10 +132,17 @@ public class InteractObject : MonoBehaviour
         }
     }
 
-    public void InteractWithObject()
+    public bool InteractWithObject()
     {
-        if (_curSelectedIndex == -1 || _interactableObjects.Count == 0) return;
-        _interactableObjects[_curSelectedIndex]?.Interact();
+        if (_curSelectedIndex == -1 || _interactableObjects.Count == 0) return false;
+        var interactObj = _interactableObjects[_curSelectedIndex];
+        if (interactObj.TryGetComponent(out IInteractableObject interactable) &&
+            !interactObj.IsGameObjectNullOrDestroyed())
+        {
+            interactable.Interact();
+            return true;
+        }
+        return false;
     }
 
     public bool HasInteractObject()

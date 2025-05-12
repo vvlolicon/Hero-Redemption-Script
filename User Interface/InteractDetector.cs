@@ -10,9 +10,9 @@ public class InteractDetector : MonoBehaviour
     {
         if (other == null) return;
         //Debug.Log("Collide with object " + other.gameObject.name);
-        if(other.TryGetComponent<IInteractableObject>(out var obj))
+        if (other.TryGetComponent<IInteractableObject>(out _))
         {
-            UI_Controller.GetUIScript<InteractObject>().AddInteractObject(obj);
+            UI_Controller.GetUIScript<InteractObject>().AddInteractObject(other.gameObject);
         }
     }
 
@@ -20,9 +20,9 @@ public class InteractDetector : MonoBehaviour
     {
         if (other == null) return;
         //Debug.Log("Exit Collide with object " + other.gameObject.name);
-        if (other.TryGetComponent<IInteractableObject>(out var obj))
+        if (other.TryGetComponent<IInteractableObject>(out _))
         {
-            UI_Controller.GetUIScript<InteractObject>().RemoveInteractObject(obj);
+            UI_Controller.GetUIScript<InteractObject>().RemoveInteractObject(other.gameObject);
         }
     }
     

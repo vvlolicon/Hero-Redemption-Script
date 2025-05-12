@@ -170,8 +170,10 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
     {
         if (LockAllInput) return;
         if (UI_Controller.HasClosableWindowActive()) return;
-        UI_Controller.GetUIScript<InteractObject>().InteractWithObject();
-        EnableAllInput(false);
+        if (UI_Controller.GetUIScript<InteractObject>().InteractWithObject())
+        {
+            EnableAllInput(false);
+        }
     }
 
 #endif

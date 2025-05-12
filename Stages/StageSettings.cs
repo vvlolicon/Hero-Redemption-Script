@@ -94,14 +94,13 @@ public abstract class StageSettings : MonoBehaviour
     {
          _isLocked = isLocked;
          _isDiscovered = isDiscovered;
-        Task[] spawnPickups = new Task[_pickups.Count];
         for (int i = 0; i < _pickups.Count; i++)
         {
+            _pickups[i].PickedItem = isPickupsPicked[i];
             if (!isPickupsPicked[i])
             {
                 _pickups[i].SpawnPickup();
             }
-            _pickups[i].PickedItem = isPickupsPicked[i];
         }
         if (isCleared)
         {
