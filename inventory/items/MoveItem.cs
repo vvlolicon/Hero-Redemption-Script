@@ -30,6 +30,12 @@ public class MoveItem : MonoBehaviour, IDropHandler
 
         ItemData targetItem;
         DraggableItem targetDragItem;
+
+        if (ThisSlotType == ItemType.DELETE_ITEM)
+        {
+            DestroyDropItem();
+            return;
+        }
         //Debug.Log("##########Test Variables##########");
         //Debug.Log("target slot has item inside");
         //Debug.Log("dropItemOriginWindow" + dropItemOriginWindow.name);
@@ -46,17 +52,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
             {// if target item is the same type and has space for more stack, add stack to target item
                 targetItem.curStack += droppedItem.curStack;
                 targetDragItem.GetComponent<ItemDetail>().UpdateItem();
-                Destroy(dropDragItem.gameObject);
-                // delete item data in origin slot script
-                if(originWindowPlaceType == StoredItemPlaceType.Box)
-                {
-                    dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
-                        dropItemOriginSlot.transform.GetIndexInParent(), droppedItem, true);
-                }
-                else
-                {
-                    PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
-                }
+                DestroyDropItem();
                 return;
             }
             if (targetWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
@@ -153,6 +149,25 @@ public class MoveItem : MonoBehaviour, IDropHandler
             dropDragItem.parentAfterDrag = transform;
             PlayerBackpack.SetItemInPlayerBackpack(droppedItem, targetSlotIndex, targetWindowPlaceType);
             PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+        }
+        void DestroyDropItem()
+        {
+            // delete item data in origin slot script
+            if (originWindowPlaceType == StoredItemPlaceType.Box)
+            {
+                dropItemOriginWindow.GetComponent<InventorySlotManager>().InvokeEvent(
+                    dropItemOriginSlot.transform.GetIndexInParent(), droppedItem, true);
+            }
+            else if (originWindowPlaceType == StoredItemPlaceType.PlayerEquipment)
+            {
+                dropItemOriginSlot.GetComponent<MoveItem>().RemoveItemAttribute();
+            }
+            else
+            {
+                PlayerBackpack.SetItemInPlayerBackpack(null, originSlotIndex, originWindowPlaceType);
+            }
+            Destroy(dropDragItem.gameObject);
+            UI_Controller.Instance.SetUIActive(UI_Window.EquipmentTooltip, false);
         }
     }
 

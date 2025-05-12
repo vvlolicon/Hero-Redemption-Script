@@ -31,7 +31,7 @@ public class BossStage : MonsterStage
 
     void OnBossDying()
     {
-        OnStageClear();
+        ClearStage();
         PlayerCompManager.TryGetPlayerComp<PlayerBackpack>().PlayerLevel++;
         UIController.PopMessage("Congrads! Your level is increased by 1!");
         StartCoroutine(ExtendIEnumerator.DelayAction(5f, () =>
@@ -57,7 +57,7 @@ public class BossStage : MonsterStage
     public override void OnStageClear()
     {
         base.OnStageClear();
-        //Debug.Log("Setting boss stage clear");
+        Debug.Log("Setting boss stage clear");
         _airWall.enabled = false;
         _enterTriggerCollider.enabled = false;
         _enterTriggerCollider.GetComponent<EnterColliderAction>().OnEnterAction -= OnEnterBossArea;

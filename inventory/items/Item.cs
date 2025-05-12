@@ -72,7 +72,8 @@ public enum ItemType
     Weapon_Melee,
     Weapon_Range,
     Backpack,
-    Ammo
+    Ammo,
+    DELETE_ITEM
 }
 
 public enum ConsumableItemType
