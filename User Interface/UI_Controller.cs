@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.IO;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager.UI;
 
@@ -18,7 +17,6 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
         UI_WindowPrefabNames[UI_Window.PauseMenu] = "PausePanel";
         UI_WindowPrefabNames[UI_Window.InteractToolip] = "InteractTooltip";
         UI_WindowPrefabNames[UI_Window.EquipmentTooltip] = "EquipmentTooltip";
-        UI_WindowPrefabNames[UI_Window.WinUI] = "WinUI";
         UI_WindowPrefabNames[UI_Window.LoseUI] = "LoseUI";
         UI_WindowPrefabNames[UI_Window.NotifyTooltip] = "NotifyTooltip";
         UI_WindowPrefabNames[UI_Window.OpenBook] = "OpenBook";
@@ -71,11 +69,11 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
         CreateAndSetUI(UI_Window.InteractToolip);
         CreateAndSetUI(UI_Window.PauseMenu);
         CreateAndSetUI(UI_Window.BuyItemUI);
+        CreateAndSetUI(UI_Window.OpenBook);
 
         CreateAndSetUI(UI_Window.NotifyTooltip);
         CreateAndSetUI(UI_Window.HUD);
         CreateAndSetUI(UI_Window.HotBar);
-        CreateAndSetUI(UI_Window.WinUI);
         CreateAndSetUI(UI_Window.LoseUI);
 
         // settings in inspector
@@ -90,6 +88,9 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
             UI_Windows[window] = Instantiate(pair.windowObject, transform);
             Debug.Log("ui window loaded: " + UI_Windows[window].name);
         }
+
+        UI_Windows[UI_Window.WinUI].transform.SetAsLastSibling();
+        UI_Windows[UI_Window.LoseUI].transform.SetAsLastSibling();
         CloseAllClosableWindows();
     }
 
@@ -101,6 +102,10 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
             if (IsClosableWindow(window) && active)
             {// close tooltip if other window opened
                 SetUIActive(UI_Window.InteractToolip, false);
+                if (window == UI_Window.LoseUI || window ==  UI_Window.WinUI)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                }
             }
             else
             {

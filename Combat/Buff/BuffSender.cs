@@ -55,7 +55,12 @@ public class BuffSender : MonoBehaviour
         if (victim.TryGetComponent(out IBuffReceiver buffReceiver))
         {
             foreach (var buffSetting in buffSettings)
-                buffReceiver.AddBuff(buffSetting.buff);
+            {
+                if (buffSetting.IsConditionMet(_combatStats))
+                {
+                    buffReceiver.AddBuff(buffSetting.buff);
+                }
+            }
         }
     }
 
@@ -90,6 +95,7 @@ public class AttachBuffCondition
     public CombatStatsType CompareStatType;
     public Equator CompareEquator;
     public float CompareValue;
+    [SerializeField] bool IgnoreCondition = true;
     [SerializeField] bool UsePercentage;
 
     public enum Equator
@@ -101,6 +107,7 @@ public class AttachBuffCondition
 
     public bool IsConditionMet(GeneralCombatStats stats)
     {
+        if (IgnoreCondition) return true;
         if (UsePercentage && CompareStatType == CombatStatsType.HP)
         {
             float perc = stats.HP / stats.MaxHP;

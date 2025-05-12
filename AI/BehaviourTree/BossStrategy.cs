@@ -15,6 +15,7 @@ namespace Assets.AI.BehaviourTree
             public float BossBreakAtHPperc;
             public float BossBreakTime;
             public CombatBuff AddBuff;
+            //public 
         }
 
         int curTiming;

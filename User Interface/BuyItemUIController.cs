@@ -17,6 +17,7 @@ public class BuyItemUIController : MonoBehaviour
 
     public void SetUI(List<Item> itemsSold, string ownerNPC)
     {
+        _playerDeposit.text = PlayerBackpack.PlayerOwnedMoney + "$";
         // skip if already initialized and owner is the same
         if (initialzed && _ownerNPC.Equals(ownerNPC)) return; 
         // initialize interface with sold items
@@ -35,7 +36,6 @@ public class BuyItemUIController : MonoBehaviour
             optionScript.BuyItemButton.onClick.AddListener(() => BuyItem(item));
         }
         _container.sizeDelta = new Vector2(_container.sizeDelta.x, itemsSold.Count * 60f + 10f);
-        _playerDeposit.text = PlayerBackpack.PlayerOwnedMoney + "$";
     }
 
     void ClearOptions()

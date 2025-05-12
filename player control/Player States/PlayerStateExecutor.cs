@@ -295,6 +295,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
             _playerInput.EnableAllInput(false);
             _playerInput.LockAllInput = true;
             uiContr.SetUIActive(UI_Window.LoseUI, true);
+            uiContr.SetUIActive(UI_Window.BossHUD, false);
         }));
 
     }
@@ -336,9 +337,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     float _mpRegenTimer;
     float _atkTimeCD;
     bool TransportPlayer = false;
-    bool _playerDying = false;
-    [HideInInspector]
-    public bool HasInitialized = false;
+    [HideInInspector] public bool _playerDying = false;
+    [HideInInspector] public bool HasInitialized = false;
 
     CharacterController _charCont;
     Animator _animator;

@@ -261,5 +261,7 @@ public class PlayerInputData : Singleton_LastIn<PlayerInputData>
     {
         SetCursorState(b);
         InputEnable = b;
+        _executor.RunPressed = false;
+        _executor.OnMovePressed(Vector2.zero);
     }
 }

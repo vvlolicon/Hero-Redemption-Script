@@ -15,4 +15,16 @@ public class WinUIControl : MonoBehaviour
         Time.timeScale = 1;
         SceneLoader.Instance.ReturnToMainMenu();
     }
+
+    public void GoToNextLevel()
+    {
+        int curSceneIndex = LevelManager.CurLevelScene;
+        if (curSceneIndex == 0)
+        {
+            curSceneIndex = gameObject.scene.buildIndex;
+        }
+        curSceneIndex++;
+        LevelManager.LoadLevel(curSceneIndex);
+        LevelManager.CurLevelScene = curSceneIndex;
+    }
 }

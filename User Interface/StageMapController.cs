@@ -71,8 +71,11 @@ public class StageMapController : MonoBehaviour
             enterPoint = newStage.EnteredPoint;
         else if (curStage.IsParentStageOf(newStage))
             enterPoint = newStage.EnteredPoint;
+        else if (newStage.IsStageCleared() && newStage is EventStage)
+            enterPoint = newStage.ReturnPoint;
         else
             enterPoint = newStage.ReturnPoint;
+
         _player.TransportPlayerTo(enterPoint);
         curStage = newStage;
         newStage.OnEnterStage();

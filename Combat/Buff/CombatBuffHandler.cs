@@ -117,6 +117,13 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         Debug.Log($"external stats change {_statsAfterChanges.HP}, {_statsAfterChanges.MP}");
     }
 
+    public bool HasPoisonBuff()
+    {
+        if (!_isPlayer) return false;
+        return _buffAffectValues[CombatStatsType.HP] < 0 ||
+            _buffAffectValuesPerc[CombatStatsType.MaxHP] < 0;
+    }
+
     void HandleEquipmentChange()
     {
         //Debug.Log($"_curCombatStats.HP = {_curCombatStats.HP}, _curCombatStats.MaxHP = {_curCombatStats.MaxHP}");
@@ -193,9 +200,21 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
     void SetStatsForObject()
     {
         if (_isPlayer)
+        {
             _playerExecutor.PlayerCombatStats.SetStats(_statsAfterChanges);
+            if (_statsAfterChanges.HP <= 0 && !_playerExecutor._playerDying)
+            {
+                _playerExecutor.OnDying();
+            }
+        }
         else
+        {
             _enemyExecutor.CombatStats.SetStats(_statsAfterChanges);
+            if(_statsAfterChanges.HP <= 0 && !_enemyExecutor.IsDying)
+            {
+                _enemyExecutor.OnDying();
+            }
+        }
         _lastChangedStats.SetStats(_statsAfterChanges);
     }
     #endregion
@@ -215,16 +234,39 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
         foreach (var attr in buff.affectStats)
         {
             CombatStatsType statType = attr.AtbrType;
-            if (statType != CombatStatsType.HP && statType != CombatStatsType.MP) continue;
+            if (!isStatTypeHPorMP(statType)) continue;
             if (!buff.usePercentage)
                 _statsAfterChanges.ChangeStats(statType, attr.Value);
             else
             {
-                var maxValue = (statType == CombatStatsType.HP) ? _originStats.MaxHP : _originStats.MaxMP;
-                var newValue = Mathf.Clamp(
-                    _originStats.GetStats(statType) * (1 + _buffAffectValuesPerc[statType] / 100),
-                    0, maxValue);
-                _statsAfterChanges.SetStats(statType, newValue);
+                float maxValue;
+                float newValue;
+                if(statType == CombatStatsType.HP || 
+                    statType == CombatStatsType.MaxHP)
+                {
+                    maxValue = _lastChangedStats.MaxHP;
+                    newValue = _lastChangedStats.HP;
+                }
+                else
+                {
+                    maxValue = _lastChangedStats.MaxMP;
+                    newValue = _lastChangedStats.MP;
+                }
+                if (statType == CombatStatsType.HP || statType == CombatStatsType.MP)
+                {
+                    newValue = Mathf.Clamp(
+                        _originStats.GetStats(statType) * (1 + _buffAffectValuesPerc[statType] / 100),
+                        0, maxValue);
+                }
+                else
+                {
+                    float changeValue = maxValue * attr.Value / 100;
+                    newValue += changeValue;
+                }
+                if(statType == CombatStatsType.HP || statType == CombatStatsType.MaxHP)
+                    _statsAfterChanges.SetStats(CombatStatsType.HP, newValue);
+                if (statType == CombatStatsType.MP || statType == CombatStatsType.MaxMP)
+                    _statsAfterChanges.SetStats(CombatStatsType.MP, newValue);
             }
         }
     }
@@ -269,13 +311,13 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             float perc = statsChange.Value;
             if (perc == 0) continue;
             CombatStatsType statType = statsChange.Key;
-            if (statType == CombatStatsType.HP || statType == CombatStatsType.MP) continue;
+            if (isStatTypeHPorMP(statType)) continue;
             statsChangeForPerc[statType] = tmpStats[statType] * perc / 100;
         }
         for(int i = 0; i< typeof(CombatStatsType).GetEnumCount(); i++)
         {
             CombatStatsType statType = (CombatStatsType)i;
-            if (statType == CombatStatsType.HP || statType == CombatStatsType.MP) continue;
+            if (isStatTypeHPorMP(statType)) continue;
             if (statsChangeForPerc.ContainsKey(statType))
             {
                 _statsAfterChanges.ChangeStats(statType, statsChangeForPerc[statType]);
@@ -283,6 +325,28 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             if (_buffAffectValues.ContainsKey(statType))
             {
                 _statsAfterChanges.ChangeStats(statType, _buffAffectValues[statType]);
+            }
+        }
+    }
+    bool isStatTypeHPorMP(CombatStatsType statType)
+    {
+        return statType == CombatStatsType.HP || 
+            statType == CombatStatsType.MP||
+            statType == CombatStatsType.MaxHP||
+            statType == CombatStatsType.MaxMP;
+    }
+
+    public void RemoveAllNerfs()
+    {
+        for(int i = _buffs.Count -1; i>= 0; i--)
+        {
+            var existBuff = _buffs[i];
+            if (existBuff.isNerf)
+            {
+                RemoveBuffStats(existBuff);
+                _buffs.Remove(existBuff);
+                if(_identitalBuffs.Contains(existBuff))
+                    _identitalBuffs.Remove(existBuff);
             }
         }
     }
@@ -298,7 +362,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             }
         }
         BuffStats newBuff = buff.CreateBuff();
-        //Debug.Log($"adding buff {newBuff.buffName} for {gameObject.name}");
+        Debug.Log($"adding buff {newBuff.buffName} for {gameObject.name}");
         _buffs.Add(newBuff);
         if (!newBuff.stackable)
         {
@@ -348,7 +412,7 @@ public class CombatBuffHandler : MonoBehaviour, IBuffReceiver
             if (!buff.usePercentage)
             {
                 _buffAffectValues[statType] += value;
-                //Debug.Log($"_buffAffectValues {statType} = {_buffAffectValues[statType]}");
+                Debug.Log($"_buffAffectValues {statType} = {_buffAffectValues[statType]}");
             }
             else
             {

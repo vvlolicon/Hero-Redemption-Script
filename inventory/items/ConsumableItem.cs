@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class ConsumableItem : MonoBehaviour
 {
-    PlayerStateExecutor _executor;
+    PlayerStateExecutor _executor { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
+    CombatBuffHandler _buffHandler { get { return PlayerCompManager.TryGetPlayerComp<CombatBuffHandler>(); } }
     ItemData item { get { return itemDetail.item; } }
     ItemDetail itemDetail;
     public void Awake()
     {
-        _executor = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateExecutor>();
         itemDetail = GetComponent<ItemDetail>();
     }
     public void ConsumeItem()
@@ -21,8 +21,11 @@ public class ConsumableItem : MonoBehaviour
             case ConsumableItemType.InstantPotion:
                 UsePotion(item.itemAttributes);
                 break;
+            case ConsumableItemType.AntiDote:
+                UseAntidoet(item);
+                break;
             default:
-                UseItemGeneric(item.itemAttributes);
+                UseItemGeneric(item);
                 break;
         }
     }
@@ -42,9 +45,20 @@ public class ConsumableItem : MonoBehaviour
         }
     }
 
-    public void UseItemGeneric(List<ItemAttribute> attributes)
+    public void UseAntidoet(ItemData item)
     {
-        _executor.ChangePlayerExtraStat(attributes);
+        _buffHandler.RemoveAllNerfs();
+        DecreaseItemStack();
+    }
+
+    public void UseItemGeneric(ItemData item)
+    {
+        if(item.itemAttributes.Count > 0)
+            _executor.ChangePlayerExtraStat(item.itemAttributes);
+        if(item.addBuff != null)
+        {
+            _buffHandler.AddBuff(item.addBuff);
+        }
         DecreaseItemStack();
     }
 

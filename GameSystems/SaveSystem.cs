@@ -100,7 +100,7 @@ public static class SaveSystem
     }
     
 
-    public static void SaveGame(string fileName)
+    public static string SaveGame(string fileName)
     {
         int curSceneIndex = LevelManager.CurLevelScene;
         // if current scene is the main menu, set it to current active scene index
@@ -113,12 +113,6 @@ public static class SaveSystem
         saveData.AddRange(savedStages);
 
         Initialize();
-        SaveGame(fileName, saveData.ToArray());
-        playerData.DeserializeData();// deserialize item data to prevent wired things happen
-    }
-
-    public static void SaveGame(string fileName, object[] datas)
-    {
         string filePath = SAVE_FOLDER + fileName + SAVE_EXTENSION;
         int saveNum = 1;
         while (File.Exists(filePath))
@@ -126,7 +120,13 @@ public static class SaveSystem
             filePath = SAVE_FOLDER + fileName + " (" + saveNum + ")" + SAVE_EXTENSION;
             saveNum++;
         }
+        SaveGame(fileName, saveData.ToArray());
+        playerData.DeserializeData();// deserialize item data to prevent wired things happen
+        return filePath;
+    }
 
+    public static void SaveGame(string filePath, object[] datas)
+    {
         // convert data to json synchronously
         Task[] getStringTasks = new Task[datas.Length];
         List<string> jsonStrings = new List<string>();

@@ -23,7 +23,8 @@ public class PauseMenu : MonoBehaviour
 
     public void OnSaveGame()
     {
-        SaveSystem.SaveGame("New Save");
+        string path = SaveSystem.SaveGame("New Save");
+        UI_Controller.PopMessage($"Game successfully saved to {path}");
         OnExitWindow();
     }
 }

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Antidote potion
   itemType: 8
-  consumableItemType: 1
+  consumableItemType: 4
   itemID: 24
-  itemDesc: 
+  itemDesc: Removes all debuff effects on you
   itemIcon: {fileID: 21300000, guid: d7f4bb449f433e44d8a58fdd46e202ad, type: 3}
   itemModel: {fileID: 0}
   itemValue: 100
@@ -25,3 +25,4 @@ MonoBehaviour:
   setStack: 1
   rarity: 0
   itemAttributes: []
+  addBuff: {fileID: 0}

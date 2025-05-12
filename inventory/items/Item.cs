@@ -21,6 +21,8 @@ public class Item : ScriptableObject
     [SerializeField]
     public List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
 
+    public CombatBuff addBuff;
+
     public int curStack { get; set; }
 
     public Item(){}
@@ -75,7 +77,7 @@ public enum ItemType
 
 public enum ConsumableItemType
 {
-    None, InstantPotion, TimedPotion, Scroll
+    None, InstantPotion, TimedPotion, Scroll, AntiDote
 }
 [System.Serializable]
 public class ItemData
@@ -96,6 +98,7 @@ public class ItemData
     [System.NonSerialized] public Sprite itemIcon;
     [System.NonSerialized] public GameObject itemModel;
     [System.NonSerialized] public Item prototype;
+    [System.NonSerialized] public CombatBuff addBuff;
 
     public ItemData(Item prototype)
     {
@@ -108,6 +111,7 @@ public class ItemData
         maxStack = prototype.maxStack;
         curStack = prototype.curStack;
         itemAttributes = prototype.itemAttributes;
+        addBuff = prototype.addBuff;
     }
 
     #region ICloneable Members

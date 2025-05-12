@@ -12,7 +12,7 @@ public class PlayerBackpack : MonoBehaviour
     [SerializeField] List<Item> _playerOwnedItems;
     [SerializeField] Item[] _playerEquippedItems = new Item[8];
     [SerializeField] Item[] _playerHotbarItems = new Item[6];
-    [HideInInspector] public int PlayerLevel = 1;
+    public int PlayerLevel = 1;
     public int PlayerOwnedMoney = 0;
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
     //public int PlayerExp;

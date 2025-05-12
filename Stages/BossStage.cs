@@ -9,6 +9,7 @@ public class BossStage : MonsterStage
     [SerializeField] string bossName;
     [SerializeField] Collider _airWall;
     [SerializeField] Collider _enterTriggerCollider;
+    [SerializeField] Transform returnPoint;
 
     UI_Controller UIController { get { return UI_Controller.Instance; } }
 
@@ -20,10 +21,10 @@ public class BossStage : MonsterStage
         bossExecutor.Agent.enabled = false;
     }
 
-    private void OnDestroy()
-    {
-        _enterTriggerCollider.GetComponent<EnterColliderAction>().OnEnterAction -= OnEnterBossArea;
-    }
+    //private void OnDestroy()
+    //{
+    //    _enterTriggerCollider.GetComponent<EnterColliderAction>().OnEnterAction -= OnEnterBossArea;
+    //}
 
     public override void OnEnterStage()
     {
@@ -41,6 +42,7 @@ public class BossStage : MonsterStage
         _airWall.enabled = false;
         bossExecutor.bossActivated = false;
         UIController.SetUIActive(UI_Window.BossHUD, false);
+        returnPoint.gameObject.SetActive(true);
     }
 
     void OnEnterBossArea(Collider other)

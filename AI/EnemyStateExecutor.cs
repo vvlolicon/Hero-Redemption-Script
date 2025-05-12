@@ -200,6 +200,11 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _anim.Play("Dying");
         if(!_isBoss)
             _billboard.SetActive(false);
+        else
+        {
+            PlayerCompManager.TryGetPlayerComp<PlayerBackpack>().PlayerLevel++;
+            UI_Controller.Instance.PopMessage("Congrads! Your level is increased by 1!");
+        }
         StartCoroutine(ExtendIEnumerator.DelayAction(
             _enemyStaticStatScript._stats._dieTime, () => { 
                 AfterDying();

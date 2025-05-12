@@ -23,8 +23,10 @@ public class PlayerWalkState : PlayerBaseState
 
     public override void EnterState(){
         Executor.Animator.SetBool("Walk", true);
-        Executor.SoundMan.PlaySound("Walk");
         walkTimer = (Executor.RunPressed)? runTimeInterval : walkTimeInterval;
+        if (Executor.CurState.CurStateType() == PlayerStates.FALL) return;
+        // do not play sound if is not on ground
+        Executor.SoundMan.PlaySound("Walk");
         if (Executor.RunPressed)
         {
             Executor.SoundMan.PlaySound("Run");
@@ -49,7 +51,8 @@ public class PlayerWalkState : PlayerBaseState
     {
         Executor.Animator.SetBool("Walk", true);
         walkTimer -= Time.deltaTime;
-        bool playSound = walkTimer <= 0f;
+        bool playSound = walkTimer <= 0f &&
+            Executor.CurState.CurStateType() != PlayerStates.FALL;
         if (Executor.RunPressed)
         {
             Executor.Animator.SetBool("Run", true);
