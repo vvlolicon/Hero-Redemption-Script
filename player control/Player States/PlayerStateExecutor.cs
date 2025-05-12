@@ -271,7 +271,7 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
     {
         ExtraStats.ChangePlayerStats(itemAttributes);
         OnStatsChanged?.Invoke();
-        StringBuilder sb = new StringBuilder("power shard picked: ");
+        StringBuilder sb = new StringBuilder("Power shard picked: ");
         foreach (var attr in itemAttributes)
         {
             sb.Append($"{attr.AtrbName} +{attr.AtrbValue}, ");
