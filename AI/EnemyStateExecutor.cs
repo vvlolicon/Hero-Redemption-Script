@@ -199,11 +199,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
         _anim.Play("Dying");
         if(!_isBoss)
             _billboard.SetActive(false);
-        else
-        {
-            PlayerCompManager.TryGetPlayerComp<PlayerBackpack>().PlayerLevel++;
-            UI_Controller.Instance.PopMessage("Congrads! Your level is increased by 1!");
-        }
         StartCoroutine(ExtendIEnumerator.DelayAction(
             _enemyStaticStatScript._stats._dieTime, () => { 
                 AfterDying();
@@ -218,15 +213,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
     void AfterDying()
     {
         SoundManager.Mute(true);
-        if (IsBoss)
-        {
-            UI_Controller uiContr = UI_Controller.Instance;
-            PlayerInputData input = PlayerInputData.Instance;
-            uiContr.CloseAllClosableWindows();
-            input.EnableAllInput(false);
-            input.LockAllInput = true;
-            uiContr.SetUIActive(UI_Window.WinUI, true);
-        }
         gameObject.SetActive(false);
     }
 

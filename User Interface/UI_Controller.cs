@@ -48,7 +48,7 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
         if (UI_Windows.ContainsKey(window) && !UI_Windows[window].IsGameObjectNullOrDestroyed()) return;
         string path = UI_PATH + UI_WindowPrefabNames[window];
         UI_Windows[window] = Instantiate(Resources.Load<GameObject>(path), transform);
-        Debug.Log("ui window loaded: " + UI_Windows[window].name);
+        //Debug.Log("ui window loaded: " + UI_Windows[window].name);
     }
     public void Initialize()
     {
@@ -85,7 +85,7 @@ public class UI_Controller : Singleton_LastIn<UI_Controller>
                 return;
             }
             UI_Windows[window] = Instantiate(pair.windowObject, transform);
-            Debug.Log("ui window loaded: " + UI_Windows[window].name);
+            //Debug.Log("ui window loaded: " + UI_Windows[window].name);
         }
 
         UI_Windows[UI_Window.WinUI].transform.SetAsLastSibling();

@@ -37,14 +37,7 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (!Executor.Attacking)
         {
-            if (Executor.CharCont.isGrounded)
-            {
-                SwitchState(StateMan.Grounded());
-            }
-            else
-            {
-                SwitchState(StateMan.Fall());
-            }
+            SwitchState(StateMan.Grounded());
         }
     }
     public override PlayerStates CurStateType()

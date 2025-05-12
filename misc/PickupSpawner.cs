@@ -23,7 +23,7 @@ public class PickupSpawner : MonoBehaviour, IPickItem
 
     public void SpawnPickup()
     {
-        Debug.Log("Spawning Pickup");
+        //Debug.Log("Spawning Pickup");
         var pickup = Instantiate(spawnPickupDetail.itemModel, transform);
         pickup.transform.localPosition = Vector3.zero;
         var pickupScript = pickup.GetOrAddComponent<CollectableItem>();

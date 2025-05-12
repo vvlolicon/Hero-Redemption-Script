@@ -30,7 +30,7 @@ public class CollectableItem : MonoBehaviour
     {
         foreach(ItemAttribute attribute in itemAttributes)
         {
-            Debug.Log($"Adding attribute: {attribute.AtrbName}, {attribute.AtrbValue}");
+            //Debug.Log($"Adding attribute: {attribute.AtrbName}, {attribute.AtrbValue}");
             this.itemAttributes.Add(attribute);
         }
         this.spawner = spawner;

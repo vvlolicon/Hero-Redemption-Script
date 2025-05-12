@@ -246,7 +246,12 @@ public static class SaveSystem
             Task.WaitAll(getObjectTasks);
             foreach (var task in getObjectTasks)
             {
-                objects.Add(task.Result);
+                object obj = task.Result;
+                objects.Add(obj);
+                if(obj is TreasureStageData || obj is GeneralStageData)
+                {
+                    savedStages.Add(obj);
+                }
             }
             return objects.ToArray();
         }

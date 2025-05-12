@@ -33,11 +33,13 @@ public class PlayerBaseMethods
         //Rotate it to the player orientation
         moveDirection = _executor.gameObject.transform.TransformDirection(moveDirection);
         moveDirection = new Vector3(moveDirection.x * speed, moveDirection.y, moveDirection.z * speed); // apply the horizontal speed
-        if (DistToGround().IsBetweenOf(0, 0.5f) && _executor.CharCont.velocity.y < 0 &&
+        if (DistToGround().IsBetweenOf(-1.25f, 0.5f) && _executor.CharCont.velocity.y < 0 &&
             _executor.CurState.CurStateType() == PlayerStates.GROUNDED)
             moveDirection.y = -10f; //To prevent the controller from taking off when going down ramps
         else
+        {
             moveDirection.y = directionY;
+        }
         // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
         // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
         // as an acceleration (ms^-2)
@@ -83,7 +85,10 @@ public class PlayerBaseMethods
     {
         RaycastHit hit;
         if (Physics.Raycast(_executor.gameObject.transform.position, -Vector3.up, out hit, _executor.DistToGround + 999))
-            return hit.distance - _executor.DistToGround;
+        {
+            float dist = hit.distance - _executor.DistToGround;
+            return dist;
+        }
         else return 999;
     }
 
@@ -131,7 +136,7 @@ public static partial class ExtendMethods
         if (attributes == null) return;
         foreach (ItemAttribute attr in attributes)
         {
-            Debug.Log($"Item Attribute: {attr.AtrbName}, {attr.AtrbValue}");
+            //Debug.Log($"Item Attribute: {attr.AtrbName}, {attr.AtrbValue}");
             playerStats.ChangePlayerStats(attr);
         }
     }

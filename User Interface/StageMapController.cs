@@ -9,7 +9,8 @@ public class StageMapController : MonoBehaviour
     [SerializeField] float pivotOffset;
     [SerializeField] Button nextLevelButton;
 
-    [HideInInspector] public StageSettings curStage;
+    public StageSettings curStage;
+    bool isCurStageInitialized = false;
     PlayerStateExecutor _player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     UI_Controller UI_Controller { get { return UI_Controller.Instance; } }
     StageManager _stageManager { get { return StageManager.Instance; } }
@@ -34,13 +35,11 @@ public class StageMapController : MonoBehaviour
 
     private void Start()
     {
-        Init();
     }
 
     private void OnEnable()
     {
-        if (curStage == null)
-            Init();
+        Init();
         Debug.Log("curStage: " + curStage.gameObject.ToString());
         foreach (Transform child in transform.GetChild(0))
         {
@@ -86,28 +85,45 @@ public class StageMapController : MonoBehaviour
     public void SetPivot(Transform newPosTransform)
     {
         pivot.position = newPosTransform.position;
+        Debug.Log($"pivot position set to {newPosTransform.gameObject}");
     }
 
     public void SetCurStage(StageSettings newStage)
     {
         curStage = newStage;
-        StageMapButtons[] buttons = GetComponentsInChildren<StageMapButtons>();
-        foreach (StageMapButtons button in buttons)
+        isCurStageInitialized = true;
+        Debug.Log($"cur stage is {curStage.stageID}, is initialized: {isCurStageInitialized}");
+        gameObject.SetActive(true);
+        StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
         {
-            if(button.GetStage() == newStage)
+            Debug.Log($"buttons count:{transform.GetChild(0).childCount}");
+            StageMapButtons[] buttons = GetComponentsInChildren<StageMapButtons>(true);
+            foreach (StageMapButtons button in buttons)
             {
-                pivot.position = button.GetPivotTransform().position;
-                break;
+                var stage = button.GetStage();
+                Debug.Log($"checking stage: " + stage.stageID);
+                if (stage == newStage)
+                {
+                    SetPivot(button.GetPivotTransform());
+                    break;
+                }
             }
-        }
+            gameObject.SetActive(false);
+        }));
         newStage.OnEnterStage();
     }
 
     public void Init()
     {
-        Debug.Log("Initialize current stage to start stage");
-        if (curStage == null)
+        if (curStage == null && !isCurStageInitialized)
+        {
             curStage = StartStage;
+            Debug.Log("Initialize current stage to start stage");
+        }
+        else
+        {
+            Debug.Log("Cur stage is already initialized: " + curStage.stageID);
+        }
     }
 
     public void GoToNextLevel()

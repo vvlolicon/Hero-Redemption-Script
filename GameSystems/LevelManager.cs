@@ -28,6 +28,7 @@ public static class LevelManager
 
     public static void LoadDataToGame(object[] saveGameDatas)
     {
+        UI_Controller.Instance.Initialize();
         if (saveGameDatas != null)
         {
             List<object> savedStages = new();
@@ -56,11 +57,11 @@ public static class LevelManager
         {
             Debug.LogWarning("Cannot find any data");
         }
-        UI_Controller.Instance.Initialize();
         AfterGameInit();
     }
     public static void EnterNewLevel(object[] saveGameDatas)
     {
+        UI_Controller.Instance.Initialize();
         if (saveGameDatas != null)
         {
             List<object> savedStages = new();
@@ -88,7 +89,6 @@ public static class LevelManager
         {
             Debug.LogWarning("Cannot find any data");
         }
-        UI_Controller.Instance.Initialize();
         AfterGameInit();
     }
 
@@ -109,5 +109,6 @@ public static class LevelManager
     {
         VolumeMaster volumeMaster = UI_Controller.Instance.PauseMenu.GetComponent<VolumeMaster>();
         volumeMaster.ResetSliders();
+        UI_Controller.Instance.SetUIActive(UI_Window.StageMap, false);
     }
 }

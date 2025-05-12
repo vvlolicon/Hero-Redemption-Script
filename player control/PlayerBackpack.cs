@@ -159,7 +159,6 @@ public class PlayerBackpack : MonoBehaviour
     public void SetPlayerEquippedItem(ItemData item, int index)
     {
         _playerEquipments[index] = item;
-        OnStatsChanged?.Invoke();
     }
     public void SetPlayerHotbarItem(ItemData item, int index)
     {

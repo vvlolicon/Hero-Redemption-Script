@@ -6,6 +6,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
     public ItemType ThisSlotType;
     PlayerStateExecutor Player { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     PlayerBackpack PlayerBackpack { get { return PlayerCompManager.TryGetPlayerComp<PlayerBackpack>(); } }
+    PlayerStateExecutor PlayerStatsHandler { get { return PlayerCompManager.TryGetPlayerComp<PlayerStateExecutor>(); } }
     GeneralCombatStats PlayerStats { get { return Player.PlayerCombatStats; } }
     [HideInInspector]public ItemData curSlotItem;
 
@@ -182,6 +183,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
         {
             //Debug.Log("Register item attribute: " + curSlotItem.name);
             PlayerStats.ChangePlayerStats(item.itemAttributes);
+            Player.OnExternalStatChange();
         }
     }
 
@@ -196,6 +198,7 @@ public class MoveItem : MonoBehaviour, IDropHandler
                 PlayerStats.ChangePlayerStats(new ItemAttribute(itemAttr.AtrbName, value));
             }
             curSlotItem = null;
+            Player.OnExternalStatChange();
         }
         else
         {

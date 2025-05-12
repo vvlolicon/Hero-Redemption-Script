@@ -226,6 +226,8 @@ public class PlayerStateExecutor : MonoBehaviour, IDamageable, IPickItem
         }
     }
 
+    public void OnExternalStatChange() => OnStatsChanged?.Invoke();
+
     public void ChangePlayerCombatStat(List<ItemAttribute> attributes)
     {
         PlayerCombatStats.ChangePlayerStats(attributes);

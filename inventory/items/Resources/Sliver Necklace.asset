@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sliver Necklace
   m_EditorClassIdentifier: 
   itemName: Sliver Necklace
-  itemType: 6
+  itemType: 5
   consumableItemType: 0
   itemID: 18
   itemDesc: This is a Sliver Necklace
@@ -33,3 +33,4 @@ MonoBehaviour:
     AtrbValue: 15
   - AtrbName: 8
     AtrbValue: 20
+  addBuff: {fileID: 0}

@@ -20,7 +20,7 @@ MonoBehaviour:
     buffIcon: {fileID: 0}
     affectStats:
     - AtbrType: 0
-      Value: -0.05
+      Value: -0.5
     interval: 1
     duration: 10
     priority: 5

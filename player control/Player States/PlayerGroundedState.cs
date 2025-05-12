@@ -1,4 +1,7 @@
 
+using System.Collections.Generic;
+using UnityEngine;
+
 public class PlayerGroundedState : PlayerBaseState
 {
     public PlayerGroundedState(PlayerStatsManager manager, PlayerStateExecutor executor)
@@ -12,14 +15,17 @@ public class PlayerGroundedState : PlayerBaseState
         if (Executor.JumpPressed && Executor.CanJump)
         {
             SwitchState(StateMan.Jump());
+            return;
         }
-        else if (!Executor.CharCont.isGrounded && PlayerMethods.DistToGround() > 0.5f && !PlayerMethods.IsGrounded())
+        if (!Executor.CharCont.isGrounded && Executor.CharCont.velocity.y < 0)
         {
+            //Debug.Log("Executor.CharCont.velocity.y: " + Executor.CharCont.velocity.y);
             //Debug.Log("Ground state switch to fall state, " + "isGrounded: " + Executor.CharCont.isGrounded + ", check Grounded: " + PlayerMethods.IsGrounded());
             SwitchState(StateMan.Fall());
             Executor.Animator.Play("Falling");// from ground directly to fall
+            return;
         }
-        else if (Executor.AttackPressed)
+        if (Executor.AttackPressed)
         {
             SwitchState(StateMan.Attack());
         }

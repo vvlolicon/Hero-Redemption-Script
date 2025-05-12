@@ -1,6 +1,7 @@
 using Assets.SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -104,17 +105,24 @@ public class StageManager : Singleton_LastIn<StageManager>
         SetStagesFromData(savedStages);
         if (!string.IsNullOrEmpty(curStageID))
         {
-            StageMapController stageController = UI_Controller.GetUIScript<StageMapController>();
-            if(stageRegistry.TryGetValue(curStageID, out StageSettings curstage))
+            foreach (var stage in GetCurLevelStages())
             {
-                Debug.Log("Current stage: " + curstage.gameObject);
-                stageController.SetCurStage(curstage);
+                if (stage.stageID == curStageID)
+                {
+                    StartCoroutine(ExtendIEnumerator.ActionInNextFrame(() =>
+                    {
+                        StageMapController stageController = UI_Controller.GetUIScript<StageMapController>();
+                        stageController.SetCurStage(stage);
+                    }));
+                    break;
+                }
             }
         }
     }
 
     public void SetStagesFromData(List<object> savedStages)
     {
+        List<StageSettings> restoredStages = new();
         foreach (var savedData in savedStages)
         {
             if (savedData is GeneralStageData savedStage)
@@ -125,6 +133,7 @@ public class StageManager : Singleton_LastIn<StageManager>
                                  savedStage.isDiscovered,
                                  savedStage.isCleared,
                                  savedStage.pickedPickups);
+                    restoredStages.Add(stage);
                 }
             }
             else if (savedData is TreasureStageData savedTreasureStage)
@@ -139,6 +148,7 @@ public class StageManager : Singleton_LastIn<StageManager>
                                  savedTreasureStage.isCleared,
                                  savedTreasureStage.pickedPickups,
                                  savedTreasureStage.lootBoxesData);
+                        restoredStages.Add(stage);
                     }
                 }
             }
