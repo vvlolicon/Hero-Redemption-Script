@@ -46,7 +46,7 @@ public class InteractObject : MonoBehaviour
 
     public void HandleScrollInput()
     {
-        if (_tooltips.Count == 0) return; // 如果没有可交互对象，直接返回
+        if (_tooltips.Count == 0) return; // return if no interactable objects
         //Debug.Log("input: " + input);
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
@@ -132,7 +132,6 @@ public class InteractObject : MonoBehaviour
 
     public void InteractWithObject()
     {
-        //Debug.Log($"_interactableObjects.Count: {_interactableObjects.Count}, _curSelectedIndex: {_curSelectedIndex}");
         if (_curSelectedIndex == -1 || _interactableObjects.Count == 0) return;
         _interactableObjects[_curSelectedIndex]?.Interact();
     }

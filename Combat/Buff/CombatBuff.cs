@@ -19,10 +19,10 @@ public class BuffContext
     public List<CombatStatAttributes> affectStats;
     public float interval;
     public float duration;
-    public int priority;
-    public bool usePercentage = false;
-    public bool stackable;
-    public bool isNerf = false;
+    public int priority; // buff with higher priority effects if same type of buff exists
+    public bool usePercentage = false; // afftect the status base on percentage
+    public bool stackable; // is buff can stack
+    public bool isNerf = false; // get removed if antidote used
 
     public static BuffContext Clone(BuffContext other)
     {

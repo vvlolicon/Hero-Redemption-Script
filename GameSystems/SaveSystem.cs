@@ -103,7 +103,7 @@ public static class SaveSystem
     public static string SaveGame(string fileName)
     {
         int curSceneIndex = LevelManager.CurLevelScene;
-        // if current scene is the main menu, set it to current active scene index
+        // if index is not set yet, set it to current active scene index
         if (curSceneIndex == 0) curSceneIndex = SceneManager.GetActiveScene().buildIndex; 
         List<object> saveData = new List<object> { curSceneIndex };
         GatherPlayerData();
@@ -120,7 +120,7 @@ public static class SaveSystem
             filePath = SAVE_FOLDER + fileName + " (" + saveNum + ")" + SAVE_EXTENSION;
             saveNum++;
         }
-        SaveGame(fileName, saveData.ToArray());
+        SaveGame(filePath, saveData.ToArray());
         playerData.DeserializeData();// deserialize item data to prevent wired things happen
         return filePath;
     }

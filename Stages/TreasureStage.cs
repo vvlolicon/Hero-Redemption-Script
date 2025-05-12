@@ -49,7 +49,6 @@ public class TreasureStage : StageSettings
 public class TreasureStageData
 {
     public string stageID;
-    public List<string> childStageIDs;
     public List<bool> pickedPickups;
 
     public bool isLocked;

@@ -19,7 +19,7 @@ public class Item : ScriptableObject
     public int rarity;
     
     [SerializeField]
-    public List<ItemAttribute> itemAttributes = new List<ItemAttribute>();
+    public List<ItemAttribute> itemAttributes = new();
 
     public CombatBuff addBuff;
 

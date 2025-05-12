@@ -114,7 +114,6 @@ public class EnemyStateExecutor : MonoBehaviour, IDamageable
                     if (!_billboard.activeSelf)
                         _billboard.SetActive(true);
                 
-                //CurState.SwitchState(_stateMan.Hit());
                 DmgResult dmgResult = HealthManager.calculateDamage(
                     info.ATK, CombatStats.DEF, info.CritChance, CombatStats.CritChanRdc,
                     CombatStats.DmgReduce, info.CritMult, CombatStats.CritDmgResis);

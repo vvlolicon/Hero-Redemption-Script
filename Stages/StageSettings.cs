@@ -119,7 +119,6 @@ public abstract class StageSettings : MonoBehaviour
 public class GeneralStageData
 {
     public string stageID;
-    public List<string> childStageIDs;
     public List<bool> pickedPickups;
 
     public bool isLocked;
