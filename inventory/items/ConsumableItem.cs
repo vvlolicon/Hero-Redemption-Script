@@ -32,11 +32,21 @@ public class ConsumableItem : MonoBehaviour
 
     public void UsePotion(List<ItemAttribute> attributes)
     {
+        bool useItem = false;
+        if (item.addBuff != null)
+        {
+            _buffHandler.AddBuff(item.addBuff);
+            useItem = true;
+        }
         //Debug.Log($"Using item {item.itemName}");
         if (_executor.PlayerCombatStats.CanConsumeItem(attributes))
         {
-            _executor.SoundMan.PlaySound("UsePotion");
             _executor.ChangePlayerCombatStat(attributes);
+            useItem = true;
+        }
+        if (useItem)
+        {
+            _executor.SoundMan.PlaySound("UsePotion");
             DecreaseItemStack();
         }
         else
@@ -48,6 +58,7 @@ public class ConsumableItem : MonoBehaviour
     public void UseAntidoet(ItemData item)
     {
         _buffHandler.RemoveAllNerfs();
+        _executor.SoundMan.PlaySound("UsePotion");
         DecreaseItemStack();
     }
 
@@ -55,10 +66,6 @@ public class ConsumableItem : MonoBehaviour
     {
         if(item.itemAttributes.Count > 0)
             _executor.ChangePlayerExtraStat(item.itemAttributes);
-        if(item.addBuff != null)
-        {
-            _buffHandler.AddBuff(item.addBuff);
-        }
         DecreaseItemStack();
     }
 

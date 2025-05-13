@@ -21,7 +21,7 @@ MonoBehaviour:
   itemModel: {fileID: 0}
   itemValue: 100
   itemWeight: 0
-  maxStack: 1
+  maxStack: 64
   setStack: 1
   rarity: 0
   itemAttributes: []

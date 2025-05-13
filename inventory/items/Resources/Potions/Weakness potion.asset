@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Weakness potion
   itemType: 8
-  consumableItemType: 3
+  consumableItemType: 1
   itemID: 23
   itemDesc: Add critital chance for 20% in 180s
   itemIcon: {fileID: 21300000, guid: d8de0f78aa75dc047901674e2cd0ba6d, type: 3}
   itemModel: {fileID: 0}
   itemValue: 100
   itemWeight: 0
-  maxStack: 1
+  maxStack: 64
   setStack: 1
   rarity: 0
   itemAttributes: []
